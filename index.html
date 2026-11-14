@@ -47,8 +47,8 @@
         
         <!-- NAVIGATION RESPONSIVE -->
         <nav class="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold flex-wrap pt-2 lg:pt-0 border-t border-white/10 lg:border-t-0">
-          <button onclick="switchNav('news')" id="nav-news" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-white text-[#0f2544] shadow-md cursor-pointer">News</button>
-          <button onclick="switchNav('squadra')" id="nav-squadra" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition text-white hover:bg-white/10 cursor-pointer">Squadra</button>
+          <button onclick="switchNav('news')" id="nav-news" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition text-white hover:bg-white/10 cursor-pointer">News</button>
+          <button onclick="switchNav('squadra')" id="nav-squadra" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-white text-[#0f2544] shadow-md cursor-pointer">Squadra</button>
           <button onclick="switchNav('stagione')" id="nav-stagione" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition text-white hover:bg-white/10 cursor-pointer">Stagione</button>
           <button onclick="switchNav('coach')" id="nav-coach" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/40 shadow-sm cursor-pointer">Area Coach</button>
         </nav>
@@ -73,8 +73,8 @@
   <!-- MAIN APP CONTAINER -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 w-full flex-grow space-y-8 sm:space-y-10">
 
-    <!-- NEWS VIEW -->
-    <section id="view-news" class="space-y-6 sm:space-y-8">
+    <!-- NEWS VIEW (Hidden by default) -->
+    <section id="view-news" class="space-y-6 sm:space-y-8 hidden">
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-300 pb-5">
         <div>
           <span class="text-xs font-extrabold text-asa-red uppercase tracking-widest block mb-1">Stagione Ufficiale 2026/2027</span>
@@ -166,45 +166,47 @@
       </div>
     </section>
 
-    <!-- SQUADRA VIEW -->
-    <section id="view-squadra" class="space-y-8 hidden">
+    <!-- SQUADRA VIEW (Active by default or toggled) -->
+    <section id="view-squadra" class="space-y-8">
       <div class="border-b border-slate-300 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <span class="text-xs font-extrabold text-asa-red uppercase tracking-widest block mb-1">Roster Ufficiale & Staff</span>
           <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#0f2544] tracking-tight uppercase">Sezione Squadra</h2>
         </div>
         <div class="flex items-center gap-2 bg-slate-200/80 p-1.5 rounded-2xl">
-          <button onclick="switchSquadraTab('roster')" id="sq-tab-roster" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#0f2544] text-white shadow transition cursor-pointer">Roster (22)</button>
-          <button onclick="switchSquadraTab('staff')" id="sq-tab-staff" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer">Staff & Dirigenza</button>
+          <button onclick="switchSquadraTab('roster')" id="sq-tab-roster" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#0f2544] text-white shadow transition cursor-pointer">Roster Atleti (22)</button>
+          <button onclick="switchSquadraTab('staff')" id="sq-tab-staff" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer">Staff Tecnico</button>
         </div>
       </div>
 
+      <!-- ROSTER GRID (22 Atleti) -->
       <div id="squadra-content-roster" class="space-y-6">
         <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6" id="roster-grid-main"></div>
       </div>
 
+      <!-- STAFF TECNICO -->
       <div id="squadra-content-staff" class="space-y-6 hidden">
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm space-y-2">
+          <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm space-y-3">
             <span class="text-xs font-extrabold text-asa-red uppercase tracking-widest">Capo Allenatore</span>
-            <h3 class="text-xl font-black text-slate-900">Stefano Protti</h3>
-            <p class="text-xs text-slate-600">Martedì 17:00 - 18:00 presso la Palestra BUCUM.</p>
+            <h3 class="text-xl font-black text-[#0f2544]">Stefano Protti</h3>
+            <p class="text-xs text-slate-600">Conduce gli allenamenti del martedì dalle 17:00 alle 18:00 presso la Palestra BUCUM.</p>
           </div>
-          <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm space-y-2">
+          <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm space-y-3">
             <span class="text-xs font-extrabold text-asa-red uppercase tracking-widest">Capo Allenatore</span>
-            <h3 class="text-xl font-black text-slate-900">Gaia Aresta</h3>
-            <p class="text-xs text-slate-600">Mercoledì 18:00 - 19:00 presso la Palestra BUCUM.</p>
+            <h3 class="text-xl font-black text-[#0f2544]">Gaia Aresta</h3>
+            <p class="text-xs text-slate-600">Conduce gli allenamenti del mercoledì dalle 18:00 alle 19:00 presso la Palestra BUCUM.</p>
           </div>
-          <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm space-y-2">
+          <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm space-y-3">
             <span class="text-xs font-extrabold text-asa-red uppercase tracking-widest">Vice Allenatore</span>
-            <h3 class="text-xl font-black text-slate-900">Elisa Di Pietro</h3>
-            <p class="text-xs text-slate-600">Supporto tecnico e coordinamento allenamenti.</p>
+            <h3 class="text-xl font-black text-[#0f2544]">Elisa Di Pietro</h3>
+            <p class="text-xs text-slate-600">Supporto tecnico e coordinamento generale della squadra.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- STAGIONE VIEW -->
+    <!-- STAGIONE VIEW (Hidden by default) -->
     <section id="view-stagione" class="space-y-8 hidden">
       <div class="border-b border-slate-300 pb-4">
         <span class="text-xs font-extrabold text-asa-red uppercase tracking-widest block mb-1">Calendario Ufficiale</span>
@@ -213,7 +215,7 @@
       <div class="space-y-4" id="full-schedule-container"></div>
     </section>
 
-    <!-- AREA COACH VIEW -->
+    <!-- AREA COACH VIEW (Hidden by default) -->
     <section id="view-coach" class="space-y-8 hidden">
       <div class="border-b border-slate-300 pb-4">
         <span class="text-xs font-extrabold text-amber-600 uppercase tracking-widest block mb-1">Accesso Riservato</span>
@@ -293,11 +295,20 @@
       { giornata: "Giornata 5", data: "13/12/2026", avversario: "San Carlo Milano", risultato: null, sede: "Palestra BUCUM" }
     ];
 
+    // Auto-render roster on load since Squadra is default view here or initialized
+    window.addEventListener('DOMContentLoaded', () => {
+      renderRosterMain();
+    });
+
     function switchNav(navId) {
       ['news', 'squadra', 'stagione', 'coach'].forEach(id => {
         document.getElementById('view-' + id).classList.add('hidden');
         const btn = document.getElementById('nav-' + id);
-        if (btn) btn.className = id === 'coach' ? "px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/40 shadow-sm cursor-pointer" : "px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition text-white hover:bg-white/10 cursor-pointer";
+        if (btn) {
+          btn.className = id === 'coach' 
+            ? "px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/40 shadow-sm cursor-pointer" 
+            : "px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition text-white hover:bg-white/10 cursor-pointer";
+        }
       });
 
       document.getElementById('view-' + navId).classList.remove('hidden');
@@ -348,6 +359,7 @@
 
     function renderRosterMain() {
       const grid = document.getElementById('roster-grid-main');
+      if (!grid) return;
       grid.innerHTML = rosterAtleti.map(a => `
         <div class="bg-white p-4 sm:p-6 rounded-3xl border border-slate-200 shadow-sm text-center flex flex-col items-center justify-between hover:shadow-lg transition">
           <div class="relative w-24 h-28 sm:w-28 sm:h-32 bg-slate-50 rounded-2xl border-2 border-slate-300 shadow-inner flex flex-col items-center justify-between p-2 mb-3 sm:mb-4">
@@ -363,6 +375,7 @@
 
     function renderFullSchedule() {
       const container = document.getElementById('full-schedule-container');
+      if (!container) return;
       container.innerHTML = allPartite.map(p => `
         <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
