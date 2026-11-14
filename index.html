@@ -376,8 +376,6 @@
         const clipId = `jersey-clip-${idx}`;
         const patternId = `wings-pattern-${idx}`;
 
-        const cognomeFontSize = cognome.length > 10 ? 14 : 17;
-
         return `
         <div class="bg-white p-3.5 sm:p-5 rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-[#0f2544] transition-all duration-300 flex flex-col items-center justify-between group">
           
@@ -415,8 +413,8 @@
                 <polygon points="186,184 168,194 168,207 186,197" fill="#0f2544" />
                 <polygon points="186,210 169,220 169,233 186,223" fill="#0f2544" />
 
-                <!-- COGNOME ROSSO PIENO (Senza contorno, spaziosissimo) -->
-                <text x="110" y="72" text-anchor="middle" font-size="${cognomeFontSize}" font-weight="900" fill="#c8102e" letter-spacing="4" style="font-family: 'Arial Black', Impact, sans-serif;">
+                <!-- COGNOME ROSSO PIENO ADATTIVO (textLength="96" impedisce qualsiasi trabokko) -->
+                <text x="110" y="72" text-anchor="middle" font-size="15" font-weight="900" fill="#c8102e" textLength="96" lengthAdjust="spacing" style="font-family: 'Arial Black', Impact, sans-serif;">
                   ${cognome}
                 </text>
 
