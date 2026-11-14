@@ -11,7 +11,7 @@
     .asa-red { background-color: #c8102e; }
     .text-asa-red { color: #c8102e; }
     
-    /* Tipografia sportiva identica alla stampa della maglia (Rosso con bordo Blu Navy) */
+    /* Tipografia sportiva per il numero (Rosso con bordo Blu Navy) */
     .jersey-text {
       font-family: 'Impact', 'Arial Narrow', 'Inter', sans-serif;
       fill: #c8102e;
@@ -415,8 +415,8 @@
                 <polygon points="186,184 168,194 168,207 186,197" fill="#0f2544" />
                 <polygon points="186,210 169,220 169,233 186,223" fill="#0f2544" />
 
-                <!-- COGNOME SPAZIATO (letter-spacing="3.5") -->
-                <text x="110" y="72" text-anchor="middle" font-size="${cognomeFontSize}" font-weight="900" stroke-width="2.5" letter-spacing="3.5" class="jersey-text">
+                <!-- COGNOME ROSSO PIENO (Senza contorno, spaziosissimo) -->
+                <text x="110" y="72" text-anchor="middle" font-size="${cognomeFontSize}" font-weight="900" fill="#c8102e" letter-spacing="4" style="font-family: 'Arial Black', Impact, sans-serif;">
                   ${cognome}
                 </text>
 
