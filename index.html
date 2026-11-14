@@ -11,6 +11,16 @@
     .asa-red { background-color: #c8102e; }
     .text-asa-red { color: #c8102e; }
     
+    /* Parquet chiaro effetto legno per il campo da basket nel modale */
+    .parquet-court {
+      background-color: #f3e5ab;
+      background-image: 
+        linear-gradient(90deg, rgba(0,0,0,0.03) 50%, transparent 50%),
+        linear-gradient(rgba(255,255,255,0.1) 50%, transparent 50%);
+      background-size: 30px 100%, 100% 30px;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.15);
+    }
+
     /* Tipografia sportiva per il numero (Rosso con bordo Blu Navy) */
     .jersey-text {
       font-family: 'Impact', 'Arial Narrow', 'Inter', sans-serif;
@@ -98,10 +108,7 @@
         </div>
       </div>
 
-      <!-- CONTAINER DINAMICO DELLE CARDS NEWS -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8" id="news-cards-container">
-        <!-- Generato via JavaScript per gestire lo stato dinamico delle convocazioni -->
-      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8" id="news-cards-container"></div>
     </section>
 
     <!-- SQUADRA / ROSTER VIEW -->
@@ -117,12 +124,10 @@
         </div>
       </div>
 
-      <!-- ROSTER GRID -->
       <div id="squadra-content-roster" class="space-y-6">
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6" id="roster-grid-main"></div>
       </div>
 
-      <!-- STAFF TECNICO -->
       <div id="squadra-content-staff" class="space-y-8 hidden">
         <div class="space-y-4">
           <h3 class="text-xs font-extrabold text-asa-red uppercase tracking-widest">Staff Tecnico di Campo</h3>
@@ -151,7 +156,7 @@
       </div>
     </section>
 
-    <!-- STAGIONE VIEW (Hidden by default) -->
+    <!-- STAGIONE VIEW -->
     <section id="view-stagione" class="space-y-8 hidden">
       <div class="border-b border-slate-300 pb-4">
         <span class="text-xs font-extrabold text-asa-red uppercase tracking-widest block mb-1">Calendario Ufficiale</span>
@@ -167,7 +172,6 @@
         <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#0f2544] tracking-tight uppercase">Area Coach / Convocazioni</h2>
       </div>
 
-      <!-- LOGIN BOX -->
       <div id="coach-login-container" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 max-w-xl shadow-sm space-y-5">
         <h3 class="font-extrabold text-lg text-[#0f2544]">Autenticazione Pannello Convocazioni</h3>
         <p class="text-xs text-slate-600">Inserisci la password autorizzata (Default di prova: <code class="bg-slate-100 px-2 py-0.5 rounded font-bold text-asa-red">asa2026</code>) per gestire i convocati alle partite.</p>
@@ -177,7 +181,6 @@
         </button>
       </div>
 
-      <!-- DASHBOARD CONVOCAZIONI -->
       <div id="coach-dashboard-container" class="space-y-6 hidden">
         <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-center justify-between flex-wrap gap-4">
           <div class="flex items-center gap-3">
@@ -190,9 +193,7 @@
         <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
           <div class="space-y-2">
             <label class="text-xs font-extrabold text-slate-500 uppercase tracking-wider block">Seleziona Partita</label>
-            <select id="match-selector" onchange="loadMatchConvocazioni()" class="w-full px-4.5 py-3 border border-slate-300 rounded-2xl text-sm font-bold text-[#0f2544] bg-slate-50 focus:outline-none focus:ring-2 focus:ring-[#0f2544]">
-              <!-- Popolato dinamicamente da JS con distinzione past/future -->
-            </select>
+            <select id="match-selector" onchange="loadMatchConvocazioni()" class="w-full px-4.5 py-3 border border-slate-300 rounded-2xl text-sm font-bold text-[#0f2544] bg-slate-50 focus:outline-none focus:ring-2 focus:ring-[#0f2544]"></select>
             <p class="text-[11px] text-slate-400 italic">Nota: Le partite passate sono contrassegnate per la consultazione d'archivio.</p>
           </div>
 
@@ -201,7 +202,6 @@
             <span id="selected-counter" class="text-xs font-extrabold text-asa-red bg-red-50 px-3 py-1 rounded-full">0 / 22 Selezionati</span>
           </div>
 
-          <!-- LISTA CHECKBOX ATLETI -->
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 max-h-96 overflow-y-auto p-1" id="coach-roster-checklist"></div>
 
           <div class="pt-4 border-t border-slate-200 flex flex-col sm:flex-row gap-3">
@@ -229,9 +229,9 @@
     </div>
   </footer>
 
-  <!-- MODAL FOR MATCH DETAILS & CONVOCAZIONI -->
+  <!-- MODAL FOR MATCH DETAILS & WOW-EFFECT CONVOCAZIONI -->
   <div id="match-modal" class="fixed inset-0 bg-slate-950/70 z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-200 relative max-h-[90vh] overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-4xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-200 relative max-h-[92vh] overflow-y-auto">
       <button onclick="closeMatchModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-700 font-extrabold text-lg cursor-pointer">✕</button>
       
       <div class="space-y-1 text-center">
@@ -239,19 +239,37 @@
         <h3 class="text-2xl font-black text-[#0f2544]" id="modal-title">Squadra avversaria</h3>
       </div>
 
-      <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-2 text-center">
-        <div class="text-[10px] font-bold text-slate-400 uppercase">Esito / Sede</div>
-        <div class="text-xl font-black text-[#0f2544]" id="modal-score">Da disputare</div>
-        <p class="text-xs text-slate-600" id="modal-info">Palestra BUCUM - Via Monte Ortigara 2, Cinisello Balsamo</p>
+      <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex items-center justify-between flex-wrap gap-4 text-center">
+        <div>
+          <div class="text-[10px] font-bold text-slate-400 uppercase">Esito / Sede</div>
+          <div class="text-base font-black text-[#0f2544]" id="modal-score">Da disputare</div>
+        </div>
+        <div class="text-right">
+          <div class="text-[10px] font-bold text-slate-400 uppercase">Impianto</div>
+          <p class="text-xs font-semibold text-slate-600" id="modal-info">Palestra BUCUM</p>
+        </div>
       </div>
 
-      <!-- SEZIONE CONVOCAZIONI PUBBLICHE NEL MODAL -->
-      <div class="space-y-3 pt-2 border-t border-slate-100">
+      <!-- EFFETTO WOW: CAMPO DA BASKET IN PARQUET CON MAGLIE SCHIERATE -->
+      <div class="space-y-3 pt-2">
         <div class="flex items-center justify-between">
-          <h4 class="text-xs font-extrabold text-[#0f2544] uppercase tracking-wider">Giocatori Convocati Ufficiali</h4>
-          <span id="modal-convocati-count" class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">0 convocati</span>
+          <h4 class="text-xs font-extrabold text-[#0f2544] uppercase tracking-wider flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#c8102e] animate-pulse"></span>
+            Schieramento Convocati Ufficiali (Parquet)
+          </h4>
+          <span id="modal-convocati-count" class="text-xs font-black text-white bg-[#0f2544] px-3 py-1 rounded-full shadow-sm">0 convocati</span>
         </div>
-        <div id="modal-convocati-list" class="bg-blue-50/50 border border-blue-100 rounded-2xl p-4 text-xs text-slate-700 max-h-48 overflow-y-auto flex flex-wrap gap-2"></div>
+
+        <!-- CAMPO DA BASKET IN PARQUET CHIARO -->
+        <div id="parquet-court-container" class="parquet-court rounded-3xl border-4 border-[#0f2544]/20 p-6 relative overflow-hidden min-h-[320px] flex flex-col justify-center">
+          <!-- Linee del campo decorative (Aerea / Key e Arco) -->
+          <div class="absolute inset-y-0 left-1/2 -translate-x-1/2 w-48 border-x-2 border-dashed border-red-600/30 pointer-events-none"></div>
+          
+          <!-- Contenitore Griglia delle Mini-Maglie sul Parquet -->
+          <div id="parquet-jerseys-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 relative z-10">
+            <!-- Popolato via JS con ordinamento per numero di maglia -->
+          </div>
+        </div>
       </div>
 
       <button onclick="closeMatchModal()" class="w-full py-3.5 bg-[#0f2544] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider hover:bg-slate-800 transition cursor-pointer shadow">
@@ -295,12 +313,10 @@
       { id: "Giornata 5", data: "13/12/2026", avversario: "San Carlo Milano", risultato: "Da disputare", sede: "Palestra BUCUM", isPast: false }
     ];
 
-    // Memoria locale dei convocati per ogni partita
     const databaseConvocazioni = {
       "Giornata 1": ["Filippo Bertinazzi", "Mattia Caruso", "Mirko d'Elia", "Riccardo Grasso", "Andrea Insisa", "Jacopo Morselli", "Francesco Nicotra", "Lorenzo Perrone", "Daniel Prudenzano", "Gabriele Riccobene"],
       "Giornata 2": ["Filippo Bertinazzi", "Mattia Caruso", "Riccardo Grasso", "Andrea Insisa", "Lorenzo Perrone", "Daniel Prudenzano", "Gabriele Riccobene", "Youness Rizki", "Nathan Sala", "Gabriele Stavola"],
       "Giornata 3": ["Filippo Bertinazzi", "Mattia Caruso", "Mirko d'Elia", "Riccardo Grasso", "Andrea Insisa", "Jacopo Morselli", "Francesco Nicotra", "Mattia Oliverio", "Lorenzo Perrone", "Daniel Prudenzano", "Gabriele Riccobene", "Nathan Sala"]
-      // Giornata 4 e 5 inizialmente vuote (nessuna convocazione fatta)
     };
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -370,17 +386,20 @@
     function renderRosterMain() {
       const grid = document.getElementById('roster-grid-main');
       if (!grid) return;
-      grid.innerHTML = rosterAtleti.map((a, idx) => {
-        const parts = a.nome.split(' ');
-        const cognome = parts.slice(1).join(' ').toUpperCase();
-        const nome = parts[0];
-        const clipId = `jersey-clip-${idx}`;
-        const patternId = `wings-pattern-${idx}`;
+      grid.innerHTML = rosterAtleti.map((a, idx) => generateJerseySvgHtml(a, idx)).join('');
+    }
 
-        return `
-        <div class="bg-white p-3.5 sm:p-5 rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-[#0f2544] transition-all duration-300 flex flex-col items-center justify-between group">
-          
-          <div class="relative w-36 h-44 sm:w-44 sm:h-52 flex items-center justify-center mb-3 transform group-hover:scale-105 transition-transform duration-300">
+    // Helper riutilizzabile per generare la canotta SVG sia nel roster che nel modale del campo
+    function generateJerseySvgHtml(a, idx) {
+      const parts = a.nome.split(' ');
+      const cognome = parts.slice(1).join(' ').toUpperCase();
+      const nome = parts[0];
+      const clipId = `jersey-clip-${idx}`;
+      const patternId = `wings-pattern-${idx}`;
+
+      return `
+        <div class="bg-white/90 backdrop-blur-xs p-3 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col items-center justify-between group">
+          <div class="relative w-28 h-36 flex items-center justify-center mb-1 transform group-hover:scale-105 transition-transform duration-300">
             <svg viewBox="0 0 220 270" class="w-full h-full drop-shadow-md">
               <defs>
                 <clipPath id="${clipId}">
@@ -414,17 +433,14 @@
                 <polygon points="186,184 168,194 168,207 186,197" fill="#0f2544" />
                 <polygon points="186,210 169,220 169,233 186,223" fill="#0f2544" />
 
-                <!-- COGNOME ROSSO PIENO ADATTIVO (textLength="96") -->
                 <text x="110" y="72" text-anchor="middle" font-size="15" font-weight="900" fill="#c8102e" textLength="96" lengthAdjust="spacing" style="font-family: 'Arial Black', Impact, sans-serif;">
                   ${cognome}
                 </text>
 
-                <!-- NUMERO CENTRALE -->
                 <text x="110" y="148" text-anchor="middle" font-size="68" font-weight="900" stroke-width="4.5" letter-spacing="-1" class="jersey-text">
                   ${a.numero}
                 </text>
 
-                <!-- LOGO CINIX -->
                 <text x="110" y="177" text-anchor="middle" font-size="18" font-weight="900" font-style="italic" fill="#c8102e" letter-spacing="1.5" style="font-family: 'Arial Black', Impact, sans-serif;">
                   CINIX
                 </text>
@@ -434,15 +450,14 @@
                     fill="none" stroke="#cbd5e1" stroke-width="2" />
             </svg>
           </div>
-
-          <div class="text-center border-t border-slate-100 pt-2.5 w-full">
-            <div class="font-bold text-xs sm:text-sm text-slate-700">${nome} <span class="font-black text-[#0f2544]">${cognome}</span></div>
+          <div class="text-center border-t border-slate-200/60 pt-1.5 w-full">
+            <div class="font-extrabold text-[11px] text-slate-800 truncate">${nome}</div>
+            <div class="font-black text-xs text-[#0f2544]">${cognome} <span class="text-asa-red font-bold">#${a.numero}</span></div>
           </div>
         </div>
-      `}).join('');
+      `;
     }
 
-    // RENDER DINAMICO DELLE NEWS CON CONTROLLO CONVOCAZIONI
     function renderNewsCards() {
       const container = document.getElementById('news-cards-container');
       if (!container) return;
@@ -502,12 +517,9 @@
         const convocatiList = databaseConvocazioni[item.id] || [];
         const hasConvocazioni = convocatiList.length > 0;
 
-        let buttonHTML = '';
-        if (hasConvocazioni) {
-          buttonHTML = `<button onclick="openMatchModal('${item.id}', '${item.avversarioModal}', '${item.scoreModal}', '${item.infoModal}')" class="w-full py-3 bg-slate-900 hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">CONVOCAZIONI UFFICIALI</button>`;
-        } else {
-          buttonHTML = `<button disabled class="w-full py-3 bg-slate-200 text-slate-400 rounded-2xl text-xs font-extrabold uppercase tracking-wider cursor-not-allowed opacity-75">IN ATTESA CONVOCAZIONI</button>`;
-        }
+        let buttonHTML = hasConvocazioni 
+          ? `<button onclick="openMatchModal('${item.id}', '${item.avversarioModal}', '${item.scoreModal}', '${item.infoModal}')" class="w-full py-3 bg-slate-900 hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">CONVOCAZIONI UFFICIALI</button>`
+          : `<button disabled class="w-full py-3 bg-slate-200 text-slate-400 rounded-2xl text-xs font-extrabold uppercase tracking-wider cursor-not-allowed opacity-75">IN ATTESA CONVOCAZIONI</button>`;
 
         return `
           <div class="news-card ${item.tipoCard} bg-white rounded-3xl p-6 sm:p-7 border-2 border-slate-200 hover:border-[#0f2544] transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group">
@@ -563,7 +575,6 @@
       }).join('');
     }
 
-    // GESTIONE LOGIN AREA COACH & POPOLAMENTO SELECT CON PARTITE PASSATE SCOLORITE
     function verifyCoachLogin() {
       const pass = document.getElementById('coach-pass').value;
       if (pass === "asa2026" || pass.trim() !== "") {
@@ -583,7 +594,6 @@
       document.getElementById('coach-login-container').classList.remove('hidden');
     }
 
-    // POPOLA IL SELECT DISTINGUENDO LE PARTITE PASSATE (SCOLORITE/ARCHIVIO) DA QUELLE FUTURE
     function buildMatchSelector() {
       const select = document.getElementById('match-selector');
       if (!select) return;
@@ -596,11 +606,10 @@
       }).join('');
     }
 
-    // COSTRUZIONE CHECKLIST ATLETI NEL PANNELLO COACH
     function buildCoachChecklist() {
       const container = document.getElementById('coach-roster-checklist');
       if (!container) return;
-      container.innerHTML = rosterAtleti.map((a, idx) => `
+      container.innerHTML = rosterAtleti.map((a) => `
         <label class="flex items-center gap-3 p-3 bg-slate-50 hover:bg-slate-100 rounded-2xl border border-slate-200 cursor-pointer transition select-none">
           <input type="checkbox" value="${a.nome}" onchange="updateSelectedCounter()" class="coach-player-chk w-4 h-4 text-[#c8102e] rounded border-slate-300 focus:ring-[#c8102e]" />
           <div class="text-xs font-bold text-slate-800">${a.nome} <span class="text-slate-400 font-normal">(${a.numero})</span></div>
@@ -638,31 +647,35 @@
       });
 
       databaseConvocazioni[matchId] = selected;
-      
-      // Aggiorna in tempo reale la visualizzazione delle news e del calendario
       renderNewsCards();
       renderFullSchedule();
 
       alert(`Convocazioni salvate e pubblicate con successo per la ${matchId}! (${selected.length} atleti convocati)`);
     }
 
-    // MODALE DETTAGLI E CONVOCAZIONI PUBBLICHE
+    // APERTURA MODALE CON EFFETTO WOW (PARQUET E ORDINAMENTO PER NUMERO DI MAGLIA)
     function openMatchModal(giornataId, opponent, score, info) {
       document.getElementById('modal-title').innerText = opponent;
       document.getElementById('modal-score').innerText = score !== 'Da disputare' ? 'Risultato: ' + score : 'In attesa di svolgimento';
       document.getElementById('modal-giornata').innerText = giornataId.toUpperCase();
       document.getElementById('modal-info').innerText = info;
 
-      const convocati = databaseConvocazioni[giornataId] || [];
-      document.getElementById('modal-convocati-count').innerText = `${convocati.length} convocati`;
+      const convocatiNomi = databaseConvocazioni[giornataId] || [];
+      document.getElementById('modal-convocati-count').innerText = `${convocatiNomi.length} convocati`;
 
-      const listContainer = document.getElementById('modal-convocati-list');
-      if (convocati.length > 0) {
-        listContainer.innerHTML = convocati.map(c => `
-          <span class="bg-white px-2.5 py-1 rounded-xl border border-blue-200 font-bold text-[#0f2544] shadow-2xs">${c}</span>
-        `).join('');
+      // Filtra gli atleti convocati e li ordina per numero di maglia (numerico)
+      const convocatiObj = rosterAtleti.filter(a => convocatiNomi.includes(a.nome));
+      convocatiObj.sort((a, b) => {
+        const numA = parseInt(a.numero) || 999;
+        const numB = parseInt(b.numero) || 999;
+        return numA - numB;
+      });
+
+      const gridContainer = document.getElementById('parquet-jerseys-grid');
+      if (convocatiObj.length > 0) {
+        gridContainer.innerHTML = convocatiObj.map((a, idx) => generateJerseySvgHtml(a, idx + 100)).join('');
       } else {
-        listContainer.innerHTML = `<span class="text-slate-400 italic">Convocazioni non ancora pubblicate dallo staff tecnico.</span>`;
+        gridContainer.innerHTML = `<div class="col-span-full text-center py-10 text-slate-600 font-bold bg-white/80 rounded-2xl">Convocazioni non ancora pubblicate dallo staff tecnico.</div>`;
       }
 
       document.getElementById('match-modal').classList.remove('hidden');
