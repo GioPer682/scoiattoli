@@ -9,40 +9,38 @@
     body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background-color: #f4f6f9; }
     .asa-navy { background-color: #0f2544; }
     .asa-red { background-color: #c8102e; }
-    .squirrel-badge { background: linear-gradient(135deg, #0f2544 0%, #1e3a8a 100%); }
   </style>
 </head>
 <body class="text-slate-800 min-h-screen flex flex-col justify-between">
 
-  <!-- Top Header -->
-  <header class="asa-navy text-white shadow-lg sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 py-3.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-      <div class="flex items-center gap-3">
-        <!-- Squirrel Mascot Icon in Header -->
-        <div class="w-11 h-11 rounded-full asa-red flex items-center justify-center font-black text-white text-lg shadow-md border-2 border-white/30 relative overflow-hidden">
-          <span class="text-xl">🐿️</span>
+  <!-- Top Header (Ispirato alla barra del portale maglie) -->
+  <header class="asa-navy text-white shadow-xl sticky top-0 z-50 border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div class="flex items-center gap-3.5">
+        <div class="w-12 h-12 rounded-xl asa-red flex items-center justify-center font-black text-white text-xl shadow-md border-2 border-white/20 shrink-0">
+          ASA
         </div>
         <div>
-          <div class="flex items-center gap-2 flex-wrap">
-            <span class="text-lg font-black tracking-wider">ASA BASKET CINISELLO</span>
-            <span class="bg-[#c8102e] text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">SCOIATTOLI 2018/2019</span>
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <span class="text-lg md:text-xl font-black tracking-wider">ASA BASKET CINISELLO</span>
+            <span class="bg-[#c8102e] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">SCOIATTOLI 2018/2019</span>
             <span class="inline-flex items-center gap-1 bg-emerald-900/80 text-emerald-300 text-[11px] font-semibold px-2 py-0.5 rounded-full border border-emerald-700/50">
               <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Live
             </span>
           </div>
-          <p class="text-xs text-slate-300">Palestra BUCUM (Via Monte Ortigara 2, Cinisello Balsamo)</p>
+          <p class="text-xs text-slate-300 mt-0.5">Palestra BUCUM • Via Monte Ortigara 2, Cinisello Balsamo</p>
         </div>
       </div>
       
-      <!-- Top Navigation Tabs -->
-      <nav class="flex items-center gap-2 text-xs sm:text-sm flex-wrap">
-        <button onclick="switchTab('partite')" id="tab-btn-partite" class="px-3 py-1.5 rounded-lg font-semibold transition bg-white text-slate-900 shadow flex items-center gap-1.5 cursor-pointer">
+      <!-- Top Navigation & Admin Button -->
+      <nav class="flex items-center gap-2.5 text-xs sm:text-sm flex-wrap">
+        <button onclick="switchTab('partite')" id="tab-btn-partite" class="px-3.5 py-2 rounded-lg font-semibold transition bg-white text-slate-900 shadow flex items-center gap-1.5 cursor-pointer">
           🏆 Partite & Calendario
         </button>
-        <button onclick="switchTab('roster')" id="tab-btn-roster" class="px-3 py-1.5 rounded-lg font-medium transition text-white hover:bg-white/20 cursor-pointer">
+        <button onclick="switchTab('roster')" id="tab-btn-roster" class="px-3.5 py-2 rounded-lg font-medium transition text-white hover:bg-white/20 cursor-pointer">
           👥 Roster Atleti (22)
         </button>
-        <button onclick="openAdminModal()" class="px-3 py-1.5 rounded-lg font-medium transition bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/30 flex items-center gap-1.5 cursor-pointer">
+        <button onclick="openAdminModal()" class="px-3.5 py-2 rounded-lg font-bold transition bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/30 flex items-center gap-1.5 cursor-pointer shadow">
           🔒 Area Dirigente / Coach
         </button>
       </nav>
@@ -53,12 +51,12 @@
   <div class="w-full h-1.5 asa-red shadow-sm"></div>
 
   <!-- Main Content Area -->
-  <main class="max-w-7xl mx-auto px-4 py-6 space-y-8 w-full flex-grow">
+  <main class="max-w-7xl mx-auto px-4 py-8 space-y-8 w-full flex-grow">
 
     <!-- TAB 1: PARTITE & CALENDARIO (PUBLIC) -->
     <div id="tab-partite" class="space-y-6">
       <!-- Hero Banner -->
-      <div class="asa-navy rounded-2xl p-6 text-white shadow-xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 border border-slate-800">
+      <div class="asa-navy rounded-2xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 border border-slate-800">
         <div class="space-y-2 max-w-xl">
           <span class="bg-[#c8102e] text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider inline-block">Stagione Ufficiale 2026/2027</span>
           <h2 class="text-2xl sm:text-3xl font-black tracking-tight">Calendario & Partite Scoiattoli</h2>
@@ -83,7 +81,7 @@
       </div>
 
       <!-- View Switcher -->
-      <div class="bg-white rounded-xl border border-slate-200 px-4 py-3 flex items-center justify-between text-xs sm:text-sm shadow-sm">
+      <div class="bg-white rounded-xl border border-slate-200 px-4 py-3.5 flex items-center justify-between text-xs sm:text-sm shadow-sm">
         <div class="flex items-center gap-4 font-semibold text-slate-700">
           <span class="text-red-700 font-bold uppercase tracking-wider">Visualizzazione</span>
           <span class="text-slate-300">|</span>
@@ -125,27 +123,27 @@
       </div>
     </div>
 
-    <!-- TAB 2: ROSTER & STAFF (PUBLIC - Squirrel Avatars & Jersey Numbers) -->
+    <!-- TAB 2: ROSTER & STAFF (PUBLIC - 4 per row grid with realistic basketball jersey) -->
     <div id="tab-roster" class="hidden space-y-8">
-      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+      <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-200">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
           <div class="flex items-center gap-3">
-            <div class="w-12 h-12 rounded-xl asa-red flex items-center justify-center text-white text-2xl shadow-md">🐿️</div>
+            <div class="w-12 h-12 rounded-xl asa-red flex items-center justify-center text-white text-2xl shadow-md font-black">🏀</div>
             <div>
               <h2 class="text-xl font-black text-[#0f2544] tracking-tight uppercase">Roster Ufficiale Scoiattoli 2018/2019</h2>
-              <p class="text-xs text-slate-500 mt-0.5">I 22 atleti della squadra con stemma e numero di maglia ufficiale</p>
+              <p class="text-xs text-slate-500 mt-0.5">Elenco ufficiale dei 22 atleti con canotta e numero di maglia</p>
             </div>
           </div>
           <input type="text" id="public-search" oninput="renderPublicRoster()" placeholder="Cerca atleta o numero..."
-            class="text-sm px-3.5 py-2 border border-slate-300 rounded-lg w-full sm:w-72 focus:outline-none focus:ring-2 focus:ring-blue-900" />
+            class="text-sm px-4 py-2.5 border border-slate-300 rounded-xl w-full sm:w-80 focus:outline-none focus:ring-2 focus:ring-blue-900 shadow-sm" />
         </div>
 
-        <!-- Public Roster Grid (Squirrel Mascot Cards) -->
-        <div id="public-roster-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 pt-6"></div>
+        <!-- Public Roster Grid: max 4 columns (grid-cols-1 sm:grid-cols-2 md:grid-cols-4) -->
+        <div id="public-roster-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 pt-6"></div>
       </div>
 
       <!-- Staff Section -->
-      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+      <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-200 space-y-4">
         <h3 class="text-lg font-black text-[#0f2544] tracking-wider uppercase border-b border-slate-200 pb-3">Staff Tecnico & Dirigenziale</h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4" id="staff-grid"></div>
       </div>
@@ -154,7 +152,7 @@
   </main>
 
   <!-- Footer -->
-  <footer class="asa-navy text-white text-xs py-4 text-center mt-12 border-t border-slate-800">
+  <footer class="asa-navy text-white text-xs py-5 text-center mt-12 border-t border-slate-800">
     <p>ASA Basket Cinisello • Settore Minibasket • Scoiattoli 2018/2019</p>
     <p class="text-slate-400 mt-1">Palestra BUCUM • Via Monte Ortigara 2, Cinisello Balsamo (MI)</p>
   </footer>
@@ -275,10 +273,10 @@
       });
       document.getElementById('tab-' + tabName).classList.remove('hidden');
 
-      document.getElementById('tab-btn-partite').className = "px-3 py-1.5 rounded-lg font-medium transition text-white hover:bg-white/20 cursor-pointer";
-      document.getElementById('tab-btn-roster').className = "px-3 py-1.5 rounded-lg font-medium transition text-white hover:bg-white/20 cursor-pointer";
+      document.getElementById('tab-btn-partite').className = "px-3.5 py-2 rounded-lg font-medium transition text-white hover:bg-white/20 cursor-pointer";
+      document.getElementById('tab-btn-roster').className = "px-3.5 py-2 rounded-lg font-medium transition text-white hover:bg-white/20 cursor-pointer";
 
-      document.getElementById('tab-btn-' + tabName).className = "px-3 py-1.5 rounded-lg font-semibold transition bg-white text-slate-900 shadow cursor-pointer";
+      document.getElementById('tab-btn-' + tabName).className = "px-3.5 py-2 rounded-lg font-semibold transition bg-white text-slate-900 shadow cursor-pointer";
 
       if (tabName === 'roster') {
         renderPublicRoster();
@@ -407,7 +405,7 @@
       container.innerHTML = html;
     }
 
-    // Public Roster (Squirrel Mascot Cards replacing blue circles!)
+    // Public Roster: 4 columns max (grid-cols-1 sm:grid-cols-2 md:grid-cols-4), realistic jersey graphic with number (no N/D)
     function renderPublicRoster() {
       const query = document.getElementById('public-search').value.toLowerCase().trim();
       const grid = document.getElementById('public-roster-grid');
@@ -416,16 +414,35 @@
       const filtered = atleti.filter(a => `${a.nome_completo} ${a.numero_maglia || ''}`.toLowerCase().includes(query));
 
       grid.innerHTML = filtered.map(a => {
-        const num = a.numero_maglia ? `#${a.numero_maglia}` : 'N/D';
+        const numDisplay = (a.numero_maglia !== null && a.numero_maglia !== undefined) ? a.numero_maglia : '';
         return `
-          <div class="bg-slate-50 rounded-2xl p-4 text-center border border-slate-200 hover:shadow-lg transition flex flex-col items-center relative overflow-hidden group">
-            <!-- Top badge with squirrel mascot & jersey number -->
-            <div class="w-16 h-16 rounded-2xl squirrel-badge text-white flex flex-col items-center justify-center font-black shadow-md mb-3 border-2 border-red-600/30 group-hover:scale-105 transition">
-              <span class="text-lg">🐿️</span>
-              <span class="text-[10px] text-amber-300 font-bold">${num}</span>
+          <div class="bg-slate-50 rounded-2xl p-5 text-center border border-slate-200 hover:shadow-xl transition flex flex-col items-center justify-between group">
+            
+            <!-- Canotta da basket realistica con numero al centro -->
+            <div class="relative w-28 h-32 bg-white rounded-xl border-2 border-slate-300 shadow-inner flex flex-col items-center justify-between p-2 mb-4 group-hover:border-red-600 transition">
+              <!-- Bordo superiore canotta (bretelle) -->
+              <div class="w-full flex justify-between px-2">
+                <div class="w-4 h-3 bg-slate-200 rounded-b"></div>
+                <div class="text-[9px] font-black text-slate-400 tracking-tighter">ASA</div>
+                <div class="w-4 h-3 bg-slate-200 rounded-b"></div>
+              </div>
+              
+              <!-- Numero al centro della canotta -->
+              <div class="my-auto">
+                <span class="text-3xl font-black text-[#0f2544] tracking-tighter">${numDisplay}</span>
+              </div>
+
+              <!-- Fondo canotta con scritta CINIX -->
+              <div class="w-full bg-[#0f2544] text-white text-[9px] font-bold py-0.5 rounded tracking-widest text-center">
+                CINIX
+              </div>
             </div>
-            <h4 class="text-sm font-bold text-slate-900 leading-snug">${a.nome_completo}</h4>
-            <span class="text-[10px] text-red-700 font-semibold uppercase tracking-wider mt-1 bg-red-50 px-2 py-0.5 rounded-full">Scoiattoli 18/19</span>
+
+            <!-- Nome Atleta -->
+            <div class="w-full">
+              <h4 class="text-sm font-black text-slate-900 leading-snug">${a.nome_completo}</h4>
+              <span class="inline-block text-[10px] text-red-700 font-bold uppercase tracking-wider mt-1.5 bg-red-50 px-2.5 py-0.5 rounded-full border border-red-200">Scoiattoli 18/19</span>
+            </div>
           </div>
         `;
       }).join('');
@@ -479,7 +496,7 @@
       tbody.innerHTML = filtered.map((a, i) => `
         <tr>
           <td class="p-2 text-slate-400">${i+1}</td>
-          <td class="p-2"><input type="number" id="adm-num-${a.id}" value="${a.numero_maglia || ''}" class="w-16 px-2 py-1 border rounded text-xs" /></td>
+          <td class="p-2"><input type="number" id="adm-num-${a.id}" value="${a.numero_maglia !== null && a.numero_maglia !== undefined ? a.numero_maglia : ''}" class="w-16 px-2 py-1 border rounded text-xs" /></td>
           <td class="p-2 font-bold">${a.nome_completo}</td>
           <td class="p-2 text-slate-600">${a.data_nascita || ''}</td>
           <td class="p-2">
@@ -500,7 +517,8 @@
     function saveAtleta(id) {
       const a = APP_DATA.atleti.find(x => x.id === id);
       if (!a) return;
-      a.numero_maglia = document.getElementById(`adm-num-${id}`).value ? parseInt(document.getElementById(`adm-num-${id}`).value) : null;
+      const val = document.getElementById(`adm-num-${id}`).value;
+      a.numero_maglia = val !== "" ? parseInt(val) : null;
       a.genitori.mamma.nome = document.getElementById(`adm-mom-name-${id}`).value;
       a.genitori.mamma.telefono = document.getElementById(`adm-mom-tel-${id}`).value;
       a.genitori.papa.nome = document.getElementById(`adm-pop-name-${id}`).value;
