@@ -83,7 +83,7 @@
   <!-- MAIN APP CONTAINER -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 w-full flex-grow space-y-8 sm:space-y-10">
 
-    <!-- NEWS VIEW (Hidden by default per mostrare subito il Roster aggiornato) -->
+    <!-- NEWS VIEW -->
     <section id="view-news" class="space-y-6 sm:space-y-8 hidden">
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-300 pb-5">
         <div>
@@ -376,556 +376,66 @@
         const clipId = `jersey-clip-${idx}`;
         const patternId = `wings-pattern-${idx}`;
 
-        // Adatta la dimensione del font per cognomi lunghi
-        const cognomeFontSize = cognome.length > 10 ? 15 : 18;
+        const cognomeFontSize = cognome.length > 10 ? 14 : 17;
 
         return `
         <div class="bg-white p-3.5 sm:p-5 rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-[#0f2544] transition-all duration-300 flex flex-col items-center justify-between group">
           
-          <!-- CANOTTA UFFICIALE CINIX (Replica esatta della foto) -->
           <div class="relative w-36 h-44 sm:w-44 sm:h-52 flex items-center justify-center mb-3 transform group-hover:scale-105 transition-transform duration-300">
             <svg viewBox="0 0 220 270" class="w-full h-full drop-shadow-md">
               <defs>
-                <!-- Sagoma esatta della canotta -->
                 <clipPath id="${clipId}">
                   <path d="M52,16 L80,16 Q110,42 140,16 L168,16 L186,82 Q165,112 178,136 L184,254 L36,254 L42,136 Q55,112 34,82 Z" />
                 </clipPath>
-                <!-- Pattern alato tono su tono sul tessuto bianco -->
                 <pattern id="${patternId}" width="22" height="18" patternUnits="userSpaceOnUse">
                   <path d="M3,11 Q7,5 11,11 Q15,5 19,11 Q15,15 11,13 Q7,15 3,11 Z" fill="#f1f5f9" />
                 </pattern>
               </defs>
 
-              <!-- Interno clipped della canotta -->
               <g clip-path="url(#${clipId})">
-                <!-- Base bianca + trama alata leggera -->
                 <rect x="0" y="0" width="220" height="270" fill="#ffffff" />
                 <rect x="0" y="0" width="220" height="270" fill="url(#${patternId})" />
 
-                <!-- Spallina destra (strisce diagonali blu navy e rosse) -->
                 <polygon points="118,12 175,12 182,42" fill="#0f2544" />
                 <polygon points="134,12 175,12 180,32" fill="#c8102e" />
                 <polygon points="148,12 175,12 178,24" fill="#0f2544" />
 
-                <!-- Bordo rosso giromanica sinistro -->
                 <path d="M52,16 L34,82 Q55,112 42,136" fill="none" stroke="#c8102e" stroke-width="6" />
 
-                <!-- Fascia laterale SINISTRA con chevron blu/rosso -->
                 <polygon points="34,132 54,142 50,254 34,254" fill="#c8102e" />
                 <polygon points="34,132 54,142 53,155 34,145" fill="#0f2544" />
                 <polygon points="34,158 53,168 53,181 34,171" fill="#0f2544" />
                 <polygon points="34,184 52,194 52,207 34,197" fill="#0f2544" />
                 <polygon points="34,210 51,220 51,233 34,223" fill="#0f2544" />
-                <!-- Tacca bianca in basso a sinistra (etichetta) -->
                 <polygon points="35,236 45,254 35,254" fill="#e2e8f0" />
 
-                <!-- Fascia laterale DESTRA con chevron blu/rosso -->
                 <polygon points="186,132 166,142 170,254 186,254" fill="#c8102e" />
                 <polygon points="186,132 166,142 167,155 186,145" fill="#0f2544" />
                 <polygon points="186,158 167,168 167,181 186,171" fill="#0f2544" />
                 <polygon points="186,184 168,194 168,207 186,197" fill="#0f2544" />
                 <polygon points="186,210 169,220 169,233 186,223" fill="#0f2544" />
 
-                <!-- COGNOME (Rosso con bordo Blu Navy) -->
-                <text x="110" y="72" text-anchor="middle" font-size="${cognomeFontSize}" font-weight="900" stroke-width="2.5" letter-spacing="0.5" class="jersey-text">
+                <!-- COGNOME SPAZIATO (letter-spacing="3.5") -->
+                <text x="110" y="72" text-anchor="middle" font-size="${cognomeFontSize}" font-weight="900" stroke-width="2.5" letter-spacing="3.5" class="jersey-text">
                   ${cognome}
                 </text>
 
-                <!-- NUMERO GRANDE CENTRALE (Rosso con bordo Blu Navy) -->
+                <!-- NUMERO CENTRALE -->
                 <text x="110" y="148" text-anchor="middle" font-size="68" font-weight="900" stroke-width="4.5" letter-spacing="-1" class="jersey-text">
                   ${a.numero}
                 </text>
 
-                <!-- LOGO CINIX IN ROSSO SUBITO SOTTO IL NUMERO -->
+                <!-- LOGO CINIX -->
                 <text x="110" y="177" text-anchor="middle" font-size="18" font-weight="900" font-style="italic" fill="#c8102e" letter-spacing="1.5" style="font-family: 'Arial Black', Impact, sans-serif;">
                   CINIX
                 </text>
               </g>
 
-              <!-- Contorno esterno pulito della canotta -->
               <path d="M52,16 L80,16 Q110,42 140,16 L168,16 L186,82 Q165,112 178,136 L184,254 L36,254 L42,136 Q55,112 34,82 Z" 
                     fill="none" stroke="#cbd5e1" stroke-width="2" />
             </svg>
           </div>
 
-          <!-- NOME COMPLETO SOTTO LA CANOTTA -->
-          <div class="text-center border-t border-slate-100 pt-2.5 w-full">
-            <div class="font-bold text-xs sm:text-sm text-slate-700">${nome} <span class="font-black text-[#0f2544]">${cognome}</span></div>
-          </div>
-        </div>
-      `}).join('');
-    }
-
-    function renderFullSchedule() {
-      const container = document.getElementById('full-schedule-container');
-      if (!container) return;
-      container.innerHTML = allPartite.map(p => `
-        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div>
-            <span class="text-xs font-extrabold text-asa-red uppercase tracking-wider">${p.giornata} • ${p.data}</span>
-            <h4 class="text-lg font-black text-[#0f2544]">ASA Cinisello vs ${p.avversario}</h4>
-            <p class="text-xs text-slate-500">Sede: ${p.sede}</p>
-          </div>
-          <div>
-            <span class="px-4 py-1.5 rounded-xl text-xs font-extrabold uppercase tracking-wider ${p.risultato ? 'bg-emerald-100 text-emerald-900' : 'bg-amber-100 text-amber-900'}">
-              ${p.risultato ? 'Finale: ' + p.risultato : 'Da disputare'}
-            </span>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function openMatchModal(opponent,<!DOCTYPE html>
-<html lang="it">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ASA Basket Cinisello — Scoiattoli 2018/2019</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background-color: #f8fafc; color: #0f172a; }
-    .asa-navy { background-color: #0f2544; }
-    .asa-red { background-color: #c8102e; }
-    .text-asa-red { color: #c8102e; }
-    
-    /* Tipografia sportiva identica alla stampa della maglia (Rosso con bordo Blu Navy) */
-    .jersey-text {
-      font-family: 'Impact', 'Arial Narrow', 'Inter', sans-serif;
-      fill: #c8102e;
-      stroke: #0f2544;
-      paint-order: stroke fill;
-      stroke-linejoin: round;
-    }
-
-    @keyframes ticker {
-      0% { transform: translateX(100%); }
-      100% { transform: translateX(-100%); }
-    }
-    .animate-ticker {
-      display: inline-block;
-      white-space: nowrap;
-      animation: ticker 25s linear infinite;
-    }
-  </style>
-</head>
-<body class="min-h-screen flex flex-col justify-between selection:bg-[#c8102e] selection:text-white">
-
-  <!-- TOP WRAPPER (TESTATA + TICKER) -->
-  <div>
-    <!-- TOP HEADER RESPONSIVE -->
-    <header class="asa-navy text-white shadow-2xl sticky top-0 z-50 border-b border-white/10">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 sm:gap-6">
-        <div class="flex items-center gap-3 sm:gap-5">
-          <!-- Logo Scalabile Mobile-First -->
-          <div class="shrink-0 transition">
-            <img src="logo1.png" alt="ASA Basket Cinisello" class="h-16 sm:h-24 md:h-32 w-auto object-contain drop-shadow-xl" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><rect width=\'100\' height=\'100\' fill=\'%23c8102e\'/><text x=\'50\' y=\'55\' font-size=\'32\' font-weight=\'bold\' fill=\'white\' text-anchor=\'middle\' dominant-baseline=\'middle\'>ASA</text></svg>'" />
-          </div>
-          <div>
-            <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
-              <span class="text-lg sm:text-2xl md:text-3xl font-black tracking-wider text-white">ASA BASKET CINISELLO</span>
-              <span class="asa-red text-white text-[9px] sm:text-[11px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-widest shadow-sm">SCOIATTOLI 2018/2019</span>
-              <span class="inline-flex items-center gap-1.5 bg-emerald-950 text-emerald-400 text-[10px] sm:text-xs font-bold px-2.5 py-0.5 sm:py-1 rounded-full border border-emerald-800">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> LIVE
-              </span>
-            </div>
-            <p class="text-xs sm:text-sm text-slate-300 font-medium mt-1 tracking-wide">Palestra BUCUM • Via Monte Ortigara 2, Cinisello Balsamo</p>
-          </div>
-        </div>
-        
-        <!-- NAVIGATION RESPONSIVE -->
-        <nav class="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold flex-wrap pt-2 lg:pt-0 border-t border-white/10 lg:border-t-0">
-          <button onclick="switchNav('news')" id="nav-news" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition text-white hover:bg-white/10 cursor-pointer">News</button>
-          <button onclick="switchNav('squadra')" id="nav-squadra" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-white text-[#0f2544] font-bold shadow-md cursor-pointer">Squadra</button>
-          <button onclick="switchNav('stagione')" id="nav-stagione" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition text-white hover:bg-white/10 cursor-pointer">Stagione</button>
-          <button onclick="switchNav('coach')" id="nav-coach" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/40 shadow-sm cursor-pointer">Area Coach</button>
-        </nav>
-      </div>
-    </header>
-
-    <!-- RED ACCENT LINE -->
-    <div class="w-full h-1.5 asa-red shadow-md"></div>
-
-    <!-- LIVE TICKER BANNER -->
-    <div class="asa-red text-white text-[11px] sm:text-xs font-bold py-2 px-4 overflow-hidden relative shadow-inner">
-      <div class="flex items-center gap-6 animate-ticker">
-        <span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-white animate-ping"></span> PROSSIMA GARA: SABATO 22 NOVEMBRE • ORE 16:00 VS SESTO BASKET (TRASFERTA)</span>
-        <span>•</span>
-        <span>IN ATTESA CONVOCAZIONI UFFICIALI</span>
-        <span>•</span>
-        <span>PALESTRA BUCUM: ALLENAMENTI MARTEDI ORE 17:00 E MERCOLEDI ORE 18:00</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- MAIN APP CONTAINER -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 w-full flex-grow space-y-8 sm:space-y-10">
-
-    <!-- NEWS VIEW (Hidden by default per mostrare subito il Roster aggiornato) -->
-    <section id="view-news" class="space-y-6 sm:space-y-8 hidden">
-      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-300 pb-5">
-        <div>
-          <span class="text-xs font-extrabold text-asa-red uppercase tracking-widest block mb-1">Stagione Ufficiale 2026/2027</span>
-          <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#0f2544] tracking-tight uppercase">News & Incontri Ufficiali</h1>
-        </div>
-        
-        <div class="flex items-center gap-1 bg-slate-200/80 p-1.5 rounded-2xl overflow-x-auto">
-          <button onclick="filterNews('all')" id="tab-all" class="px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-bold bg-[#0f2544] text-white shadow transition cursor-pointer whitespace-nowrap">Panoramica</button>
-          <button onclick="filterNews('recenti')" id="tab-recenti" class="px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap">Recenti</button>
-          <button onclick="filterNews('prossimi')" id="tab-prossimi" class="px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap">Prossimi</button>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8" id="news-cards-grid">
-        <!-- CARD 1 -->
-        <div class="news-card card-recenti bg-white rounded-3xl p-6 sm:p-7 border-2 border-slate-200 hover:border-[#0f2544] transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group">
-          <div class="space-y-4">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-              <span class="text-xs font-extrabold text-asa-red uppercase tracking-wider">Ultima Partita</span>
-              <span class="px-3 py-1 rounded-full text-[10px] font-black bg-slate-100 text-slate-700 uppercase tracking-widest">Conclusa</span>
-            </div>
-            <div>
-              <span class="text-xs font-bold text-slate-400">Sabato 22 Novembre 2026</span>
-              <h3 class="text-xl font-black text-[#0f2544] tracking-tight mt-0.5">Giornata 2</h3>
-              <p class="text-xs text-slate-500 mt-1">Palestra Comunale - Via Marx, Sesto S.G.</p>
-            </div>
-            <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200 text-center space-y-2 group-hover:bg-[#0f2544] group-hover:text-white transition-colors duration-300">
-              <div class="text-[10px] font-black uppercase tracking-widest text-slate-400 group-hover:text-slate-300">Risultato Finale</div>
-              <div class="text-4xl font-black tracking-tighter text-[#0f2544] group-hover:text-white">17 - 20</div>
-              <div class="text-xs font-bold text-slate-700 group-hover:text-slate-200">Sesto Basket vs ASA Cinisello</div>
-            </div>
-          </div>
-          <div class="pt-6">
-            <button onclick="openMatchModal('Sesto Basket', '17 - 20', 'Trasferta', '17-20')" class="w-full py-3 bg-slate-900 group-hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">
-              Analisi Dettagliata
-            </button>
-          </div>
-        </div>
-
-        <!-- CARD 2 -->
-        <div class="news-card card-prossimi bg-white rounded-3xl p-6 sm:p-7 border-2 border-slate-200 hover:border-[#0f2544] transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group">
-          <div class="space-y-4">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-              <span class="text-xs font-extrabold text-blue-900 uppercase tracking-wider">Prossimo Incontro</span>
-              <span class="px-3 py-1 rounded-full text-[10px] font-black bg-blue-50 text-blue-900 uppercase tracking-widest border border-blue-200">In Casa</span>
-            </div>
-            <div>
-              <span class="text-xs font-bold text-slate-400">Sabato 29 Novembre 2026 • Ore 15:30</span>
-              <h3 class="text-xl font-black text-[#0f2544] tracking-tight mt-0.5">Giornata 3</h3>
-              <p class="text-xs text-asa-red font-bold mt-1">Palestra BUCUM • Via Monte Ortigara 2</p>
-            </div>
-            <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200 text-center space-y-2 group-hover:bg-[#0f2544] group-hover:text-white transition-colors duration-300">
-              <div class="text-[10px] font-black uppercase tracking-widest text-slate-400 group-hover:text-slate-300">Gara Ufficiale</div>
-              <div class="text-xl font-black tracking-tight text-[#0f2544] group-hover:text-white">ASA Cinisello vs Fortitudo Cologno</div>
-              <div class="text-xs font-semibold text-emerald-600 group-hover:text-emerald-400">Incontro Confermato</div>
-            </div>
-          </div>
-          <div class="pt-6">
-            <button onclick="openMatchModal('Fortitudo Cologno', 'Da disputare', 'In Casa', '29/11/2026')" class="w-full py-3 bg-slate-900 group-hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">
-              CONVOCAZIONI UFFICIALI
-            </button>
-          </div>
-        </div>
-
-        <!-- CARD 3 -->
-        <div class="news-card card-prossimi bg-white rounded-3xl p-6 sm:p-7 border-2 border-slate-200 hover:border-[#0f2544] transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group">
-          <div class="space-y-4">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-              <span class="text-xs font-extrabold text-purple-900 uppercase tracking-wider">In Programma</span>
-              <span class="px-3 py-1 rounded-full text-[10px] font-black bg-purple-50 text-purple-900 uppercase tracking-widest border border-purple-200">Trasferta</span>
-            </div>
-            <div>
-              <span class="text-xs font-bold text-slate-400">Sabato 06 Dicembre 2026 • Ore 16:30</span>
-              <h3 class="text-xl font-black text-[#0f2544] tracking-tight mt-0.5">Giornata 4</h3>
-              <p class="text-xs text-slate-500 mt-1">Centro Sportivo - Cologno Monzese</p>
-            </div>
-            <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200 text-center space-y-2 group-hover:bg-[#0f2544] group-hover:text-white transition-colors duration-300">
-              <div class="text-[10px] font-black uppercase tracking-widest text-slate-400 group-hover:text-slate-300">Gara Ufficiale</div>
-              <div class="text-xl font-black tracking-tight text-[#0f2544] group-hover:text-white">Rondinella Sesto vs ASA Cinisello</div>
-              <div class="text-xs font-semibold text-amber-600 group-hover:text-amber-400">Incontro da confermare</div>
-            </div>
-          </div>
-          <div class="pt-6">
-            <button onclick="openMatchModal('Rondinella Sesto', 'Da disputare', 'Trasferta', '06/12/2026')" class="w-full py-3 bg-slate-900 group-hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">
-              Dettagli Trasferta
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SQUADRA / ROSTER VIEW -->
-    <section id="view-squadra" class="space-y-8">
-      <div class="border-b border-slate-300 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <span class="text-xs font-extrabold text-asa-red uppercase tracking-widest block mb-1">Stagione 2026/2027 • Scoiattoli 18/19</span>
-          <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#0f2544] tracking-tight uppercase">Roster</h2>
-        </div>
-        <div class="flex items-center gap-2 bg-slate-200/80 p-1.5 rounded-2xl">
-          <button onclick="switchSquadraTab('roster')" id="sq-tab-roster" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#0f2544] text-white shadow transition cursor-pointer">Giocatori (22)</button>
-          <button onclick="switchSquadraTab('staff')" id="sq-tab-staff" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer">Staff Tecnico</button>
-        </div>
-      </div>
-
-      <!-- ROSTER GRID -->
-      <div id="squadra-content-roster" class="space-y-6">
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6" id="roster-grid-main"></div>
-      </div>
-
-      <!-- STAFF TECNICO -->
-      <div id="squadra-content-staff" class="space-y-6 hidden">
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm space-y-3">
-            <span class="text-xs font-extrabold text-asa-red uppercase tracking-widest">Capo Allenatore</span>
-            <h3 class="text-xl font-black text-[#0f2544]">Stefano Protti</h3>
-            <p class="text-xs text-slate-600">Conduce gli allenamenti del martedì dalle 17:00 alle 18:00 presso la Palestra BUCUM.</p>
-          </div>
-          <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm space-y-3">
-            <span class="text-xs font-extrabold text-asa-red uppercase tracking-widest">Capo Allenatore</span>
-            <h3 class="text-xl font-black text-[#0f2544]">Gaia Aresta</h3>
-            <p class="text-xs text-slate-600">Conduce gli allenamenti del mercoledì dalle 18:00 alle 19:00 presso la Palestra BUCUM.</p>
-          </div>
-          <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm space-y-3">
-            <span class="text-xs font-extrabold text-asa-red uppercase tracking-widest">Vice Allenatore</span>
-            <h3 class="text-xl font-black text-[#0f2544]">Elisa Di Pietro</h3>
-            <p class="text-xs text-slate-600">Supporto tecnico e coordinamento generale della squadra.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- STAGIONE VIEW (Hidden by default) -->
-    <section id="view-stagione" class="space-y-8 hidden">
-      <div class="border-b border-slate-300 pb-4">
-        <span class="text-xs font-extrabold text-asa-red uppercase tracking-widest block mb-1">Calendario Ufficiale</span>
-        <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#0f2544] tracking-tight uppercase">Tutte le Partite</h2>
-      </div>
-      <div class="space-y-4" id="full-schedule-container"></div>
-    </section>
-
-    <!-- AREA COACH VIEW (Hidden by default) -->
-    <section id="view-coach" class="space-y-8 hidden">
-      <div class="border-b border-slate-300 pb-4">
-        <span class="text-xs font-extrabold text-amber-600 uppercase tracking-widest block mb-1">Accesso Riservato</span>
-        <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#0f2544] tracking-tight uppercase">Area Dirigente / Coach</h2>
-      </div>
-      <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 max-w-xl shadow-sm space-y-5">
-        <h3 class="font-extrabold text-lg text-[#0f2544]">Autenticazione Pannello di Controllo</h3>
-        <p class="text-xs text-slate-600">Inserisci le credenziali autorizzate per accedere alla gestione anagrafica e dei kit di gara.</p>
-        <input type="password" id="coach-pass" placeholder="Password di accesso..." class="w-full px-4.5 py-3 border border-slate-300 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-[#0f2544]" />
-        <button onclick="verifyCoachLogin()" class="w-full py-3.5 bg-[#0f2544] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider hover:bg-slate-800 transition cursor-pointer shadow">
-          Accedi al Pannello
-        </button>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- FOOTER -->
-  <footer class="asa-navy text-white text-xs py-8 text-center mt-16 border-t border-slate-800">
-    <div class="max-w-7xl mx-auto px-6 space-y-2">
-      <p class="font-bold tracking-wider">ASA Basket Cinisello • Settore Minibasket • Scoiattoli 2018/2019</p>
-      <p class="text-slate-400">Palestra BUCUM • Via Monte Ortigara 2, Cinisello Balsamo (MI)</p>
-    </div>
-  </footer>
-
-  <!-- MODAL FOR MATCH DETAILS -->
-  <div id="match-modal" class="fixed inset-0 bg-slate-950/70 z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-200 text-center relative">
-      <button onclick="closeMatchModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-700 font-extrabold text-lg cursor-pointer">✕</button>
-      <div class="space-y-1">
-        <span class="text-xs font-extrabold text-asa-red uppercase tracking-widest" id="modal-subtitle">Dettaglio Incontro</span>
-        <h3 class="text-2xl font-black text-[#0f2544]" id="modal-title">Squadra avversaria</h3>
-      </div>
-      <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-2">
-        <div class="text-xs font-bold text-slate-500 uppercase">Esito / Status</div>
-        <div class="text-2xl font-black text-[#0f2544]" id="modal-score">17 - 20</div>
-        <p class="text-xs text-slate-600 mt-2" id="modal-info">Palestra BUCUM - Via Monte Ortigara 2, Cinisello Balsamo</p>
-      </div>
-      <button onclick="closeMatchModal()" class="w-full py-3.5 bg-[#0f2544] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider hover:bg-slate-800 transition cursor-pointer shadow">
-        Chiudi Dettagli
-      </button>
-    </div>
-  </div>
-
-  <!-- SCRIPT -->
-  <script>
-    const rosterAtleti = [
-      { nome: "Alessandro Affronti", numero: "-" },
-      { nome: "Filippo Bertinazzi", numero: "75" },
-      { nome: "Claudio Brucculeri", numero: "-" },
-      { nome: "Mattia Caruso", numero: "23" },
-      { nome: "Mirko d'Elia", numero: "48" },
-      { nome: "Riccardo Grasso", numero: "99" },
-      { nome: "Dominic Husejinovic", numero: "-" },
-      { nome: "Andrea Insisa", numero: "7" },
-      { nome: "Francesco Mascarella", numero: "-" },
-      { nome: "Jacopo Morselli", numero: "41" },
-      { nome: "Francesco Nicotra", numero: "19" },
-      { nome: "Mattia Oliverio", numero: "45" },
-      { nome: "Lorenzo Perrone", numero: "39" },
-      { nome: "Daniel Prudenzano", numero: "6" },
-      { nome: "Gabriele Riccobene", numero: "9" },
-      { nome: "Youness Rizki", numero: "74" },
-      { nome: "Nathan Sala", numero: "28" },
-      { nome: "Francesco Sale", numero: "49" },
-      { nome: "Gabriele Stavola", numero: "78" },
-      { nome: "Giulia Tamanza", numero: "70" },
-      { nome: "Andrea Zingarino", numero: "8" },
-      { nome: "Jonas Mantoan", numero: "24" }
-    ];
-
-    const allPartite = [
-      { giornata: "Giornata 1", data: "15/11/2026", avversario: "Pallacanestro Cinisello", risultato: "14 - 18", sede: "Palestra BUCUM" },
-      { giornata: "Giornata 2", data: "22/11/2026", avversario: "Sesto Basket", risultato: "17 - 20", sede: "Palestra Comunale Sesto" },
-      { giornata: "Giornata 3", data: "29/11/2026", avversario: "Fortitudo Cologno", risultato: null, sede: "Palestra BUCUM" },
-      { giornata: "Giornata 4", data: "06/12/2026", avversario: "Rondinella Sesto", risultato: null, sede: "Centro Sportivo Cologno" },
-      { giornata: "Giornata 5", data: "13/12/2026", avversario: "San Carlo Milano", risultato: null, sede: "Palestra BUCUM" }
-    ];
-
-    window.addEventListener('DOMContentLoaded', () => {
-      renderRosterMain();
-    });
-
-    function switchNav(navId) {
-      ['news', 'squadra', 'stagione', 'coach'].forEach(id => {
-        document.getElementById('view-' + id).classList.add('hidden');
-        const btn = document.getElementById('nav-' + id);
-        if (btn) {
-          btn.className = id === 'coach' 
-            ? "px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/40 shadow-sm cursor-pointer" 
-            : "px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition text-white hover:bg-white/10 cursor-pointer";
-        }
-      });
-
-      document.getElementById('view-' + navId).classList.remove('hidden');
-      const activeBtn = document.getElementById('nav-' + navId);
-      if (activeBtn) {
-        activeBtn.className = navId === 'coach'
-          ? "px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-amber-400 text-slate-900 font-extrabold shadow cursor-pointer"
-          : "px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-white text-[#0f2544] font-bold shadow-md cursor-pointer";
-      }
-
-      if (navId === 'squadra') renderRosterMain();
-      if (navId === 'stagione') renderFullSchedule();
-    }
-
-    function filterNews(type) {
-      ['all', 'recenti', 'prossimi'].forEach(t => {
-        const btn = document.getElementById('tab-' + t);
-        if (t === type) {
-          btn.className = "px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-bold bg-[#0f2544] text-white shadow transition cursor-pointer whitespace-nowrap";
-        } else {
-          btn.className = "px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap";
-        }
-      });
-
-      const cardsRecent = document.querySelectorAll('.card-recenti');
-      const cardsProssimi = document.querySelectorAll('.card-prossimi');
-
-      if (type === 'all') {
-        cardsRecent.forEach(c => c.style.display = 'flex');
-        cardsProssimi.forEach(c => c.style.display = 'flex');
-      } else if (type === 'recenti') {
-        cardsRecent.forEach(c => c.style.display = 'flex');
-        cardsProssimi.forEach(c => c.style.display = 'none');
-      } else if (type === 'prossimi') {
-        cardsRecent.forEach(c => c.style.display = 'none');
-        cardsProssimi.forEach(c => c.style.display = 'flex');
-      }
-    }
-
-    function switchSquadraTab(tab) {
-      ['roster', 'staff'].forEach(t => {
-        document.getElementById('squadra-content-' + t).classList.add('hidden');
-        document.getElementById('sq-tab-' + t).className = "px-4 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer";
-      });
-      document.getElementById('squadra-content-' + tab).classList.remove('hidden');
-      document.getElementById('sq-tab-' + tab).className = "px-4 py-2 rounded-xl text-xs font-bold bg-[#0f2544] text-white shadow transition cursor-pointer";
-    }
-
-    function renderRosterMain() {
-      const grid = document.getElementById('roster-grid-main');
-      if (!grid) return;
-      grid.innerHTML = rosterAtleti.map((a, idx) => {
-        const parts = a.nome.split(' ');
-        const cognome = parts.slice(1).join(' ').toUpperCase();
-        const nome = parts[0];
-        const clipId = `jersey-clip-${idx}`;
-        const patternId = `wings-pattern-${idx}`;
-
-        // Adatta la dimensione del font per cognomi lunghi
-        const cognomeFontSize = cognome.length > 10 ? 15 : 18;
-
-        return `
-        <div class="bg-white p-3.5 sm:p-5 rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-[#0f2544] transition-all duration-300 flex flex-col items-center justify-between group">
-          
-          <!-- CANOTTA UFFICIALE CINIX (Replica esatta della foto) -->
-          <div class="relative w-36 h-44 sm:w-44 sm:h-52 flex items-center justify-center mb-3 transform group-hover:scale-105 transition-transform duration-300">
-            <svg viewBox="0 0 220 270" class="w-full h-full drop-shadow-md">
-              <defs>
-                <!-- Sagoma esatta della canotta -->
-                <clipPath id="${clipId}">
-                  <path d="M52,16 L80,16 Q110,42 140,16 L168,16 L186,82 Q165,112 178,136 L184,254 L36,254 L42,136 Q55,112 34,82 Z" />
-                </clipPath>
-                <!-- Pattern alato tono su tono sul tessuto bianco -->
-                <pattern id="${patternId}" width="22" height="18" patternUnits="userSpaceOnUse">
-                  <path d="M3,11 Q7,5 11,11 Q15,5 19,11 Q15,15 11,13 Q7,15 3,11 Z" fill="#f1f5f9" />
-                </pattern>
-              </defs>
-
-              <!-- Interno clipped della canotta -->
-              <g clip-path="url(#${clipId})">
-                <!-- Base bianca + trama alata leggera -->
-                <rect x="0" y="0" width="220" height="270" fill="#ffffff" />
-                <rect x="0" y="0" width="220" height="270" fill="url(#${patternId})" />
-
-                <!-- Spallina destra (strisce diagonali blu navy e rosse) -->
-                <polygon points="118,12 175,12 182,42" fill="#0f2544" />
-                <polygon points="134,12 175,12 180,32" fill="#c8102e" />
-                <polygon points="148,12 175,12 178,24" fill="#0f2544" />
-
-                <!-- Bordo rosso giromanica sinistro -->
-                <path d="M52,16 L34,82 Q55,112 42,136" fill="none" stroke="#c8102e" stroke-width="6" />
-
-                <!-- Fascia laterale SINISTRA con chevron blu/rosso -->
-                <polygon points="34,132 54,142 50,254 34,254" fill="#c8102e" />
-                <polygon points="34,132 54,142 53,155 34,145" fill="#0f2544" />
-                <polygon points="34,158 53,168 53,181 34,171" fill="#0f2544" />
-                <polygon points="34,184 52,194 52,207 34,197" fill="#0f2544" />
-                <polygon points="34,210 51,220 51,233 34,223" fill="#0f2544" />
-                <!-- Tacca bianca in basso a sinistra (etichetta) -->
-                <polygon points="35,236 45,254 35,254" fill="#e2e8f0" />
-
-                <!-- Fascia laterale DESTRA con chevron blu/rosso -->
-                <polygon points="186,132 166,142 170,254 186,254" fill="#c8102e" />
-                <polygon points="186,132 166,142 167,155 186,145" fill="#0f2544" />
-                <polygon points="186,158 167,168 167,181 186,171" fill="#0f2544" />
-                <polygon points="186,184 168,194 168,207 186,197" fill="#0f2544" />
-                <polygon points="186,210 169,220 169,233 186,223" fill="#0f2544" />
-
-                <!-- COGNOME (Rosso con bordo Blu Navy) -->
-                <text x="110" y="72" text-anchor="middle" font-size="${cognomeFontSize}" font-weight="900" stroke-width="2.5" letter-spacing="0.5" class="jersey-text">
-                  ${cognome}
-                </text>
-
-                <!-- NUMERO GRANDE CENTRALE (Rosso con bordo Blu Navy) -->
-                <text x="110" y="148" text-anchor="middle" font-size="68" font-weight="900" stroke-width="4.5" letter-spacing="-1" class="jersey-text">
-                  ${a.numero}
-                </text>
-
-                <!-- LOGO CINIX IN ROSSO SUBITO SOTTO IL NUMERO -->
-                <text x="110" y="177" text-anchor="middle" font-size="18" font-weight="900" font-style="italic" fill="#c8102e" letter-spacing="1.5" style="font-family: 'Arial Black', Impact, sans-serif;">
-                  CINIX
-                </text>
-              </g>
-
-              <!-- Contorno esterno pulito della canotta -->
-              <path d="M52,16 L80,16 Q110,42 140,16 L168,16 L186,82 Q165,112 178,136 L184,254 L36,254 L42,136 Q55,112 34,82 Z" 
-                    fill="none" stroke="#cbd5e1" stroke-width="2" />
-            </svg>
-          </div>
-
-          <!-- NOME COMPLETO SOTTO LA CANOTTA -->
           <div class="text-center border-t border-slate-100 pt-2.5 w-full">
             <div class="font-bold text-xs sm:text-sm text-slate-700">${nome} <span class="font-black text-[#0f2544]">${cognome}</span></div>
           </div>
@@ -953,28 +463,6 @@
     }
 
     function openMatchModal(opponent, score, type, info) {
-      document.getElementById('modal-title').innerText = opponent;
-      document.getElementById('modal-score').innerText = score;
-      document.getElementById('modal-subtitle').innerText = type.toUpperCase();
-      document.getElementById('modal-info').innerText = info;
-      document.getElementById('match-modal').classList.remove('hidden');
-    }
-
-    function closeMatchModal() {
-      document.getElementById('match-modal').classList.add('hidden');
-    }
-
-    function verifyCoachLogin() {
-      const pass = document.getElementById('coach-pass').value;
-      if (pass.trim() !== "") {
-        alert("Accesso autorizzato. Benvenuto nel pannello.");
-      } else {
-        alert("Inserire la password di accesso.");
-      }
-    }
-  </script>
-</body>
-</html> score, type, info) {
       document.getElementById('modal-title').innerText = opponent;
       document.getElementById('modal-score').innerText = score;
       document.getElementById('modal-subtitle').innerText = type.toUpperCase();
