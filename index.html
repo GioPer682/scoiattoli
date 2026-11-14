@@ -195,22 +195,31 @@
       </div>
 
       <!-- STAFF TECNICO -->
-      <div id="squadra-content-staff" class="space-y-6 hidden">
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm space-y-3">
-            <span class="text-xs font-extrabold text-asa-red uppercase tracking-widest">Capo Allenatore</span>
-            <h3 class="text-xl font-black text-[#0f2544]">Stefano Protti</h3>
-            <p class="text-xs text-slate-600">Conduce gli allenamenti del martedì dalle 17:00 alle 18:00 presso la Palestra BUCUM.</p>
+      <div id="squadra-content-staff" class="space-y-8 hidden">
+        <!-- Staff di Campo (Gaia ed Elisa sovrapposti / affiancati) -->
+        <div class="space-y-4">
+          <h3 class="text-xs font-extrabold text-asa-red uppercase tracking-widest">Staff Tecnico di Campo</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm space-y-3 border-l-4 border-l-[#c8102e]">
+              <span class="text-[10px] font-black bg-red-50 text-asa-red px-2.5 py-1 rounded-full uppercase tracking-wider">Capo Allenatore</span>
+              <h4 class="text-2xl font-black text-[#0f2544]">Gaia Aresta</h4>
+              <p class="text-xs text-slate-600">Conduce gli allenamenti della squadra presso la Palestra BUCUM.</p>
+            </div>
+            <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm space-y-3 border-l-4 border-l-[#0f2544]">
+              <span class="text-[10px] font-black bg-blue-50 text-[#0f2544] px-2.5 py-1 rounded-full uppercase tracking-wider">Vice Allenatore</span>
+              <h4 class="text-2xl font-black text-[#0f2544]">Elisa Di Pietro</h4>
+              <p class="text-xs text-slate-600">Supporto tecnico e coordinamento sul campo della squadra.</p>
+            </div>
           </div>
-          <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm space-y-3">
-            <span class="text-xs font-extrabold text-asa-red uppercase tracking-widest">Capo Allenatore</span>
-            <h3 class="text-xl font-black text-[#0f2544]">Gaia Aresta</h3>
-            <p class="text-xs text-slate-600">Conduce gli allenamenti del mercoledì dalle 18:00 alle 19:00 presso la Palestra BUCUM.</p>
-          </div>
-          <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm space-y-3">
-            <span class="text-xs font-extrabold text-asa-red uppercase tracking-widest">Vice Allenatore</span>
-            <h3 class="text-xl font-black text-[#0f2544]">Elisa Di Pietro</h3>
-            <p class="text-xs text-slate-600">Supporto tecnico e coordinamento generale della squadra.</p>
+        </div>
+
+        <!-- Responsabile Settore Minibasket (Stefano in altra sezione) -->
+        <div class="space-y-4 pt-4 border-t border-slate-200">
+          <h3 class="text-xs font-extrabold text-[#0f2544] uppercase tracking-widest">Direzione & Settore Giovanile</h3>
+          <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm space-y-3 max-w-xl border-l-4 border-l-[#0f2544]">
+            <span class="text-[10px] font-black bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full uppercase tracking-wider">Responsabile</span>
+            <h4 class="text-2xl font-black text-[#0f2544]">Stefano Protti</h4>
+            <p class="text-xs text-slate-600">Responsabile del settore minibasket e coordinamento organizzativo generale.</p>
           </div>
         </div>
       </div>
@@ -413,7 +422,7 @@
                 <polygon points="186,184 168,194 168,207 186,197" fill="#0f2544" />
                 <polygon points="186,210 169,220 169,233 186,223" fill="#0f2544" />
 
-                <!-- COGNOME ROSSO PIENO ADATTIVO (textLength="96" impedisce qualsiasi trabokko) -->
+                <!-- COGNOME ROSSO PIENO ADATTIVO (textLength="96") -->
                 <text x="110" y="72" text-anchor="middle" font-size="15" font-weight="900" fill="#c8102e" textLength="96" lengthAdjust="spacing" style="font-family: 'Arial Black', Impact, sans-serif;">
                   ${cognome}
                 </text>
