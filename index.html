@@ -98,81 +98,9 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8" id="news-cards-grid">
-        <!-- CARD 1 -->
-        <div class="news-card card-recenti bg-white rounded-3xl p-6 sm:p-7 border-2 border-slate-200 hover:border-[#0f2544] transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group">
-          <div class="space-y-4">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-              <span class="text-xs font-extrabold text-asa-red uppercase tracking-wider">Ultima Partita</span>
-              <span class="px-3 py-1 rounded-full text-[10px] font-black bg-slate-100 text-slate-700 uppercase tracking-widest">Conclusa</span>
-            </div>
-            <div>
-              <span class="text-xs font-bold text-slate-400">Sabato 22 Novembre 2026</span>
-              <h3 class="text-xl font-black text-[#0f2544] tracking-tight mt-0.5">Giornata 2</h3>
-              <p class="text-xs text-slate-500 mt-1">Palestra Comunale - Via Marx, Sesto S.G.</p>
-            </div>
-            <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200 text-center space-y-2 group-hover:bg-[#0f2544] group-hover:text-white transition-colors duration-300">
-              <div class="text-[10px] font-black uppercase tracking-widest text-slate-400 group-hover:text-slate-300">Risultato Finale</div>
-              <div class="text-4xl font-black tracking-tighter text-[#0f2544] group-hover:text-white">17 - 20</div>
-              <div class="text-xs font-bold text-slate-700 group-hover:text-slate-200">Sesto Basket vs ASA Cinisello</div>
-            </div>
-          </div>
-          <div class="pt-6">
-            <button onclick="openMatchModal('Giornata 2', 'Sesto Basket', '17 - 20', 'Trasferta', 'Palestra Comunale Sesto')" class="w-full py-3 bg-slate-900 group-hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">
-              Analisi Dettagliata
-            </button>
-          </div>
-        </div>
-
-        <!-- CARD 2 -->
-        <div class="news-card card-prossimi bg-white rounded-3xl p-6 sm:p-7 border-2 border-slate-200 hover:border-[#0f2544] transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group">
-          <div class="space-y-4">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-              <span class="text-xs font-extrabold text-blue-900 uppercase tracking-wider">Prossimo Incontro</span>
-              <span class="px-3 py-1 rounded-full text-[10px] font-black bg-blue-50 text-blue-900 uppercase tracking-widest border border-blue-200">In Casa</span>
-            </div>
-            <div>
-              <span class="text-xs font-bold text-slate-400">Sabato 29 Novembre 2026 • Ore 15:30</span>
-              <h3 class="text-xl font-black text-[#0f2544] tracking-tight mt-0.5">Giornata 3</h3>
-              <p class="text-xs text-asa-red font-bold mt-1">Palestra BUCUM • Via Monte Ortigara 2</p>
-            </div>
-            <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200 text-center space-y-2 group-hover:bg-[#0f2544] group-hover:text-white transition-colors duration-300">
-              <div class="text-[10px] font-black uppercase tracking-widest text-slate-400 group-hover:text-slate-300">Gara Ufficiale</div>
-              <div class="text-xl font-black tracking-tight text-[#0f2544] group-hover:text-white">ASA Cinisello vs Fortitudo Cologno</div>
-              <div class="text-xs font-semibold text-emerald-600 group-hover:text-emerald-400">Incontro Confermato</div>
-            </div>
-          </div>
-          <div class="pt-6">
-            <button onclick="openMatchModal('Giornata 3', 'Fortitudo Cologno', 'Da disputare', 'In Casa', 'Palestra BUCUM - Via Monte Ortigara 2')" class="w-full py-3 bg-slate-900 group-hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">
-              CONVOCAZIONI UFFICIALI
-            </button>
-          </div>
-        </div>
-
-        <!-- CARD 3 -->
-        <div class="news-card card-prossimi bg-white rounded-3xl p-6 sm:p-7 border-2 border-slate-200 hover:border-[#0f2544] transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group">
-          <div class="space-y-4">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-              <span class="text-xs font-extrabold text-purple-900 uppercase tracking-wider">In Programma</span>
-              <span class="px-3 py-1 rounded-full text-[10px] font-black bg-purple-50 text-purple-900 uppercase tracking-widest border border-purple-200">Trasferta</span>
-            </div>
-            <div>
-              <span class="text-xs font-bold text-slate-400">Sabato 06 Dicembre 2026 • Ore 16:30</span>
-              <h3 class="text-xl font-black text-[#0f2544] tracking-tight mt-0.5">Giornata 4</h3>
-              <p class="text-xs text-slate-500 mt-1">Centro Sportivo - Cologno Monzese</p>
-            </div>
-            <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200 text-center space-y-2 group-hover:bg-[#0f2544] group-hover:text-white transition-colors duration-300">
-              <div class="text-[10px] font-black uppercase tracking-widest text-slate-400 group-hover:text-slate-300">Gara Ufficiale</div>
-              <div class="text-xl font-black tracking-tight text-[#0f2544] group-hover:text-white">Rondinella Sesto vs ASA Cinisello</div>
-              <div class="text-xs font-semibold text-amber-600 group-hover:text-amber-400">Incontro da confermare</div>
-            </div>
-          </div>
-          <div class="pt-6">
-            <button onclick="openMatchModal('Giornata 4', 'Rondinella Sesto', 'Da disputare', 'Trasferta', 'Centro Sportivo - Cologno Monzese')" class="w-full py-3 bg-slate-900 group-hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">
-              CONVOCAZIONI UFFICIALI
-            </button>
-          </div>
-        </div>
+      <!-- CONTAINER DINAMICO DELLE CARDS NEWS -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8" id="news-cards-container">
+        <!-- Generato via JavaScript per gestire lo stato dinamico delle convocazioni -->
       </div>
     </section>
 
@@ -239,7 +167,7 @@
         <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#0f2544] tracking-tight uppercase">Area Coach / Convocazioni</h2>
       </div>
 
-      <!-- LOGIN BOX (Visibile prima dell'accesso) -->
+      <!-- LOGIN BOX -->
       <div id="coach-login-container" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 max-w-xl shadow-sm space-y-5">
         <h3 class="font-extrabold text-lg text-[#0f2544]">Autenticazione Pannello Convocazioni</h3>
         <p class="text-xs text-slate-600">Inserisci la password autorizzata (Default di prova: <code class="bg-slate-100 px-2 py-0.5 rounded font-bold text-asa-red">asa2026</code>) per gestire i convocati alle partite.</p>
@@ -249,7 +177,7 @@
         </button>
       </div>
 
-      <!-- DASHBOARD CONVOCAZIONI (Nascosta finché non si fa login) -->
+      <!-- DASHBOARD CONVOCAZIONI -->
       <div id="coach-dashboard-container" class="space-y-6 hidden">
         <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-center justify-between flex-wrap gap-4">
           <div class="flex items-center gap-3">
@@ -263,12 +191,9 @@
           <div class="space-y-2">
             <label class="text-xs font-extrabold text-slate-500 uppercase tracking-wider block">Seleziona Partita</label>
             <select id="match-selector" onchange="loadMatchConvocazioni()" class="w-full px-4.5 py-3 border border-slate-300 rounded-2xl text-sm font-bold text-[#0f2544] bg-slate-50 focus:outline-none focus:ring-2 focus:ring-[#0f2544]">
-              <option value="Giornata 1">Giornata 1 (15/11/2026) vs Pallacanestro Cinisello</option>
-              <option value="Giornata 2">Giornata 2 (22/11/2026) vs Sesto Basket</option>
-              <option value="Giornata 3" selected>Giornata 3 (29/11/2026) vs Fortitudo Cologno</option>
-              <option value="Giornata 4">Giornata 4 (06/12/2026) vs Rondinella Sesto</option>
-              <option value="Giornata 5">Giornata 5 (13/12/2026) vs San Carlo Milano</option>
+              <!-- Popolato dinamicamente da JS con distinzione past/future -->
             </select>
+            <p class="text-[11px] text-slate-400 italic">Nota: Le partite passate sono contrassegnate per la consultazione d'archivio.</p>
           </div>
 
           <div class="flex items-center justify-between border-b border-slate-200 pb-3">
@@ -277,9 +202,7 @@
           </div>
 
           <!-- LISTA CHECKBOX ATLETI -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 max-h-96 overflow-y-auto p-1" id="coach-roster-checklist">
-            <!-- Popolato via JS -->
-          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 max-h-96 overflow-y-auto p-1" id="coach-roster-checklist"></div>
 
           <div class="pt-4 border-t border-slate-200 flex flex-col sm:flex-row gap-3">
             <button onclick="saveConvocazioni()" class="flex-1 py-4 bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider hover:bg-red-700 transition cursor-pointer shadow-lg">
@@ -328,9 +251,7 @@
           <h4 class="text-xs font-extrabold text-[#0f2544] uppercase tracking-wider">Giocatori Convocati Ufficiali</h4>
           <span id="modal-convocati-count" class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">0 convocati</span>
         </div>
-        <div id="modal-convocati-list" class="bg-blue-50/50 border border-blue-100 rounded-2xl p-4 text-xs text-slate-700 max-h-48 overflow-y-auto flex flex-wrap gap-2">
-          <!-- Popolato via JS -->
-        </div>
+        <div id="modal-convocati-list" class="bg-blue-50/50 border border-blue-100 rounded-2xl p-4 text-xs text-slate-700 max-h-48 overflow-y-auto flex flex-wrap gap-2"></div>
       </div>
 
       <button onclick="closeMatchModal()" class="w-full py-3.5 bg-[#0f2544] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider hover:bg-slate-800 transition cursor-pointer shadow">
@@ -367,23 +288,25 @@
     ];
 
     const allPartite = [
-      { id: "Giornata 1", data: "15/11/2026", avversario: "Pallacanestro Cinisello", risultato: "14 - 18", sede: "Palestra BUCUM" },
-      { id: "Giornata 2", data: "22/11/2026", avversario: "Sesto Basket", risultato: "17 - 20", sede: "Palestra Comunale Sesto" },
-      { id: "Giornata 3", data: "29/11/2026", avversario: "Fortitudo Cologno", risultato: "Da disputare", sede: "Palestra BUCUM - Via Monte Ortigara 2" },
-      { id: "Giornata 4", data: "06/12/2026", avversario: "Rondinella Sesto", risultato: "Da disputare", sede: "Centro Sportivo - Cologno Monzese" },
-      { id: "Giornata 5", data: "13/12/2026", avversario: "San Carlo Milano", risultato: "Da disputare", sede: "Palestra BUCUM" }
+      { id: "Giornata 1", data: "15/11/2026", avversario: "Pallacanestro Cinisello", risultato: "14 - 18", sede: "Palestra BUCUM", isPast: true },
+      { id: "Giornata 2", data: "22/11/2026", avversario: "Sesto Basket", risultato: "17 - 20", sede: "Palestra Comunale Sesto", isPast: true },
+      { id: "Giornata 3", data: "29/11/2026", avversario: "Fortitudo Cologno", risultato: "Da disputare", sede: "Palestra BUCUM - Via Monte Ortigara 2", isPast: false },
+      { id: "Giornata 4", data: "06/12/2026", avversario: "Rondinella Sesto", risultato: "Da disputare", sede: "Centro Sportivo - Cologno Monzese", isPast: false },
+      { id: "Giornata 5", data: "13/12/2026", avversario: "San Carlo Milano", risultato: "Da disputare", sede: "Palestra BUCUM", isPast: false }
     ];
 
-    // Memoria locale dei convocati per ogni partita (pre-carichiamo qualche convocato di esempio per la Giornata 3)
+    // Memoria locale dei convocati per ogni partita
     const databaseConvocazioni = {
       "Giornata 1": ["Filippo Bertinazzi", "Mattia Caruso", "Mirko d'Elia", "Riccardo Grasso", "Andrea Insisa", "Jacopo Morselli", "Francesco Nicotra", "Lorenzo Perrone", "Daniel Prudenzano", "Gabriele Riccobene"],
       "Giornata 2": ["Filippo Bertinazzi", "Mattia Caruso", "Riccardo Grasso", "Andrea Insisa", "Lorenzo Perrone", "Daniel Prudenzano", "Gabriele Riccobene", "Youness Rizki", "Nathan Sala", "Gabriele Stavola"],
       "Giornata 3": ["Filippo Bertinazzi", "Mattia Caruso", "Mirko d'Elia", "Riccardo Grasso", "Andrea Insisa", "Jacopo Morselli", "Francesco Nicotra", "Mattia Oliverio", "Lorenzo Perrone", "Daniel Prudenzano", "Gabriele Riccobene", "Nathan Sala"]
+      // Giornata 4 e 5 inizialmente vuote (nessuna convocazione fatta)
     };
 
     window.addEventListener('DOMContentLoaded', () => {
       renderRosterMain();
       renderFullSchedule();
+      renderNewsCards();
     });
 
     function switchNav(navId) {
@@ -407,6 +330,7 @@
 
       if (navId === 'squadra') renderRosterMain();
       if (navId === 'stagione') renderFullSchedule();
+      if (navId === 'news') renderNewsCards();
     }
 
     function filterNews(type) {
@@ -518,34 +442,134 @@
       `}).join('');
     }
 
+    // RENDER DINAMICO DELLE NEWS CON CONTROLLO CONVOCAZIONI
+    function renderNewsCards() {
+      const container = document.getElementById('news-cards-container');
+      if (!container) return;
+
+      const newsData = [
+        {
+          id: "Giornata 2",
+          tipoCard: "card-recenti",
+          etichettaTop: "Ultima Partita",
+          badge: "Conclusa",
+          badgeClass: "bg-slate-100 text-slate-700",
+          data: "Sabato 22 Novembre 2026",
+          titolo: "Giornata 2",
+          sede: "Palestra Comunale - Via Marx, Sesto S.G.",
+          isRisultato: true,
+          testoRisultato: "17 - 20",
+          squadreScore: "Sesto Basket vs ASA Cinisello",
+          avversarioModal: "Sesto Basket",
+          scoreModal: "17 - 20",
+          infoModal: "Palestra Comunale Sesto"
+        },
+        {
+          id: "Giornata 3",
+          tipoCard: "card-prossimi",
+          etichettaTop: "Prossimo Incontro",
+          badge: "In Casa",
+          badgeClass: "bg-blue-50 text-blue-900 border border-blue-200",
+          data: "Sabato 29 Novembre 2026 • Ore 15:30",
+          titolo: "Giornata 3",
+          sede: "Palestra BUCUM • Via Monte Ortigara 2",
+          isRisultato: false,
+          testoRisultato: "ASA Cinisello vs Fortitudo Cologno",
+          squadreScore: "Incontro Confermato",
+          avversarioModal: "Fortitudo Cologno",
+          scoreModal: "Da disputare",
+          infoModal: "Palestra BUCUM - Via Monte Ortigara 2"
+        },
+        {
+          id: "Giornata 4",
+          tipoCard: "card-prossimi",
+          etichettaTop: "In Programma",
+          badge: "Trasferta",
+          badgeClass: "bg-purple-50 text-purple-900 border border-purple-200",
+          data: "Sabato 06 Dicembre 2026 • Ore 16:30",
+          titolo: "Giornata 4",
+          sede: "Centro Sportivo - Cologno Monzese",
+          isRisultato: false,
+          testoRisultato: "Rondinella Sesto vs ASA Cinisello",
+          squadreScore: "Incontro da confermare",
+          avversarioModal: "Rondinella Sesto",
+          scoreModal: "Da disputare",
+          infoModal: "Centro Sportivo - Cologno Monzese"
+        }
+      ];
+
+      container.innerHTML = newsData.map(item => {
+        const convocatiList = databaseConvocazioni[item.id] || [];
+        const hasConvocazioni = convocatiList.length > 0;
+
+        let buttonHTML = '';
+        if (hasConvocazioni) {
+          buttonHTML = `<button onclick="openMatchModal('${item.id}', '${item.avversarioModal}', '${item.scoreModal}', '${item.infoModal}')" class="w-full py-3 bg-slate-900 hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">CONVOCAZIONI UFFICIALI</button>`;
+        } else {
+          buttonHTML = `<button disabled class="w-full py-3 bg-slate-200 text-slate-400 rounded-2xl text-xs font-extrabold uppercase tracking-wider cursor-not-allowed opacity-75">IN ATTESA CONVOCAZIONI</button>`;
+        }
+
+        return `
+          <div class="news-card ${item.tipoCard} bg-white rounded-3xl p-6 sm:p-7 border-2 border-slate-200 hover:border-[#0f2544] transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group">
+            <div class="space-y-4">
+              <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <span class="text-xs font-extrabold text-asa-red uppercase tracking-wider">${item.etichettaTop}</span>
+                <span class="px-3 py-1 rounded-full text-[10px] font-black ${item.badgeClass} uppercase tracking-widest">${item.badge}</span>
+              </div>
+              <div>
+                <span class="text-xs font-bold text-slate-400">${item.data}</span>
+                <h3 class="text-xl font-black text-[#0f2544] tracking-tight mt-0.5">${item.titolo}</h3>
+                <p class="text-xs text-slate-500 mt-1">${item.sede}</p>
+              </div>
+              <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200 text-center space-y-2 group-hover:bg-[#0f2544] group-hover:text-white transition-colors duration-300">
+                <div class="text-[10px] font-black uppercase tracking-widest text-slate-400 group-hover:text-slate-300">${item.isRisultato ? 'Risultato Finale' : 'Gara Ufficiale'}</div>
+                <div class="${item.isRisultato ? 'text-4xl font-black tracking-tighter' : 'text-xl font-black tracking-tight'} text-[#0f2544] group-hover:text-white">${item.testoRisultato}</div>
+                <div class="text-xs font-bold text-slate-700 group-hover:text-slate-200">${item.squadreScore}</div>
+              </div>
+            </div>
+            <div class="pt-6">
+              ${buttonHTML}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
     function renderFullSchedule() {
       const container = document.getElementById('full-schedule-container');
       if (!container) return;
-      container.innerHTML = allPartite.map(p => `
-        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div>
-            <span class="text-xs font-extrabold text-asa-red uppercase tracking-wider">${p.id} • ${p.data}</span>
-            <h4 class="text-lg font-black text-[#0f2544]">ASA Cinisello vs ${p.avversario}</h4>
-            <p class="text-xs text-slate-500">Sede: ${p.sede}</p>
+      container.innerHTML = allPartite.map(p => {
+        const convocatiList = databaseConvocazioni[p.id] || [];
+        const hasConvocati = convocatiList.length > 0;
+
+        return `
+          <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <span class="text-xs font-extrabold text-asa-red uppercase tracking-wider">${p.id} • ${p.data} ${p.isPast ? '• [CONCLUSIONE]' : ''}</span>
+              <h4 class="text-lg font-black text-[#0f2544]">ASA Cinisello vs ${p.avversario}</h4>
+              <p class="text-xs text-slate-500">Sede: ${p.sede}</p>
+            </div>
+            <div class="flex items-center gap-3 flex-wrap">
+              <span class="px-4 py-1.5 rounded-xl text-xs font-extrabold uppercase tracking-wider ${p.risultato !== 'Da disputare' ? 'bg-emerald-100 text-emerald-900' : 'bg-amber-100 text-amber-900'}">
+                ${p.risultato !== 'Da disputare' ? 'Finale: ' + p.risultato : 'Da disputare'}
+              </span>
+              ${hasConvocati 
+                ? `<button onclick="openMatchModal('${p.id}', '${p.avversario}', '${p.risultato}', '${p.sede}')" class="px-4 py-1.5 bg-[#0f2544] hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition cursor-pointer shadow">Convocazioni Ufficiali</button>`
+                : `<button disabled class="px-4 py-1.5 bg-slate-100 text-slate-400 rounded-xl text-xs font-bold cursor-not-allowed">In Attesa Convocazioni</button>`
+              }
+            </div>
           </div>
-          <div class="flex items-center gap-3">
-            <span class="px-4 py-1.5 rounded-xl text-xs font-extrabold uppercase tracking-wider ${p.risultato !== 'Da disputare' ? 'bg-emerald-100 text-emerald-900' : 'bg-amber-100 text-amber-900'}">
-              ${p.risultato !== 'Da disputare' ? 'Finale: ' + p.risultato : 'Da disputare'}
-            </span>
-            <button onclick="openMatchModal('${p.id}', '${p.avversario}', '${p.risultato}', '${p.sede}')" class="px-4 py-1.5 bg-[#0f2544] hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition cursor-pointer">
-              Convocati
-            </button>
-          </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
-    // GESTIONE LOGIN AREA COACH
+    // GESTIONE LOGIN AREA COACH & POPOLAMENTO SELECT CON PARTITE PASSATE SCOLORITE
     function verifyCoachLogin() {
       const pass = document.getElementById('coach-pass').value;
       if (pass === "asa2026" || pass.trim() !== "") {
         document.getElementById('coach-login-container').classList.add('hidden');
         document.getElementById('coach-dashboard-container').classList.remove('hidden');
+        buildMatchSelector();
         buildCoachChecklist();
         loadMatchConvocazioni();
       } else {
@@ -557,6 +581,19 @@
       document.getElementById('coach-pass').value = "";
       document.getElementById('coach-dashboard-container').classList.add('hidden');
       document.getElementById('coach-login-container').classList.remove('hidden');
+    }
+
+    // POPOLA IL SELECT DISTINGUENDO LE PARTITE PASSATE (SCOLORITE/ARCHIVIO) DA QUELLE FUTURE
+    function buildMatchSelector() {
+      const select = document.getElementById('match-selector');
+      if (!select) return;
+      select.innerHTML = allPartite.map(p => {
+        if (p.isPast) {
+          return `<option value="${p.id}" style="color: #94a3b8; background-color: #f1f5f9; font-style: italic;">📂 [ARCHIVIO / PASSATA] ${p.id} (${p.data}) vs ${p.avversario}</option>`;
+        } else {
+          return `<option value="${p.id}">📅 [PROSSIMA] ${p.id} (${p.data}) vs ${p.avversario}</option>`;
+        }
+      }).join('');
     }
 
     // COSTRUZIONE CHECKLIST ATLETI NEL PANNELLO COACH
@@ -601,7 +638,12 @@
       });
 
       databaseConvocazioni[matchId] = selected;
-      alert(`Convocazioni salvate con successo per la ${matchId}! (${selected.length} atleti convocati)`);
+      
+      // Aggiorna in tempo reale la visualizzazione delle news e del calendario
+      renderNewsCards();
+      renderFullSchedule();
+
+      alert(`Convocazioni salvate e pubblicate con successo per la ${matchId}! (${selected.length} atleti convocati)`);
     }
 
     // MODALE DETTAGLI E CONVOCAZIONI PUBBLICHE
@@ -611,7 +653,6 @@
       document.getElementById('modal-giornata').innerText = giornataId.toUpperCase();
       document.getElementById('modal-info').innerText = info;
 
-      // Recupera i convocati salvati per questa giornata
       const convocati = databaseConvocazioni[giornataId] || [];
       document.getElementById('modal-convocati-count').innerText = `${convocati.length} convocati`;
 
