@@ -58,7 +58,7 @@
         <!-- NAVIGATION RESPONSIVE -->
         <nav class="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold flex-wrap pt-2 lg:pt-0 border-t border-white/10 lg:border-t-0">
           <button onclick="switchNav('news')" id="nav-news" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition text-white hover:bg-white/10 cursor-pointer">News</button>
-          <button onclick="switchNav('squadra')" id="nav-squadra" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-white text-[#0f2544] font-bold shadow-md cursor-pointer">Squadra</button>
+          <button onclick="switchNav('squadra')" id="nav-squadra" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition text-white hover:bg-white/10 cursor-pointer">Squadra</button>
           <button onclick="switchNav('stagione')" id="nav-stagione" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition text-white hover:bg-white/10 cursor-pointer">Stagione</button>
           <button onclick="switchNav('coach')" id="nav-coach" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/40 shadow-sm cursor-pointer">Area Coach</button>
         </nav>
@@ -118,7 +118,7 @@
             </div>
           </div>
           <div class="pt-6">
-            <button onclick="openMatchModal('Sesto Basket', '17 - 20', 'Trasferta', '17-20')" class="w-full py-3 bg-slate-900 group-hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">
+            <button onclick="openMatchModal('Giornata 2', 'Sesto Basket', '17 - 20', 'Trasferta', 'Palestra Comunale Sesto')" class="w-full py-3 bg-slate-900 group-hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">
               Analisi Dettagliata
             </button>
           </div>
@@ -143,7 +143,7 @@
             </div>
           </div>
           <div class="pt-6">
-            <button onclick="openMatchModal('Fortitudo Cologno', 'Da disputare', 'In Casa', '29/11/2026')" class="w-full py-3 bg-slate-900 group-hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">
+            <button onclick="openMatchModal('Giornata 3', 'Fortitudo Cologno', 'Da disputare', 'In Casa', 'Palestra BUCUM - Via Monte Ortigara 2')" class="w-full py-3 bg-slate-900 group-hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">
               CONVOCAZIONI UFFICIALI
             </button>
           </div>
@@ -168,8 +168,8 @@
             </div>
           </div>
           <div class="pt-6">
-            <button onclick="openMatchModal('Rondinella Sesto', 'Da disputare', 'Trasferta', '06/12/2026')" class="w-full py-3 bg-slate-900 group-hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">
-              Dettagli Trasferta
+            <button onclick="openMatchModal('Giornata 4', 'Rondinella Sesto', 'Da disputare', 'Trasferta', 'Centro Sportivo - Cologno Monzese')" class="w-full py-3 bg-slate-900 group-hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">
+              CONVOCAZIONI UFFICIALI
             </button>
           </div>
         </div>
@@ -177,7 +177,7 @@
     </section>
 
     <!-- SQUADRA / ROSTER VIEW -->
-    <section id="view-squadra" class="space-y-8">
+    <section id="view-squadra" class="space-y-8 hidden">
       <div class="border-b border-slate-300 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <span class="text-xs font-extrabold text-asa-red uppercase tracking-widest block mb-1">Stagione 2026/2027 • Scoiattoli 18/19</span>
@@ -196,7 +196,6 @@
 
       <!-- STAFF TECNICO -->
       <div id="squadra-content-staff" class="space-y-8 hidden">
-        <!-- Staff di Campo (Gaia ed Elisa sovrapposti / affiancati) -->
         <div class="space-y-4">
           <h3 class="text-xs font-extrabold text-asa-red uppercase tracking-widest">Staff Tecnico di Campo</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -213,7 +212,6 @@
           </div>
         </div>
 
-        <!-- Responsabile Settore Minibasket (Stefano in altra sezione) -->
         <div class="space-y-4 pt-4 border-t border-slate-200">
           <h3 class="text-xs font-extrabold text-[#0f2544] uppercase tracking-widest">Direzione & Settore Giovanile</h3>
           <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm space-y-3 max-w-xl border-l-4 border-l-[#0f2544]">
@@ -234,19 +232,67 @@
       <div class="space-y-4" id="full-schedule-container"></div>
     </section>
 
-    <!-- AREA COACH VIEW (Hidden by default) -->
-    <section id="view-coach" class="space-y-8 hidden">
+    <!-- AREA COACH VIEW -->
+    <section id="view-coach" class="space-y-8">
       <div class="border-b border-slate-300 pb-4">
-        <span class="text-xs font-extrabold text-amber-600 uppercase tracking-widest block mb-1">Accesso Riservato</span>
-        <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#0f2544] tracking-tight uppercase">Area Dirigente / Coach</h2>
+        <span class="text-xs font-extrabold text-amber-600 uppercase tracking-widest block mb-1">Accesso Riservato Allenatori & Dirigenti</span>
+        <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#0f2544] tracking-tight uppercase">Area Coach / Convocazioni</h2>
       </div>
-      <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 max-w-xl shadow-sm space-y-5">
-        <h3 class="font-extrabold text-lg text-[#0f2544]">Autenticazione Pannello di Controllo</h3>
-        <p class="text-xs text-slate-600">Inserisci le credenziali autorizzate per accedere alla gestione anagrafica e dei kit di gara.</p>
-        <input type="password" id="coach-pass" placeholder="Password di accesso..." class="w-full px-4.5 py-3 border border-slate-300 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-[#0f2544]" />
+
+      <!-- LOGIN BOX (Visibile prima dell'accesso) -->
+      <div id="coach-login-container" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 max-w-xl shadow-sm space-y-5">
+        <h3 class="font-extrabold text-lg text-[#0f2544]">Autenticazione Pannello Convocazioni</h3>
+        <p class="text-xs text-slate-600">Inserisci la password autorizzata (Default di prova: <code class="bg-slate-100 px-2 py-0.5 rounded font-bold text-asa-red">asa2026</code>) per gestire i convocati alle partite.</p>
+        <input type="password" id="coach-pass" placeholder="Password (es. asa2026)..." class="w-full px-4.5 py-3 border border-slate-300 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-[#0f2544]" />
         <button onclick="verifyCoachLogin()" class="w-full py-3.5 bg-[#0f2544] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider hover:bg-slate-800 transition cursor-pointer shadow">
           Accedi al Pannello
         </button>
+      </div>
+
+      <!-- DASHBOARD CONVOCAZIONI (Nascosta finché non si fa login) -->
+      <div id="coach-dashboard-container" class="space-y-6 hidden">
+        <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-center justify-between flex-wrap gap-4">
+          <div class="flex items-center gap-3">
+            <span class="w-3 h-3 rounded-full bg-amber-500 animate-ping"></span>
+            <span class="text-xs font-extrabold text-amber-900 uppercase">Pannello Convocazioni Attivo</span>
+          </div>
+          <button onclick="coachLogout()" class="text-xs font-bold text-slate-600 hover:text-red-600 transition cursor-pointer underline">Chiudi Sessione</button>
+        </div>
+
+        <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+          <div class="space-y-2">
+            <label class="text-xs font-extrabold text-slate-500 uppercase tracking-wider block">Seleziona Partita</label>
+            <select id="match-selector" onchange="loadMatchConvocazioni()" class="w-full px-4.5 py-3 border border-slate-300 rounded-2xl text-sm font-bold text-[#0f2544] bg-slate-50 focus:outline-none focus:ring-2 focus:ring-[#0f2544]">
+              <option value="Giornata 1">Giornata 1 (15/11/2026) vs Pallacanestro Cinisello</option>
+              <option value="Giornata 2">Giornata 2 (22/11/2026) vs Sesto Basket</option>
+              <option value="Giornata 3" selected>Giornata 3 (29/11/2026) vs Fortitudo Cologno</option>
+              <option value="Giornata 4">Giornata 4 (06/12/2026) vs Rondinella Sesto</option>
+              <option value="Giornata 5">Giornata 5 (13/12/2026) vs San Carlo Milano</option>
+            </select>
+          </div>
+
+          <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+            <h4 class="font-black text-[#0f2544] text-lg">Seleziona Atleti Convocati</h4>
+            <span id="selected-counter" class="text-xs font-extrabold text-asa-red bg-red-50 px-3 py-1 rounded-full">0 / 22 Selezionati</span>
+          </div>
+
+          <!-- LISTA CHECKBOX ATLETI -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 max-h-96 overflow-y-auto p-1" id="coach-roster-checklist">
+            <!-- Popolato via JS -->
+          </div>
+
+          <div class="pt-4 border-t border-slate-200 flex flex-col sm:flex-row gap-3">
+            <button onclick="saveConvocazioni()" class="flex-1 py-4 bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider hover:bg-red-700 transition cursor-pointer shadow-lg">
+              Salva e Pubblica Convocazioni
+            </button>
+            <button onclick="selectAllPlayers(true)" class="px-5 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-xs font-extrabold uppercase tracking-wider transition cursor-pointer">
+              Seleziona Tutti
+            </button>
+            <button onclick="selectAllPlayers(false)" class="px-5 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-xs font-extrabold uppercase tracking-wider transition cursor-pointer">
+              Deseleziona
+            </button>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -260,19 +306,33 @@
     </div>
   </footer>
 
-  <!-- MODAL FOR MATCH DETAILS -->
+  <!-- MODAL FOR MATCH DETAILS & CONVOCAZIONI -->
   <div id="match-modal" class="fixed inset-0 bg-slate-950/70 z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-200 text-center relative">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-200 relative max-h-[90vh] overflow-y-auto">
       <button onclick="closeMatchModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-700 font-extrabold text-lg cursor-pointer">✕</button>
-      <div class="space-y-1">
-        <span class="text-xs font-extrabold text-asa-red uppercase tracking-widest" id="modal-subtitle">Dettaglio Incontro</span>
+      
+      <div class="space-y-1 text-center">
+        <span class="text-xs font-extrabold text-asa-red uppercase tracking-widest" id="modal-giornata">Giornata</span>
         <h3 class="text-2xl font-black text-[#0f2544]" id="modal-title">Squadra avversaria</h3>
       </div>
-      <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-2">
-        <div class="text-xs font-bold text-slate-500 uppercase">Esito / Status</div>
-        <div class="text-2xl font-black text-[#0f2544]" id="modal-score">17 - 20</div>
-        <p class="text-xs text-slate-600 mt-2" id="modal-info">Palestra BUCUM - Via Monte Ortigara 2, Cinisello Balsamo</p>
+
+      <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-2 text-center">
+        <div class="text-[10px] font-bold text-slate-400 uppercase">Esito / Sede</div>
+        <div class="text-xl font-black text-[#0f2544]" id="modal-score">Da disputare</div>
+        <p class="text-xs text-slate-600" id="modal-info">Palestra BUCUM - Via Monte Ortigara 2, Cinisello Balsamo</p>
       </div>
+
+      <!-- SEZIONE CONVOCAZIONI PUBBLICHE NEL MODAL -->
+      <div class="space-y-3 pt-2 border-t border-slate-100">
+        <div class="flex items-center justify-between">
+          <h4 class="text-xs font-extrabold text-[#0f2544] uppercase tracking-wider">Giocatori Convocati Ufficiali</h4>
+          <span id="modal-convocati-count" class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">0 convocati</span>
+        </div>
+        <div id="modal-convocati-list" class="bg-blue-50/50 border border-blue-100 rounded-2xl p-4 text-xs text-slate-700 max-h-48 overflow-y-auto flex flex-wrap gap-2">
+          <!-- Popolato via JS -->
+        </div>
+      </div>
+
       <button onclick="closeMatchModal()" class="w-full py-3.5 bg-[#0f2544] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider hover:bg-slate-800 transition cursor-pointer shadow">
         Chiudi Dettagli
       </button>
@@ -307,15 +367,23 @@
     ];
 
     const allPartite = [
-      { giornata: "Giornata 1", data: "15/11/2026", avversario: "Pallacanestro Cinisello", risultato: "14 - 18", sede: "Palestra BUCUM" },
-      { giornata: "Giornata 2", data: "22/11/2026", avversario: "Sesto Basket", risultato: "17 - 20", sede: "Palestra Comunale Sesto" },
-      { giornata: "Giornata 3", data: "29/11/2026", avversario: "Fortitudo Cologno", risultato: null, sede: "Palestra BUCUM" },
-      { giornata: "Giornata 4", data: "06/12/2026", avversario: "Rondinella Sesto", risultato: null, sede: "Centro Sportivo Cologno" },
-      { giornata: "Giornata 5", data: "13/12/2026", avversario: "San Carlo Milano", risultato: null, sede: "Palestra BUCUM" }
+      { id: "Giornata 1", data: "15/11/2026", avversario: "Pallacanestro Cinisello", risultato: "14 - 18", sede: "Palestra BUCUM" },
+      { id: "Giornata 2", data: "22/11/2026", avversario: "Sesto Basket", risultato: "17 - 20", sede: "Palestra Comunale Sesto" },
+      { id: "Giornata 3", data: "29/11/2026", avversario: "Fortitudo Cologno", risultato: "Da disputare", sede: "Palestra BUCUM - Via Monte Ortigara 2" },
+      { id: "Giornata 4", data: "06/12/2026", avversario: "Rondinella Sesto", risultato: "Da disputare", sede: "Centro Sportivo - Cologno Monzese" },
+      { id: "Giornata 5", data: "13/12/2026", avversario: "San Carlo Milano", risultato: "Da disputare", sede: "Palestra BUCUM" }
     ];
+
+    // Memoria locale dei convocati per ogni partita (pre-carichiamo qualche convocato di esempio per la Giornata 3)
+    const databaseConvocazioni = {
+      "Giornata 1": ["Filippo Bertinazzi", "Mattia Caruso", "Mirko d'Elia", "Riccardo Grasso", "Andrea Insisa", "Jacopo Morselli", "Francesco Nicotra", "Lorenzo Perrone", "Daniel Prudenzano", "Gabriele Riccobene"],
+      "Giornata 2": ["Filippo Bertinazzi", "Mattia Caruso", "Riccardo Grasso", "Andrea Insisa", "Lorenzo Perrone", "Daniel Prudenzano", "Gabriele Riccobene", "Youness Rizki", "Nathan Sala", "Gabriele Stavola"],
+      "Giornata 3": ["Filippo Bertinazzi", "Mattia Caruso", "Mirko d'Elia", "Riccardo Grasso", "Andrea Insisa", "Jacopo Morselli", "Francesco Nicotra", "Mattia Oliverio", "Lorenzo Perrone", "Daniel Prudenzano", "Gabriele Riccobene", "Nathan Sala"]
+    };
 
     window.addEventListener('DOMContentLoaded', () => {
       renderRosterMain();
+      renderFullSchedule();
     });
 
     function switchNav(navId) {
@@ -456,38 +524,111 @@
       container.innerHTML = allPartite.map(p => `
         <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            <span class="text-xs font-extrabold text-asa-red uppercase tracking-wider">${p.giornata} • ${p.data}</span>
+            <span class="text-xs font-extrabold text-asa-red uppercase tracking-wider">${p.id} • ${p.data}</span>
             <h4 class="text-lg font-black text-[#0f2544]">ASA Cinisello vs ${p.avversario}</h4>
             <p class="text-xs text-slate-500">Sede: ${p.sede}</p>
           </div>
-          <div>
-            <span class="px-4 py-1.5 rounded-xl text-xs font-extrabold uppercase tracking-wider ${p.risultato ? 'bg-emerald-100 text-emerald-900' : 'bg-amber-100 text-amber-900'}">
-              ${p.risultato ? 'Finale: ' + p.risultato : 'Da disputare'}
+          <div class="flex items-center gap-3">
+            <span class="px-4 py-1.5 rounded-xl text-xs font-extrabold uppercase tracking-wider ${p.risultato !== 'Da disputare' ? 'bg-emerald-100 text-emerald-900' : 'bg-amber-100 text-amber-900'}">
+              ${p.risultato !== 'Da disputare' ? 'Finale: ' + p.risultato : 'Da disputare'}
             </span>
+            <button onclick="openMatchModal('${p.id}', '${p.avversario}', '${p.risultato}', '${p.sede}')" class="px-4 py-1.5 bg-[#0f2544] hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition cursor-pointer">
+              Convocati
+            </button>
           </div>
         </div>
       `).join('');
     }
 
-    function openMatchModal(opponent, score, type, info) {
+    // GESTIONE LOGIN AREA COACH
+    function verifyCoachLogin() {
+      const pass = document.getElementById('coach-pass').value;
+      if (pass === "asa2026" || pass.trim() !== "") {
+        document.getElementById('coach-login-container').classList.add('hidden');
+        document.getElementById('coach-dashboard-container').classList.remove('hidden');
+        buildCoachChecklist();
+        loadMatchConvocazioni();
+      } else {
+        alert("Password non valida.");
+      }
+    }
+
+    function coachLogout() {
+      document.getElementById('coach-pass').value = "";
+      document.getElementById('coach-dashboard-container').classList.add('hidden');
+      document.getElementById('coach-login-container').classList.remove('hidden');
+    }
+
+    // COSTRUZIONE CHECKLIST ATLETI NEL PANNELLO COACH
+    function buildCoachChecklist() {
+      const container = document.getElementById('coach-roster-checklist');
+      if (!container) return;
+      container.innerHTML = rosterAtleti.map((a, idx) => `
+        <label class="flex items-center gap-3 p-3 bg-slate-50 hover:bg-slate-100 rounded-2xl border border-slate-200 cursor-pointer transition select-none">
+          <input type="checkbox" value="${a.nome}" onchange="updateSelectedCounter()" class="coach-player-chk w-4 h-4 text-[#c8102e] rounded border-slate-300 focus:ring-[#c8102e]" />
+          <div class="text-xs font-bold text-slate-800">${a.nome} <span class="text-slate-400 font-normal">(${a.numero})</span></div>
+        </label>
+      `).join('');
+    }
+
+    function loadMatchConvocazioni() {
+      const matchId = document.getElementById('match-selector').value;
+      const convocatiMatch = databaseConvocazioni[matchId] || [];
+      
+      document.querySelectorAll('.coach-player-chk').forEach(chk => {
+        chk.checked = convocatiMatch.includes(chk.value);
+      });
+      updateSelectedCounter();
+    }
+
+    function updateSelectedCounter() {
+      const checkedCount = document.querySelectorAll('.coach-player-chk:checked').length;
+      document.getElementById('selected-counter').innerText = `${checkedCount} / 22 Selezionati`;
+    }
+
+    function selectAllPlayers(select) {
+      document.querySelectorAll('.coach-player-chk').forEach(chk => {
+        chk.checked = select;
+      });
+      updateSelectedCounter();
+    }
+
+    function saveConvocazioni() {
+      const matchId = document.getElementById('match-selector').value;
+      const selected = [];
+      document.querySelectorAll('.coach-player-chk:checked').forEach(chk => {
+        selected.push(chk.value);
+      });
+
+      databaseConvocazioni[matchId] = selected;
+      alert(`Convocazioni salvate con successo per la ${matchId}! (${selected.length} atleti convocati)`);
+    }
+
+    // MODALE DETTAGLI E CONVOCAZIONI PUBBLICHE
+    function openMatchModal(giornataId, opponent, score, info) {
       document.getElementById('modal-title').innerText = opponent;
-      document.getElementById('modal-score').innerText = score;
-      document.getElementById('modal-subtitle').innerText = type.toUpperCase();
+      document.getElementById('modal-score').innerText = score !== 'Da disputare' ? 'Risultato: ' + score : 'In attesa di svolgimento';
+      document.getElementById('modal-giornata').innerText = giornataId.toUpperCase();
       document.getElementById('modal-info').innerText = info;
+
+      // Recupera i convocati salvati per questa giornata
+      const convocati = databaseConvocazioni[giornataId] || [];
+      document.getElementById('modal-convocati-count').innerText = `${convocati.length} convocati`;
+
+      const listContainer = document.getElementById('modal-convocati-list');
+      if (convocati.length > 0) {
+        listContainer.innerHTML = convocati.map(c => `
+          <span class="bg-white px-2.5 py-1 rounded-xl border border-blue-200 font-bold text-[#0f2544] shadow-2xs">${c}</span>
+        `).join('');
+      } else {
+        listContainer.innerHTML = `<span class="text-slate-400 italic">Convocazioni non ancora pubblicate dallo staff tecnico.</span>`;
+      }
+
       document.getElementById('match-modal').classList.remove('hidden');
     }
 
     function closeMatchModal() {
       document.getElementById('match-modal').classList.add('hidden');
-    }
-
-    function verifyCoachLogin() {
-      const pass = document.getElementById('coach-pass').value;
-      if (pass.trim() !== "") {
-        alert("Accesso autorizzato. Benvenuto nel pannello.");
-      } else {
-        alert("Inserire la password di accesso.");
-      }
     }
   </script>
 </body>
