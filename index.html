@@ -232,7 +232,7 @@
 
       <div id="dirigente-login-container" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 max-w-xl shadow-sm space-y-5">
         <h3 class="font-extrabold text-lg text-[#0f2544]">Accesso Riservato Dirigenza</h3>
-        <p class="text-xs text-slate-600">Inserisci la password amministrativa (<code class="bg-slate-100 px-2 py-0.5 rounded font-bold text-slate-900">dirigente2026</code>) per gestire in tempo reale il calendario, i risultati, i rinvii, la barra scorrevole e il roster sul Database Cloud.</p>
+        <p class="text-xs text-slate-600">Inserisci la password amministrativa (<code class="bg-slate-100 px-2 py-0.5 rounded font-bold text-slate-900">dirigente2026</code>) per gestire in tempo reale il calendario, gli stati partita, i risultati, la barra scorrevole e il roster sul Database Cloud.</p>
         <input type="password" id="dirigente-pass" placeholder="Password dirigente..." class="w-full px-4.5 py-3 border border-slate-300 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-800" />
         <button onclick="verifyDirigenteLogin()" class="w-full py-3.5 bg-[#0f2544] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider hover:bg-slate-800 transition cursor-pointer shadow">
           Entra in Area Dirigente
@@ -252,7 +252,7 @@
         </div>
 
         <div class="flex items-center gap-2 bg-slate-200/80 p-1.5 rounded-2xl overflow-x-auto">
-          <button onclick="switchRegiaTab('partite')" id="regia-tab-partite" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-[#0f2544] text-white shadow transition cursor-pointer whitespace-nowrap">1. Calendario, Risultati & Rinvii</button>
+          <button onclick="switchRegiaTab('partite')" id="regia-tab-partite" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-[#0f2544] text-white shadow transition cursor-pointer whitespace-nowrap">1. Calendario, Stati & Risultati</button>
           <button onclick="switchRegiaTab('ticker')" id="regia-tab-ticker" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap">2. Barra Avvisi (Ticker)</button>
           <button onclick="switchRegiaTab('roster')" id="regia-tab-roster" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap">3. Roster & Numeri Maglia</button>
         </div>
@@ -261,7 +261,7 @@
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
             <div>
               <h3 class="text-lg font-black text-[#0f2544]">Gestione Incontri</h3>
-              <p class="text-xs text-slate-500">Seleziona una giornata per modificarla, inserire il risultato, i tempini o segnarla come <strong>Rimandata</strong>.</p>
+              <p class="text-xs text-slate-500">Imposta lo stato della gara: <strong>Programmata</strong>, <strong>Prossimo Incontro</strong> (verde), <strong>Rinviata</strong> (azzurra) o <strong>Conclusa</strong>.</p>
             </div>
             <button onclick="prepareNewMatch()" class="px-4 py-2.5 bg-[#0f2544] hover:bg-slate-800 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider transition cursor-pointer shadow-sm">
               + Nuova Partita / Amichevole
@@ -317,9 +317,10 @@
                 <div>
                   <label class="text-[11px] font-bold text-slate-600 uppercase block mb-1">Stato Incontro</label>
                   <select id="regia-f-stato" onchange="toggleRegiaStateFields()" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-extrabold text-[#0f2544]">
-                    <option value="programmata">🟢 Programmata (Da giocare)</option>
-                    <option value="conclusa">🏁 Conclusa (Con risultato)</option>
-                    <option value="rimandata">🔵 Rimandata (Evidenzia in azzurro)</option>
+                    <option value="programmata">🟡 Programmata (In calendario)</option>
+                    <option value="prossimo_incontro">🟢 Prossimo Incontro (Evidenzia in verde + Convocazioni)</option>
+                    <option value="rinviata">🔵 Rinviata (Evidenzia in azzurro + Blocca disponibilità)</option>
+                    <option value="conclusa">🏁 Conclusa (Con risultato e statistiche)</option>
                   </select>
                 </div>
               </div>
@@ -337,9 +338,9 @@
                 </div>
               </div>
 
-              <div id="regia-box-nota" class="bg-sky-100/70 p-3.5 rounded-xl border border-sky-300 space-y-1">
+              <div id="regia-box-nota" class="bg-sky-100/70 p-3.5 rounded-xl border border-sky-300 space-y-1 hidden">
                 <label class="text-[11px] font-extrabold text-sky-900 uppercase block">Nota Pubblica Rinvio / Avviso Genitori</label>
-                <input type="text" id="regia-f-nota" placeholder="es. Partita rimandata per indisponibilità palestra. Nuova data da definire." class="w-full px-3 py-2 bg-white border border-sky-300 rounded-lg text-xs text-slate-800" />
+                <input type="text" id="regia-f-nota" placeholder="es. Partita rinviata per indisponibilità palestra. Nuova data da definire." class="w-full px-3 py-2 bg-white border border-sky-300 rounded-lg text-xs text-slate-800" />
               </div>
 
               <div class="pt-2">
@@ -590,6 +591,12 @@
         docRef.onSnapshot((doc) => {
           if (doc.exists) {
             dbState = doc.data();
+            // Migrazione retrocompatibile per eventuale vecchio stato 'rimandata'
+            if (dbState.partite) {
+              dbState.partite.forEach(p => {
+                if (p.stato === 'rimandata') p.stato = 'rinviata';
+              });
+            }
             sortPartite();
             renderAllPublicViews();
             if (!document.getElementById('view-dirigente').classList.contains('hidden')) {
@@ -610,7 +617,14 @@
     function loadLocalFallback() {
       const saved = localStorage.getItem('asa_scoiattoli_db_live');
       if (saved) {
-        try { dbState = JSON.parse(saved); } catch (e) {}
+        try { 
+          dbState = JSON.parse(saved);
+          if (dbState.partite) {
+            dbState.partite.forEach(p => {
+              if (p.stato === 'rimandata') p.stato = 'rinviata';
+            });
+          }
+        } catch (e) {}
       }
       sortPartite();
       switchNav('news');
@@ -761,11 +775,11 @@
 
       let htmlContent = "";
 
-      // 1. RECENTI TAB CARDS (Concluse)
+      // 1. RECENTI TAB CARDS (CONCLUSA)
       if (concluse.length > 0) {
         [...concluse].reverse().forEach((item, idx) => {
           let etichettaTop = idx === 0 ? "Ultima Partita Giocata" : "Partita Recente";
-          let extraClasses = idx === 0 && concluse.length > 0 ? "card-recenti card-panoramica" : "card-recenti";
+          let extraClasses = idx === 0 ? "card-recenti card-panoramica" : "card-recenti";
           htmlContent += `
             <div class="news-card ${extraClasses} bg-white border-2 border-slate-200 hover:border-[#0f2544] rounded-3xl p-6 sm:p-7 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group relative overflow-hidden">
               <div class="space-y-4">
@@ -802,34 +816,54 @@
         `;
       }
 
-      // Helper per renderizzare una card attiva (programmata o rimandata)
-      function renderActiveCard(item, etichettaTop, cardClasses) {
-        const isRimandata = item.stato === 'rimandata';
+      // Helper per renderizzare una card attiva in base agli stati: PROGRAMMATA, PROSSIMO_INCONTRO, RINVIATA
+      function renderActiveCard(item, cardClasses) {
+        const isProssimoIncontro = item.stato === 'prossimo_incontro';
+        const isRinviata = item.stato === 'rinviata';
+        const convocatiList = dbState.convocazioni && dbState.convocazioni[item.id] ? dbState.convocazioni[item.id] : [];
+        const hasConvocati = convocatiList.length > 0;
+        const dispCount = dbState.disponibilita && dbState.disponibilita[item.id] ? Object.values(dbState.disponibilita[item.id]).filter(Boolean).length : 0;
+
+        // Default: PROGRAMMATA
+        let etichettaTop = "In Agenda";
         let cardWrapperClass = "bg-white border-2 border-slate-200 hover:border-[#0f2544]";
         let badgeHTML = `<span class="px-3 py-1 rounded-full text-[10px] font-black bg-amber-500 text-white uppercase tracking-widest shadow-xs">Programmata (${item.tipo})</span>`;
         let centralBoxClass = "bg-amber-100/70 border border-amber-200 text-amber-950";
         let centralLabel = "In Agenda • " + item.tipo.toUpperCase();
         let centralMainText = item.tipo === 'In Casa' ? `ASA Cinisello vs ${item.avversario}` : `${item.avversario} vs ASA Cinisello`;
         let centralSubText = "Partita di campionato";
+        let buttonHTML = `<button onclick="openAvailabilityModal('${item.id}')" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow flex items-center justify-between px-5"><span>CONFERMA DISPONIBILITÀ</span> <span class="bg-slate-950 text-amber-300 px-2.5 py-0.5 rounded-full text-[10px] font-bold">${dispCount} disponibili</span></button>`;
 
-        if (isRimandata) {
+        // Stato: PROSSIMO INCONTRO (Verde + switch automatico disponibilità -> lista convocati)
+        if (isProssimoIncontro) {
+          etichettaTop = "Prossimo Incontro";
+          cardWrapperClass = "bg-emerald-50/70 border-2 border-emerald-400 shadow-emerald-100";
+          badgeHTML = `
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black bg-emerald-600 text-white uppercase tracking-widest shadow-xs">
+              <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> Confermata (${item.tipo})
+            </span>`;
+          centralBoxClass = "bg-emerald-100/70 border border-emerald-300 text-emerald-950";
+          centralLabel = "Prossima Gara • " + item.tipo.toUpperCase();
+
+          if (hasConvocati) {
+            buttonHTML = `<button onclick="openMatchModal('${item.id}')" class="w-full py-3 bg-slate-900 hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">LISTA CONVOCATI (${convocatiList.length})</button>`;
+          } else {
+            buttonHTML = `<button onclick="openAvailabilityModal('${item.id}')" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow flex items-center justify-between px-5"><span>CONFERMA DISPONIBILITÀ</span> <span class="bg-slate-950 text-emerald-300 px-2.5 py-0.5 rounded-full text-[10px] font-bold">${dispCount} disponibili</span></button>`;
+          }
+        }
+
+        // Stato: RINVIATA (Azzurra + disponibilità bloccate)
+        if (isRinviata) {
+          etichettaTop = "Gara Rinviata";
           cardWrapperClass = "bg-sky-50/80 border-2 border-sky-400 shadow-sky-100";
           badgeHTML = `
             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black bg-sky-600 text-white uppercase tracking-widest shadow-xs">
-              <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> Rimandata
+              <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> Rinviata
             </span>`;
           centralBoxClass = "bg-sky-100/80 border border-sky-300 text-sky-950";
-          centralLabel = "Avviso Gara Rimandata";
-          centralSubText = item.nota ? item.nota : "Nuova data in fase di definizione";
-        }
-
-        const convocatiList = (item.stato !== 'programmata') ? (dbState.convocazioni[item.id] || []) : [];
-        let buttonHTML = "";
-        if (convocatiList.length > 0 && !isRimandata) {
-          buttonHTML = `<button onclick="openMatchModal('${item.id}')" class="w-full py-3 bg-slate-900 hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">CONVOCAZIONI UFFICIALI</button>`;
-        } else {
-          const dispCount = dbState.disponibilita && dbState.disponibilita[item.id] ? Object.values(dbState.disponibilita[item.id]).filter(Boolean).length : 0;
-          buttonHTML = `<button onclick="openAvailabilityModal('${item.id}')" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow flex items-center justify-between px-5"><span>CONFERMA DISPONIBILITÀ</span> <span class="bg-slate-950 text-amber-300 px-2.5 py-0.5 rounded-full text-[10px] font-bold">${dispCount} disponibili</span></button>`;
+          centralLabel = "Avviso Gara Rinviata";
+          centralSubText = item.nota ? item.nota : "Nuova data da definire";
+          buttonHTML = `<div class="w-full py-3 bg-sky-200/70 text-sky-900 rounded-2xl text-xs font-extrabold uppercase tracking-wider text-center border border-sky-300 select-none">Disponibilità Sospese • In Attesa Nuova Data</div>`;
         }
 
         return `
@@ -857,28 +891,20 @@
         `;
       }
 
-      // 2. Render delle partite attive in perfetto ordine cronologico
+      // 2. Render delle partite attive in ordine cronologico
       for (let i = 0; i < attive.length; i++) {
         const item = attive[i];
         let inPanoramica = false;
         let inProssimi = false;
-        let etichettaTop = "In Agenda";
 
         if (concluse.length > 0) {
-          if (i === 0) { inPanoramica = true; inProssimi = true; etichettaTop = "Ultima da Giocare"; }
-          else if (i === 1) { inPanoramica = true; inProssimi = true; etichettaTop = "In Agenda"; }
-          else { inPanoramica = false; inProssimi = true; etichettaTop = "In Agenda"; }
+          // Con concluse: Panoramica mostra l'ultima conclusa + le prime 2 attive
+          if (i === 0 || i === 1) { inPanoramica = true; inProssimi = true; }
+          else { inPanoramica = false; inProssimi = true; }
         } else {
-          // Senza concluse: le prime 3 in agenda vanno sia in Panoramica che in Prossimi con etichetta "In Agenda"
-          if (i === 0 || i === 1 || i === 2) { 
-            inPanoramica = true; 
-            inProssimi = true; 
-            etichettaTop = "In Agenda"; 
-          } else { 
-            inPanoramica = false; 
-            inProssimi = true; 
-            etichettaTop = "In Agenda"; 
-          }
+          // Senza concluse: Panoramica e Prossimi mostrano entrambe le prime 3 partite attive
+          if (i === 0 || i === 1 || i === 2) { inPanoramica = true; inProssimi = true; }
+          else { inPanoramica = false; inProssimi = true; }
         }
 
         let cardClasses = "";
@@ -886,7 +912,7 @@
         if (inProssimi) cardClasses += " card-prossimi";
 
         if (inPanoramica || inProssimi) {
-          htmlContent += renderActiveCard(item, etichettaTop, cardClasses);
+          htmlContent += renderActiveCard(item, cardClasses);
         }
       }
 
@@ -896,7 +922,7 @@
 
     function openAvailabilityModal(matchId) {
       const match = dbState.partite.find(p => p.id === matchId);
-      if (!match) return;
+      if (!match || match.stato === 'rinviata' || match.stato === 'conclusa') return;
 
       document.getElementById('avail-modal-title').innerText = `${match.id} vs ${match.avversario}`;
       document.getElementById('avail-match-id').value = matchId;
@@ -948,6 +974,7 @@
       saveToDatabase('disponibilita');
       openAvailabilityModal(matchId);
       renderNewsCards();
+      renderFullSchedule();
     }
 
     function closeAvailabilityModal() {
@@ -1038,38 +1065,41 @@
       const container = document.getElementById('full-schedule-container');
       if (!container || !dbState.partite) return;
       container.innerHTML = dbState.partite.map(p => {
-        const convocatiList = dbState.convocazioni[p.id] || [];
+        const convocatiList = dbState.convocazioni && dbState.convocazioni[p.id] ? dbState.convocazioni[p.id] : [];
         const hasConvocati = convocatiList.length > 0;
-        const isRimandata = p.stato === 'rimandata';
+        const isProssimoIncontro = p.stato === 'prossimo_incontro';
+        const isRinviata = p.stato === 'rinviata';
         const isConclusa = p.stato === 'conclusa';
 
         let statusBadge = `<span class="px-4 py-1.5 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-amber-100 text-amber-900">Programmata</span>`;
-        if (isConclusa) {
-          statusBadge = `<span class="px-4 py-1.5 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-emerald-100 text-emerald-900">Risultato: ${p.risultato || 'Conclusa'}</span>`;
-        } else if (isRimandata) {
-          statusBadge = `<span class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-sky-600 text-white"><span class="w-2 h-2 rounded-full bg-white"></span> Rimandata</span>`;
-        }
-
         let rowClass = "bg-white border-slate-200";
-        if (isRimandata) rowClass = "bg-sky-50/70 border-sky-300";
-        else if (isConclusa) rowClass = "bg-slate-50 border-slate-200";
+        let actionBtn = `<button onclick="openAvailabilityModal('${p.id}')" class="px-4 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl text-xs font-extrabold transition cursor-pointer shadow">Conferma Disponibilità</button>`;
 
-        let actionBtn = "";
-        if (isConclusa) {
-          actionBtn = `<button onclick="openMatchModal('${p.id}')" class="px-4 py-1.5 bg-[#0f2544] hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition cursor-pointer shadow">Dettagli Partita</button>`;
-        } else if (hasConvocati && p.stato !== 'programmata') {
-          actionBtn = `<button onclick="openMatchModal('${p.id}')" class="px-4 py-1.5 bg-[#0f2544] hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition cursor-pointer shadow">Convocazioni Ufficiali</button>`;
-        } else {
-          actionBtn = `<button onclick="openAvailabilityModal('${p.id}')" class="px-4 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl text-xs font-extrabold transition cursor-pointer shadow">Conferma Disponibilità</button>`;
+        if (isProssimoIncontro) {
+          statusBadge = `<span class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-emerald-600 text-white"><span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> Prossimo Incontro</span>`;
+          rowClass = "bg-emerald-50/70 border-emerald-400";
+          if (hasConvocati) {
+            actionBtn = `<button onclick="openMatchModal('${p.id}')" class="px-4 py-1.5 bg-[#0f2544] hover:bg-[#c8102e] text-white rounded-xl text-xs font-bold transition cursor-pointer shadow">Lista Convocati (${convocatiList.length})</button>`;
+          } else {
+            actionBtn = `<button onclick="openAvailabilityModal('${p.id}')" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-extrabold transition cursor-pointer shadow">Conferma Disponibilità</button>`;
+          }
+        } else if (isRinviata) {
+          statusBadge = `<span class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-sky-600 text-white"><span class="w-2 h-2 rounded-full bg-white"></span> Rinviata</span>`;
+          rowClass = "bg-sky-50/70 border-sky-300";
+          actionBtn = `<span class="px-4 py-1.5 rounded-xl text-xs font-bold bg-sky-100 text-sky-900 border border-sky-200">Disponibilità Sospese</span>`;
+        } else if (isConclusa) {
+          statusBadge = `<span class="px-4 py-1.5 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-slate-200 text-slate-800">Risultato: ${p.risultato || 'Conclusa'}</span>`;
+          rowClass = "bg-slate-50 border-slate-200";
+          actionBtn = `<button onclick="openMatchModal('${p.id}')" class="px-4 py-1.5 bg-[#0f2544] hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition cursor-pointer shadow">Dettagli & Statistiche</button>`;
         }
 
         return `
           <div class="${rowClass} p-6 rounded-3xl border shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
-              <span class="text-xs font-extrabold ${isRimandata ? 'text-sky-700' : 'text-slate-600'} uppercase tracking-wider">${p.id} • ${p.data}${p.ora ? ' (' + p.ora + ')' : ''} • ${p.tipo}</span>
+              <span class="text-xs font-extrabold ${isRinviata ? 'text-sky-700' : (isProssimoIncontro ? 'text-emerald-700' : 'text-slate-600')} uppercase tracking-wider">${p.id} • ${p.data}${p.ora ? ' (' + p.ora + ')' : ''} • ${p.tipo}</span>
               <h4 class="text-lg font-black text-[#0f2544]">ASA Cinisello vs ${p.avversario}</h4>
               <p class="text-xs text-slate-600">Sede: ${p.sede}</p>
-              ${isRimandata && p.nota ? `<p class="text-xs font-bold text-sky-800 mt-1">ℹ️ ${p.nota}</p>` : ''}
+              ${isRinviata && p.nota ? `<p class="text-xs font-bold text-sky-800 mt-1">ℹ️ ${p.nota}</p>` : ''}
             </div>
             <div class="flex items-center gap-3 flex-wrap">
               ${statusBadge}
@@ -1169,7 +1199,7 @@
         dynamicContainer.innerHTML = tempiniHtml + rosterHtml;
 
       } else {
-        let scoreText = match.stato === 'rimandata' ? `RIMANDATA ${match.nota ? '(' + match.nota + ')' : ''}` : "In attesa di svolgimento";
+        let scoreText = match.stato === 'rinviata' ? `RINVIATA ${match.nota ? '(' + match.nota + ')' : ''}` : "In attesa di svolgimento";
         document.getElementById('modal-score').innerText = scoreText;
 
         const convocatiNomi = dbState.convocazioni[giornataId] || [];
@@ -1181,7 +1211,7 @@
             <div class="flex items-center justify-between">
               <h4 class="text-xs font-extrabold text-[#0f2544] uppercase tracking-wider flex items-center gap-2">
                 <span class="w-2.5 h-2.5 rounded-full bg-[#c8102e] animate-pulse"></span>
-                Convocazioni Ufficiali (${convocatiNomi.length} convocati)
+                Lista Convocati Ufficiale (${convocatiNomi.length} convocati)
               </h4>
             </div>
 
@@ -1214,8 +1244,8 @@
         buildCoachMatchSelector();
         
         const select = document.getElementById('coach-match-selector');
-        const upcoming = dbState.partite.find(p => p.stato !== 'conclusa');
-        if (upcoming) select.value = upcoming.id;
+        const nextMatch = dbState.partite.find(p => p.stato === 'prossimo_incontro') || dbState.partite.find(p => p.stato !== 'conclusa');
+        if (nextMatch) select.value = nextMatch.id;
 
         buildCoachChecklist();
         loadMatchConvocazioni();
@@ -1235,9 +1265,10 @@
       const select = document.getElementById('coach-match-selector');
       if (!select || !dbState.partite) return;
       select.innerHTML = dbState.partite.map(p => {
-        let tag = "📅 [PROGRAMMATA]";
-        if (p.stato === 'conclusa') tag = "📂 [CONCLUSA]";
-        else if (p.stato === 'rimandata') tag = "🔵 [RIMANDATA]";
+        let tag = "🟡 [PROGRAMMATA]";
+        if (p.stato === 'prossimo_incontro') tag = "🟢 [PROSSIMO INCONTRO]";
+        else if (p.stato === 'conclusa') tag = "📂 [CONCLUSA]";
+        else if (p.stato === 'rinviata') tag = "🔵 [RINVIATA]";
         return `<option value="${p.id}">${tag} ${p.id} (${p.data}) vs ${p.avversario}</option>`;
       }).join('');
     }
@@ -1314,7 +1345,8 @@
       if (!dbState.convocazioni) dbState.convocazioni = {};
       dbState.convocazioni[matchId] = selected;
       saveToDatabase('convocazioni');
-      alert(`Convocazioni salvate sul DB in tempo reale per ${matchId}! (${selected.length} atleti)`);
+      renderAllPublicViews();
+      alert(`Lista convocati pubblicata sul DB per ${matchId}! (${selected.length} atleti)`);
     }
 
     function verifyDirigenteLogin() {
@@ -1351,7 +1383,7 @@
 
       renderRegiaMatchesList();
       if (dbState.partite && dbState.partite.length > 0) {
-        const target = dbState.partite.find(p => p.stato !== 'conclusa') || dbState.partite[dbState.partite.length - 1];
+        const target = dbState.partite.find(p => p.stato === 'prossimo_incontro') || dbState.partite.find(p => p.stato !== 'conclusa') || dbState.partite[dbState.partite.length - 1];
         selectMatchInRegia(target.id);
       }
       renderRegiaRosterEditor();
@@ -1363,8 +1395,10 @@
       if (!list || !dbState.partite) return;
       list.innerHTML = dbState.partite.map((p) => {
         let dotColor = "bg-amber-500";
-        if (p.stato === 'conclusa') dotColor = "bg-emerald-500";
-        if (p.stato === 'rimandata') dotColor = "bg-sky-500";
+        let stateLabel = "Programmata";
+        if (p.stato === 'prossimo_incontro') { dotColor = "bg-emerald-500"; stateLabel = "Prossimo Incontro"; }
+        if (p.stato === 'conclusa') { dotColor = "bg-slate-600"; stateLabel = "Conclusa"; }
+        if (p.stato === 'rinviata') { dotColor = "bg-sky-500"; stateLabel = "Rinviata"; }
 
         return `
           <div onclick="selectMatchInRegia('${p.id}')" class="p-3.5 rounded-2xl border border-slate-200 hover:border-[#0f2544] bg-slate-50 hover:bg-slate-100 cursor-pointer transition flex items-center justify-between gap-2">
@@ -1376,7 +1410,7 @@
               </div>
               <div class="text-xs font-semibold text-slate-700 mt-0.5">vs ${p.avversario}</div>
             </div>
-            <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600">${p.stato}</span>
+            <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600">${stateLabel}</span>
           </div>
         `;
       }).join('');
@@ -1453,7 +1487,7 @@
       const boxNota = document.getElementById('regia-box-nota');
 
       boxTempini.style.display = stato === 'conclusa' ? 'block' : 'none';
-      boxNota.style.display = stato === 'rimandata' ? 'block' : 'none';
+      boxNota.style.display = stato === 'rinviata' ? 'block' : 'none';
     }
 
     function saveMatchFromRegia() {
@@ -1481,6 +1515,17 @@
         calculatedScore = `${asaPts} - ${oppPts}`;
       }
 
+      if (!dbState.partite) dbState.partite = [];
+
+      // Garantisce che solo una partita alla volta sia "prossimo_incontro"
+      if (stato === 'prossimo_incontro') {
+        dbState.partite.forEach(p => {
+          if (p.stato === 'prossimo_incontro' && p.id !== matchId && p.id !== newId) {
+            p.stato = 'programmata';
+          }
+        });
+      }
+
       const matchObj = {
         id: newId,
         avversario: document.getElementById('regia-f-avversario').value.trim() || "Avversario",
@@ -1495,7 +1540,6 @@
         totaleCanestri: totaleCanestri
       };
 
-      if (!dbState.partite) dbState.partite = [];
       const existingIndex = dbState.partite.findIndex(p => p.id === matchId);
       
       if (matchId && existingIndex !== -1) {
