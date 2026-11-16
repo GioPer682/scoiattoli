@@ -761,16 +761,13 @@
 
       let htmlContent = "";
 
-      // 1. RECENTI TAB CARDS
+      // 1. RECENTI TAB CARDS (Concluse)
       if (concluse.length > 0) {
-        const ultimeConcluse = [...concluse].reverse().slice(0, 3);
-        ultimeConcluse.forEach((item, idx) => {
+        [...concluse].reverse().forEach((item, idx) => {
           let etichettaTop = idx === 0 ? "Ultima Partita Giocata" : "Partita Recente";
-          let classes = "card-recenti";
-          if (idx === 0) classes += " card-panoramica"; // La primissima conclusa appare anche in panoramica
-
+          let extraClasses = idx === 0 && concluse.length > 0 ? "card-recenti card-panoramica" : "card-recenti";
           htmlContent += `
-            <div class="news-card ${classes} bg-white border-2 border-slate-200 hover:border-[#0f2544] rounded-3xl p-6 sm:p-7 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group relative overflow-hidden">
+            <div class="news-card ${extraClasses} bg-white border-2 border-slate-200 hover:border-[#0f2544] rounded-3xl p-6 sm:p-7 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group relative overflow-hidden">
               <div class="space-y-4">
                 <div class="flex items-center justify-between border-b border-slate-200/60 pb-3">
                   <span class="text-xs font-extrabold text-slate-700 uppercase tracking-wider">${etichettaTop}</span>
@@ -805,8 +802,8 @@
         `;
       }
 
-      // Helper per generare l'HTML di una card attiva (programmata/rimandata)
-      function renderActiveCardHtml(item, isProssimoIncontro, isPanoramica, isProssimi) {
+      // Helper per renderizzare una card attiva (programmata o rimandata)
+      function renderActiveCard(item, etichettaTop, isProssimoIncontro, cardClasses) {
         const isRimandata = item.stato === 'rimandata';
         let cardWrapperClass = "bg-white border-2 border-slate-200 hover:border-[#0f2544]";
         let badgeHTML = `<span class="px-3 py-1 rounded-full text-[10px] font-black bg-amber-500 text-white uppercase tracking-widest shadow-xs">Programmata (${item.tipo})</span>`;
@@ -814,19 +811,15 @@
         let centralLabel = "In Agenda • " + item.tipo.toUpperCase();
         let centralMainText = item.tipo === 'In Casa' ? `ASA Cinisello vs ${item.avversario}` : `${item.avversario} vs ASA Cinisello`;
         let centralSubText = "Partita di campionato";
-        let etichettaTop = "In Agenda";
 
-        if (isProssimoIncontro) {
-          etichettaTop = "Prossimo Incontro";
-          if (!isRimandata) {
-            cardWrapperClass = "bg-emerald-50/70 border-2 border-emerald-400 shadow-emerald-100";
-            badgeHTML = `
-              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black bg-emerald-600 text-white uppercase tracking-widest shadow-xs">
-                <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> Confermata (${item.tipo})
-              </span>`;
-            centralBoxClass = "bg-emerald-100/70 border border-emerald-300 text-emerald-950";
-            centralLabel = "Prossima Gara • " + item.tipo.toUpperCase();
-          }
+        if (isProssimoIncontro && !isRimandata) {
+          cardWrapperClass = "bg-emerald-50/70 border-2 border-emerald-400 shadow-emerald-100";
+          badgeHTML = `
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black bg-emerald-600 text-white uppercase tracking-widest shadow-xs">
+              <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> Confermata (${item.tipo})
+            </span>`;
+          centralBoxClass = "bg-emerald-100/70 border border-emerald-300 text-emerald-950";
+          centralLabel = "Prossima Gara • " + item.tipo.toUpperCase();
         }
 
         if (isRimandata) {
@@ -840,7 +833,8 @@
           centralSubText = item.nota ? item.nota : "Nuova data in fase di definizione";
         }
 
-        const convocatiList = dbState.convocazioni[item.id] || [];
+        // Se la partita è in stato programmata, mostriamo sempre il tasto di conferma disponibilità
+        const convocatiList = (item.stato !== 'programmata') ? (dbState.convocazioni[item.id] || []) : [];
         let buttonHTML = "";
         if (convocatiList.length > 0 && !isRimandata) {
           buttonHTML = `<button onclick="openMatchModal('${item.id}')" class="w-full py-3 bg-slate-900 hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">CONVOCAZIONI UFFICIALI</button>`;
@@ -849,12 +843,8 @@
           buttonHTML = `<button onclick="openAvailabilityModal('${item.id}')" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow flex items-center justify-between px-5"><span>CONFERMA DISPONIBILITÀ</span> <span class="bg-slate-950 text-amber-300 px-2.5 py-0.5 rounded-full text-[10px] font-bold">${dispCount} disponibili</span></button>`;
         }
 
-        let classes = "news-card";
-        if (isPanoramica) classes += " card-panoramica";
-        if (isProssimi) classes += " card-prossimi";
-
         return `
-          <div class="${classes} ${cardWrapperClass} rounded-3xl p-6 sm:p-7 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group relative overflow-hidden">
+          <div class="news-card ${cardClasses} ${cardWrapperClass} rounded-3xl p-6 sm:p-7 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group relative overflow-hidden">
             <div class="space-y-4">
               <div class="flex items-center justify-between border-b border-slate-200/60 pb-3">
                 <span class="text-xs font-extrabold text-slate-700 uppercase tracking-wider">${etichettaTop}</span>
@@ -878,32 +868,33 @@
         `;
       }
 
-      // Prendi le prime 3 partite attive/programmate in ordine cronologico
-      const topActive = attive.slice(0, 3);
+      // 2. Render delle partite attive con assegnazione corretta alle viste Panoramica e Prossimi
+      for (let i = 0; i < attive.length; i++) {
+        const item = attive[i];
+        let inPanoramica = false;
+        let inProssimi = false;
+        let etichettaTop = "In Agenda";
+        let isProssimo = false;
 
-      topActive.forEach((item, i) => {
-        const isProssimoIncontro = (i === 0);
-        
-        // Regola Panoramica:
-        // - Se ci sono partite concluse: Panoramica mostra [Ultima Conclusa, attive[0], attive[1]] -> quindi attive[0] e attive[1] sono in panoramica.
-        // - Se non ci sono partite concluse (tutte programmate): Panoramica mostra [attive[0], attive[1], attive[2]] -> tutte e tre sono in panoramica!
-        let isPanoramica = false;
         if (concluse.length > 0) {
-          if (i === 0 || i === 1) isPanoramica = true;
+          // Con concluse: Panoramica mostra attive[0] e attive[1]
+          if (i === 0) { inPanoramica = true; inProssimi = true; etichettaTop = "Prossimo Incontro"; isProssimo = true; }
+          else if (i === 1) { inPanoramica = true; inProssimi = true; etichettaTop = "In Agenda"; isProssimo = false; }
+          else { inPanoramica = false; inProssimi = true; etichettaTop = "In Agenda"; isProssimo = false; }
         } else {
-          isPanoramica = true; // Tutte e tre le prime partite programmate appaiono in Panoramica
+          // Senza concluse (tutte programmate): Panoramica e Prossimi mostrano entrambe le prime 3 partite (attive[0], attive[1], attive[2])
+          if (i === 0) { inPanoramica = true; inProssimi = true; etichettaTop = "Prossimo Incontro"; isProssimo = true; }
+          else if (i === 1) { inPanoramica = true; inProssimi = true; etichettaTop = "In Agenda"; isProssimo = false; }
+          else if (i === 2) { inPanoramica = true; inProssimi = true; etichettaTop = "In Agenda"; isProssimo = false; }
+          else { inPanoramica = false; inProssimi = true; etichettaTop = "In Agenda"; isProssimo = false; }
         }
 
-        // Regola Prossimi: Tutte le prime 3 partite attive appaiono nella sezione Prossimi
-        const isProssimi = true;
+        let cardClasses = "";
+        if (inPanoramica) cardClasses += " card-panoramica";
+        if (inProssimi) cardClasses += " card-prossimi";
 
-        htmlContent += renderActiveCardHtml(item, isProssimoIncontro, isPanoramica, isProssimi);
-      });
-
-      // Se ci sono più di 3 partite attive, rendiamo la terza/quarta anche per il tab Prossimi se necessario
-      if (attive.length > 3) {
-        for (let i = 3; i < attive.length; i++) {
-          htmlContent += renderActiveCardHtml(attive[i], false, false, true);
+        if (inPanoramica || inProssimi) {
+          htmlContent += renderActiveCard(item, etichettaTop, isProssimo, cardClasses);
         }
       }
 
@@ -1074,7 +1065,7 @@
         let actionBtn = "";
         if (isConclusa) {
           actionBtn = `<button onclick="openMatchModal('${p.id}')" class="px-4 py-1.5 bg-[#0f2544] hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition cursor-pointer shadow">Dettagli Partita</button>`;
-        } else if (hasConvocati) {
+        } else if (hasConvocati && p.stato !== 'programmata') {
           actionBtn = `<button onclick="openMatchModal('${p.id}')" class="px-4 py-1.5 bg-[#0f2544] hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition cursor-pointer shadow">Convocazioni Ufficiali</button>`;
         } else {
           actionBtn = `<button onclick="openAvailabilityModal('${p.id}')" class="px-4 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl text-xs font-extrabold transition cursor-pointer shadow">Conferma Disponibilità</button>`;
