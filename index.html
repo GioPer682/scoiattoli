@@ -45,11 +45,10 @@
 
   <!-- TOP WRAPPER (TESTATA + TICKER) -->
   <div>
-    <!-- TOP HEADER RESPONSIVE (PULITO PER I VISITATORI) -->
+    <!-- TOP HEADER RESPONSIVE -->
     <header class="asa-navy text-white shadow-2xl sticky top-0 z-50 border-b border-white/10">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 sm:gap-6">
         <div class="flex items-center gap-3 sm:gap-5">
-          <!-- Logo Scalabile Mobile-First -->
           <div class="shrink-0 transition">
             <img src="logo1.png" alt="ASA Basket Cinisello" class="h-16 sm:h-24 md:h-32 w-auto object-contain drop-shadow-xl" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><rect width=\'100\' height=\'100\' fill=\'%23c8102e\'/><text x=\'50\' y=\'55\' font-size=\'32\' font-weight=\'bold\' fill=\'white\' text-anchor=\'middle\' dominant-baseline=\'middle\'>ASA</text></svg>'" />
           </div>
@@ -65,7 +64,6 @@
           </div>
         </div>
         
-        <!-- NAVIGATION RESPONSIVE (SOLO SEZIONI PUBBLICHE + AREA COACH) -->
         <nav class="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold flex-wrap pt-2 lg:pt-0 border-t border-white/10 lg:border-t-0">
           <button onclick="switchNav('news')" id="nav-news" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-white text-[#0f2544] font-bold shadow-md cursor-pointer">News</button>
           <button onclick="switchNav('squadra')" id="nav-squadra" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition text-white hover:bg-white/10 cursor-pointer">Squadra</button>
@@ -76,21 +74,17 @@
       </div>
     </header>
 
-    <!-- RED ACCENT LINE -->
     <div class="w-full h-1.5 asa-red shadow-md"></div>
 
-    <!-- LIVE TICKER BANNER (DINAMICO DA REGIA) -->
     <div id="live-ticker-wrapper" class="asa-red text-white text-[11px] sm:text-xs font-bold py-2 px-4 overflow-hidden relative shadow-inner">
-      <div class="flex items-center gap-6 animate-ticker" id="live-ticker-content">
-        <!-- Popolato dinamicamente da dbState.ticker -->
-      </div>
+      <div class="flex items-center gap-6 animate-ticker" id="live-ticker-content"></div>
     </div>
   </div>
 
   <!-- MAIN APP CONTAINER -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 w-full flex-grow space-y-8 sm:space-y-10">
 
-    <!-- NEWS VIEW (DEFAULT LANDING PAGE) -->
+    <!-- NEWS VIEW -->
     <section id="view-news" class="space-y-6 sm:space-y-8">
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-300 pb-5">
         <div>
@@ -108,7 +102,7 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8" id="news-cards-container"></div>
     </section>
 
-    <!-- SQUADRA / ROSTER VIEW -->
+    <!-- SQUADRA VIEW -->
     <section id="view-squadra" class="space-y-8 hidden">
       <div class="border-b border-slate-300 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -162,7 +156,7 @@
       <div class="space-y-4" id="full-schedule-container"></div>
     </section>
 
-    <!-- AREA COACH VIEW (SOLO CONVOCAZIONI) -->
+    <!-- AREA COACH VIEW -->
     <section id="view-coach" class="space-y-8 hidden">
       <div class="border-b border-slate-300 pb-4">
         <span class="text-xs font-extrabold text-amber-600 uppercase tracking-widest block mb-1">Accesso Riservato Allenatori</span>
@@ -171,7 +165,7 @@
 
       <div id="coach-login-container" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 max-w-xl shadow-sm space-y-5">
         <h3 class="font-extrabold text-lg text-[#0f2544]">Autenticazione Staff Tecnico</h3>
-        <p class="text-xs text-slate-600">Inserisci la password dedicata agli allenatori (Default di prova: <code class="bg-slate-100 px-2 py-0.5 rounded font-bold text-asa-red">asa2026</code>) per gestire esclusivamente le convocazioni alle partite.</p>
+        <p class="text-xs text-slate-600">Inserisci la password dedicata agli allenatori (<code class="bg-slate-100 px-2 py-0.5 rounded font-bold text-asa-red">asa2026</code>) per gestire esclusivamente le convocazioni alle partite.</p>
         <input type="password" id="coach-pass" placeholder="Password coach..." class="w-full px-4.5 py-3 border border-slate-300 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-[#0f2544]" />
         <button onclick="verifyCoachLogin()" class="w-full py-3.5 bg-[#0f2544] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider hover:bg-slate-800 transition cursor-pointer shadow">
           Accedi alle Convocazioni
@@ -215,7 +209,7 @@
       </div>
     </section>
 
-    <!-- AREA DIRIGENTE (CABINA DI REGIA RISERVATA NEL FOOTER) -->
+    <!-- AREA DIRIGENTE -->
     <section id="view-dirigente" class="space-y-8 hidden">
       <div class="border-b border-slate-300 pb-4 flex items-center justify-between">
         <div>
@@ -225,17 +219,15 @@
         <button onclick="switchNav('news')" class="text-xs font-bold text-slate-500 hover:text-[#0f2544] transition cursor-pointer underline">← Torna al Sito Pubblico</button>
       </div>
 
-      <!-- LOGIN AREA DIRIGENTE -->
       <div id="dirigente-login-container" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 max-w-xl shadow-sm space-y-5">
         <h3 class="font-extrabold text-lg text-[#0f2544]">Accesso Riservato Dirigenza</h3>
-        <p class="text-xs text-slate-600">Inserisci la password amministrativa (Default di prova: <code class="bg-slate-100 px-2 py-0.5 rounded font-bold text-slate-900">dirigente2026</code>) per gestire calendario, risultati, rinvii, barra scorrevole e roster.</p>
+        <p class="text-xs text-slate-600">Inserisci la password amministrativa (<code class="bg-slate-100 px-2 py-0.5 rounded font-bold text-slate-900">dirigente2026</code>) per gestire calendario, risultati, rinvii, barra scorrevole e roster.</p>
         <input type="password" id="dirigente-pass" placeholder="Password dirigente..." class="w-full px-4.5 py-3 border border-slate-300 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-800" />
         <button onclick="verifyDirigenteLogin()" class="w-full py-3.5 bg-[#0f2544] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider hover:bg-slate-800 transition cursor-pointer shadow">
           Entra in Area Dirigente
         </button>
       </div>
 
-      <!-- DASHBOARD AREA DIRIGENTE -->
       <div id="dirigente-dashboard-container" class="space-y-6 hidden">
         <div class="bg-slate-900 text-white rounded-2xl p-4 flex items-center justify-between flex-wrap gap-4">
           <div class="flex items-center gap-3">
@@ -254,7 +246,6 @@
           <button onclick="switchRegiaTab('roster')" id="regia-tab-roster" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap">3. Roster & Numeri Maglia</button>
         </div>
 
-        <!-- TAB 1 REGIA: PARTITE -->
         <div id="regia-content-partite" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
             <div>
@@ -322,7 +313,7 @@
                 </div>
                 <div id="regia-box-risultato">
                   <label class="text-[11px] font-bold text-slate-600 uppercase block mb-1">Risultato Finale</label>
-                  <input type="text" id="regia-f-risultato" placeholder="es. 18 - 14" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-black text-emerald-800" />
+                  <input type="text" id="regia-f-risultato" placeholder="es. 14 - 10 (Punti Tempini)" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-black text-emerald-800" />
                 </div>
               </div>
 
@@ -340,7 +331,6 @@
           </div>
         </div>
 
-        <!-- TAB 2 REGIA: TICKER -->
         <div id="regia-content-ticker" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-5 hidden">
           <div>
             <h3 class="text-lg font-black text-[#0f2544]">Barra Avvisi Scorrevole (Fascia Rossa)</h3>
@@ -364,7 +354,6 @@
           </div>
         </div>
 
-        <!-- TAB 3 REGIA: ROSTER -->
         <div id="regia-content-roster" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6 hidden">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
             <div>
@@ -394,7 +383,7 @@
 
   </main>
 
-  <!-- FOOTER (CON ACCESSO DISCRETO AREA DIRIGENTE) -->
+  <!-- FOOTER -->
   <footer class="asa-navy text-white text-xs py-8 text-center mt-16 border-t border-slate-800">
     <div class="max-w-7xl mx-auto px-6 space-y-3">
       <p class="font-bold tracking-wider">ASA Basket Cinisello • Settore Minibasket • Scoiattoli 2018/2019</p>
@@ -409,7 +398,7 @@
     </div>
   </footer>
 
-  <!-- MODAL FOR MATCH DETAILS & CONVOCAZIONI -->
+  <!-- MODAL FOR MATCH DETAILS & STATS -->
   <div id="match-modal" class="fixed inset-0 bg-slate-950/70 z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-4xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-200 relative max-h-[92vh] overflow-y-auto">
       <button onclick="closeMatchModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-700 font-extrabold text-lg cursor-pointer">✕</button>
@@ -421,7 +410,7 @@
 
       <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex items-center justify-between flex-wrap gap-4 text-center">
         <div>
-          <div class="text-[10px] font-bold text-slate-400 uppercase">Esito / Stato</div>
+          <div class="text-[10px] font-bold text-slate-400 uppercase">Esito / Risultato</div>
           <div class="text-base font-black text-[#0f2544]" id="modal-score">Da disputare</div>
         </div>
         <div class="text-right">
@@ -430,20 +419,9 @@
         </div>
       </div>
 
-      <!-- CONVOCAZIONI UFFICIALI -->
-      <div class="space-y-3 pt-2">
-        <div class="flex items-center justify-between">
-          <h4 class="text-xs font-extrabold text-[#0f2544] uppercase tracking-wider flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-[#c8102e] animate-pulse"></span>
-            Convocazioni Ufficiali
-          </h4>
-          <span id="modal-convocati-count" class="text-xs font-black text-white bg-[#0f2544] px-3 py-1 rounded-full shadow-sm">0 convocati</span>
-        </div>
-
-        <div id="arena-court-container" class="arena-court-bg rounded-3xl p-6 relative overflow-hidden min-h-[360px] flex flex-col justify-center">
-          <div id="parquet-jerseys-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 relative z-10">
-          </div>
-        </div>
+      <!-- SEZIONE DINAMICA MODALE: DETTAGLI TEMPINI (SE CONCLUSA) O CONVOCATI (SE PROGRAMMATA) -->
+      <div id="modal-dynamic-content" class="space-y-6">
+        <!-- Popolato via JS -->
       </div>
 
       <button onclick="closeMatchModal()" class="w-full py-3.5 bg-[#0f2544] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider hover:bg-slate-800 transition cursor-pointer shadow">
@@ -491,9 +469,18 @@
           avversario: "Pallacanestro Cinisello", 
           tipo: "In Casa",
           stato: "conclusa", 
-          risultato: "14 - 18", 
+          risultato: "14 - 10 (Punti)", 
           sede: "Palestra BUCUM - Via Monte Ortigara 2",
-          nota: ""
+          nota: "",
+          tempini: [
+            { t: 1, casa: 6, ospite: 4, esito: "Vinto ASA" },
+            { t: 2, casa: 4, ospite: 4, esito: "Pareggio" },
+            { t: 3, casa: 8, ospite: 2, esito: "Vinto ASA" },
+            { t: 4, casa: 3, ospite: 5, esito: "Vinto Avv" },
+            { t: 5, casa: 6, ospite: 6, esito: "Pareggio" },
+            { t: 6, casa: 5, ospite: 3, esito: "Vinto ASA" }
+          ],
+          totaleCanestri: "32 - 24"
         },
         { 
           id: "Giornata 2", 
@@ -502,9 +489,18 @@
           avversario: "Sesto Basket", 
           tipo: "Trasferta",
           stato: "conclusa", 
-          risultato: "17 - 20", 
+          risultato: "10 - 14 (Punti)", 
           sede: "Palestra Comunale - Via Marx, Sesto S.G.",
-          nota: ""
+          nota: "",
+          tempini: [
+            { t: 1, casa: 4, ospite: 6, esito: "Vinto Avv" },
+            { t: 2, casa: 2, ospite: 6, esito: "Vinto Avv" },
+            { t: 3, casa: 6, ospite: 4, esito: "Vinto ASA" },
+            { t: 4, casa: 4, ospite: 4, esito: "Pareggio" },
+            { t: 5, casa: 3, ospite: 7, esito: "Vinto Avv" },
+            { t: 6, casa: 8, ospite: 2, esito: "Vinto ASA" }
+          ],
+          totaleCanestri: "27 - 29"
         },
         { 
           id: "Giornata 3", 
@@ -652,27 +648,26 @@
     }
 
     // =========================================================================
-    // RENDERING NEWS CON CODICI COLORE (CONCLUSA, RIMANDATA, CONFERMATA, FUTURA)
+    // RENDERING NEWS CARDS CON PULSANTE "DETTAGLI PARTITA" PER LE CONCLUSE
     // =========================================================================
     function renderNewsCards() {
       const container = document.getElementById('news-cards-container');
       if (!container) return;
 
       const concluse = dbState.partite.filter(p => p.stato === 'conclusa');
-      const ultimaConclusa = concluse.length > 0 ? concluse[concluse.length - 1] : null;
+      const ultimaConclusa = concluse.length > 0 ? concluse[conclusa.length - 1] : null;
       const prossime = dbState.partite.filter(p => p.stato !== 'conclusa');
 
       const cardsToDisplay = [];
       if (ultimaConclusa) cardsToDisplay.push({ ...ultimaConclusa, cardRole: 'conclusa' });
       
-      // Prende fino a 2 prossime assegnando i ruoli per il codice colore
       prossime.slice(0, 2).forEach((p, idx) => {
         if (p.stato === 'rimandata') {
           cardsToDisplay.push({ ...p, cardRole: 'rimandata' });
         } else if (idx === 0) {
-          cardsToDisplay.push({ ...p, cardRole: 'confermata' }); // Verde Tenue (Prossima imminente)
+          cardsToDisplay.push({ ...p, cardRole: 'confermata' });
         } else {
-          cardsToDisplay.push({ ...p, cardRole: 'futura' }); // Giallo/Ambra Tenue (Successiva)
+          cardsToDisplay.push({ ...p, cardRole: 'futura' });
         }
       });
 
@@ -688,11 +683,10 @@
         else if (isConfermata) etichettaTop = "Prossimo Incontro";
         else if (isFutura) etichettaTop = "In Agenda";
 
-        // Colori dedicati in base alle 4 categorie concordate
         let cardWrapperClass = "bg-white border-2 border-slate-200 hover:border-[#0f2544]";
         let badgeHTML = "";
         let centralBoxClass = "bg-slate-50 border border-slate-200 group-hover:bg-[#0f2544] group-hover:text-white";
-        let centralLabel = isConclusa ? "Risultato Finale" : "Gara Ufficiale";
+        let centralLabel = isConclusa ? "Risultato Finale (Punti Tempini)" : "Gara Ufficiale";
         let centralMainText = isConclusa 
           ? (item.risultato || "Conclusa") 
           : (item.tipo === 'In Casa' ? `ASA Cinisello vs ${item.avversario}` : `${item.avversario} vs ASA Cinisello`);
@@ -728,12 +722,16 @@
           badgeHTML = `<span class="px-3 py-1 rounded-full text-[10px] font-black bg-slate-100 text-slate-700 uppercase tracking-widest">Conclusa</span>`;
         }
 
-        const convocatiList = dbState.convocazioni[item.id] || [];
-        const hasConvocazioni = convocatiList.length > 0;
-
-        let buttonHTML = hasConvocazioni 
-          ? `<button onclick="openMatchModal('${item.id}')" class="w-full py-3 bg-slate-900 hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">CONVOCAZIONI UFFICIALI</button>`
-          : `<button disabled class="w-full py-3 bg-slate-200 text-slate-400 rounded-2xl text-xs font-extrabold uppercase tracking-wider cursor-not-allowed opacity-75">IN ATTESA CONVOCAZIONI</button>`;
+        // Tasto dinamico: "Dettagli Partita" per le concluse, "Convocazioni Ufficiali" o "In Attesa" per le altre
+        let buttonHTML = "";
+        if (isConclusa) {
+          buttonHTML = `<button onclick="openMatchModal('${item.id}')" class="w-full py-3 bg-[#0f2544] hover:bg-slate-800 text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">📊 DETTAGLI & STATISTICHE</button>`;
+        } else {
+          const convocatiList = dbState.convocazioni[item.id] || [];
+          buttonHTML = convocatiList.length > 0 
+            ? `<button onclick="openMatchModal('${item.id}')" class="w-full py-3 bg-slate-900 hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">CONVOCAZIONI UFFICIALI</button>`
+            : `<button disabled class="w-full py-3 bg-slate-200 text-slate-400 rounded-2xl text-xs font-extrabold uppercase tracking-wider cursor-not-allowed opacity-75">IN ATTESA CONVOCAZIONI</button>`;
+        }
 
         return `
           <div class="news-card ${tipoCard} ${cardWrapperClass} rounded-3xl p-6 sm:p-7 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group relative overflow-hidden">
@@ -749,7 +747,7 @@
               </div>
               <div class="${centralBoxClass} rounded-2xl p-5 text-center space-y-2 transition-colors duration-300">
                 <div class="text-[10px] font-black uppercase tracking-widest text-slate-600">${centralLabel}</div>
-                <div class="${isConclusa ? 'text-4xl font-black tracking-tighter' : 'text-xl font-black tracking-tight'} text-[#0f2544]">${centralMainText}</div>
+                <div class="${isConclusa ? 'text-3xl font-black tracking-tighter' : 'text-xl font-black tracking-tight'} text-[#0f2544]">${centralMainText}</div>
                 <div class="text-xs font-bold text-slate-700">${centralSubText}</div>
               </div>
             </div>
@@ -854,7 +852,7 @@
 
         let statusBadge = `<span class="px-4 py-1.5 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-amber-100 text-amber-900">Programmata</span>`;
         if (isConclusa) {
-          statusBadge = `<span class="px-4 py-1.5 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-emerald-100 text-emerald-900">Finale: ${p.risultato || 'Conclusa'}</span>`;
+          statusBadge = `<span class="px-4 py-1.5 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-emerald-100 text-emerald-900">Risultato: ${p.risultato || 'Conclusa'}</span>`;
         } else if (isRimandata) {
           statusBadge = `<span class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-sky-600 text-white"><span class="w-2 h-2 rounded-full bg-white"></span> Rimandata</span>`;
         }
@@ -862,6 +860,15 @@
         let rowClass = "bg-white border-slate-200";
         if (isRimandata) rowClass = "bg-sky-50/70 border-sky-300";
         else if (isConclusa) rowClass = "bg-slate-50 border-slate-200";
+
+        let actionBtn = "";
+        if (isConclusa) {
+          actionBtn = `<button onclick="openMatchModal('${p.id}')" class="px-4 py-1.5 bg-[#0f2544] hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition cursor-pointer shadow">Dettagli Partita</button>`;
+        } else if (hasConvocati) {
+          actionBtn = `<button onclick="openMatchModal('${p.id}')" class="px-4 py-1.5 bg-[#0f2544] hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition cursor-pointer shadow">Convocazioni Ufficiali</button>`;
+        } else {
+          actionBtn = `<button disabled class="px-4 py-1.5 bg-slate-100 text-slate-400 rounded-xl text-xs font-bold cursor-not-allowed">In Attesa</button>`;
+        }
 
         return `
           <div class="${rowClass} p-6 rounded-3xl border shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -873,10 +880,7 @@
             </div>
             <div class="flex items-center gap-3 flex-wrap">
               ${statusBadge}
-              ${hasConvocati 
-                ? `<button onclick="openMatchModal('${p.id}')" class="px-4 py-1.5 bg-[#0f2544] hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition cursor-pointer shadow">Convocazioni Ufficiali</button>`
-                : `<button disabled class="px-4 py-1.5 bg-slate-100 text-slate-400 rounded-xl text-xs font-bold cursor-not-allowed">In Attesa Convocazioni</button>`
-              }
+              ${actionBtn}
             </div>
           </div>
         `;
@@ -884,33 +888,123 @@
     }
 
     // =========================================================================
-    // MODALE CONVOCAZIONI
+    // MODALE DINAMICA: DETTAGLI & STATISTICHE (CONCLUSA) VS CONVOCAZIONI
     // =========================================================================
     function openMatchModal(giornataId) {
       const match = dbState.partite.find(p => p.id === giornataId);
       if (!match) return;
 
       document.getElementById('modal-title').innerHTML = `ASA Cinisello <span class="text-[#c8102e] font-bold text-lg">vs</span> ${match.avversario}`;
-      
-      let scoreText = "In attesa di svolgimento";
-      if (match.stato === 'conclusa') scoreText = `Risultato Finale: ${match.risultato}`;
-      else if (match.stato === 'rimandata') scoreText = `RIMANDATA ${match.nota ? '(' + match.nota + ')' : ''}`;
-
-      document.getElementById('modal-score').innerText = scoreText;
       document.getElementById('modal-giornata').innerText = match.id.toUpperCase();
       document.getElementById('modal-info').innerText = `${match.data} • ${match.sede}`;
 
-      const convocatiNomi = dbState.convocazioni[giornataId] || [];
-      document.getElementById('modal-convocati-count').innerText = `${convocatiNomi.length} convocati`;
+      const dynamicContainer = document.getElementById('modal-dynamic-content');
 
-      const convocatiObj = dbState.roster.filter(a => convocatiNomi.includes(a.nome));
-      convocatiObj.sort((a, b) => (parseInt(a.numero) || 999) - (parseInt(b.numero) || 999));
+      if (match.stato === 'conclusa') {
+        document.getElementById('modal-score').innerText = `Esito Finale: ${match.risultato}`;
 
-      const gridContainer = document.getElementById('parquet-jerseys-grid');
-      if (convocatiObj.length > 0) {
-        gridContainer.innerHTML = convocatiObj.map((a, idx) => generateJerseySvgHtml(a, idx + 100, true)).join('');
+        // Renderizza la tabella dei 6 tempini e il riepilogo
+        let tempiniHtml = `
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <h4 class="text-xs font-extrabold text-[#0f2544] uppercase tracking-wider flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                Andamento dei 6 Tempini (Regolamento Minibasket)
+              </h4>
+              <span class="text-[11px] font-bold text-slate-500">Vittoria tempino = 3 pt • Pareggio = 2 pt • Sconfitta = 1 pt</span>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+        `;
+
+        if (match.tempini && match.tempini.length > 0) {
+          match.tempini.forEach(tp => {
+            let badgeBg = "bg-slate-100 text-slate-700 border-slate-200";
+            if (tp.esito.includes("ASA")) badgeBg = "bg-emerald-50 text-emerald-900 border-emerald-300 font-extrabold";
+            else if (tp.esito.includes("Pareggio")) badgeBg = "bg-amber-50 text-amber-900 border-amber-300";
+            else badgeBg = "bg-red-50 text-red-900 border-red-300";
+
+            tempiniHtml += `
+              <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 text-center space-y-1">
+                <div class="text-[10px] font-black text-slate-400 uppercase">Tempino ${tp.t}</div>
+                <div class="text-lg font-black text-[#0f2544]">${tp.casa} - ${tp.ospite}</div>
+                <div class="text-[10px] py-0.5 px-2 rounded-lg border ${badgeBg}">${tp.esito}</div>
+              </div>
+            `;
+          });
+        }
+
+        tempiniHtml += `
+            </div>
+
+            <div class="bg-blue-50/80 p-4 rounded-2xl border border-blue-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+              <div>
+                <div class="text-[10px] font-black text-blue-900 uppercase">Riepilogo Punti Classifica Tempini</div>
+                <div class="text-sm font-black text-[#0f2544]">ASA Cinisello <span class="text-[#c8102e]">${match.risultato}</span> vs ${match.avversario}</div>
+              </div>
+              <div class="text-right">
+                <div class="text-[10px] font-black text-blue-900 uppercase">Canestri Totali Realizzati</div>
+                <div class="text-sm font-black text-[#0f2544]">${match.totaleCanestri || "N.D."}</div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        // Aggiunge la sezione con i giocatori che hanno disputato la partita
+        const convocatiNomi = dbState.convocazioni[giornataId] || [];
+        const convocatiObj = dbState.roster.filter(a => convocatiNomi.includes(a.nome));
+        convocatiObj.sort((a, b) => (parseInt(a.numero) || 999) - (parseInt(b.numero) || 999));
+
+        let rosterHtml = `
+          <div class="space-y-3 pt-3 border-t border-slate-200">
+            <div class="flex items-center justify-between">
+              <h4 class="text-xs font-extrabold text-[#0f2544] uppercase tracking-wider flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#0f2544]"></span>
+                Atleti Scesi in Campo (${convocatiObj.length})
+              </h4>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 max-h-72 overflow-y-auto p-1">
+        `;
+
+        if (convocatiObj.length > 0) {
+          rosterHtml += convocatiObj.map((a, idx) => generateJerseySvgHtml(a, idx + 200, true)).join('');
+        } else {
+          rosterHtml += `<div class="col-span-full text-center py-6 text-slate-500 font-bold">Roster non registrato per questa gara.</div>`;
+        }
+        rosterHtml += `</div></div>`;
+
+        dynamicContainer.innerHTML = tempiniHtml + rosterHtml;
+
       } else {
-        gridContainer.innerHTML = `<div class="col-span-full text-center py-10 text-slate-700 font-bold bg-white/90 rounded-2xl">Convocazioni non ancora pubblicate dallo staff tecnico.</div>`;
+        // Vista classica per le gare programmate o rimandate (Convocazioni Ufficiali)
+        let scoreText = match.stato === 'rimandata' ? `RIMANDATA ${match.nota ? '(' + match.nota + ')' : ''}` : "In attesa di svolgimento";
+        document.getElementById('modal-score').innerText = scoreText;
+
+        const convocatiNomi = dbState.convocazioni[giornataId] || [];
+        const convocatiObj = dbState.roster.filter(a => convocatiNomi.includes(a.nome));
+        convocatiObj.sort((a, b) => (parseInt(a.numero) || 999) - (parseInt(b.numero) || 999));
+
+        let convocatiHtml = `
+          <div class="space-y-3 pt-2">
+            <div class="flex items-center justify-between">
+              <h4 class="text-xs font-extrabold text-[#0f2544] uppercase tracking-wider flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#c8102e] animate-pulse"></span>
+                Convocazioni Ufficiali (${convocatiNomi.length} convocati)
+              </h4>
+            </div>
+
+            <div class="arena-court-bg rounded-3xl p-6 relative overflow-hidden min-h-[340px] flex flex-col justify-center">
+              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 relative z-10">
+        `;
+
+        if (convocatiObj.length > 0) {
+          convocatiHtml += convocatiObj.map((a, idx) => generateJerseySvgHtml(a, idx + 100, true)).join('');
+        } else {
+          convocatiHtml += `<div class="col-span-full text-center py-10 text-white font-bold bg-slate-900/50 rounded-2xl">Convocazioni non ancora pubblicate dallo staff tecnico.</div>`;
+        }
+
+        convocatiHtml += `</div></div></div>`;
+        dynamicContainer.innerHTML = convocatiHtml;
       }
 
       document.getElementById('match-modal').classList.remove('hidden');
@@ -921,7 +1015,7 @@
     }
 
     // =========================================================================
-    // AREA COACH (SOLO CONVOCAZIONI)
+    // AREA COACH & AREA DIRIGENTE
     // =========================================================================
     function verifyCoachLogin() {
       const pass = document.getElementById('coach-pass').value;
@@ -994,9 +1088,6 @@
       alert(`Convocazioni aggiornate per ${matchId}! (${selected.length} atleti convocati)`);
     }
 
-    // =========================================================================
-    // AREA DIRIGENTE (CABINA DI REGIA NEL FOOTER)
-    // =========================================================================
     function verifyDirigenteLogin() {
       const pass = document.getElementById('dirigente-pass').value;
       if (pass === "dirigente2026" || pass.trim() !== "") {
@@ -1112,7 +1203,16 @@
         sede: document.getElementById('regia-f-sede').value.trim() || "Palestra BUCUM",
         stato: document.getElementById('regia-f-stato').value,
         risultato: document.getElementById('regia-f-risultato').value.trim(),
-        nota: document.getElementById('regia-f-nota').value.trim()
+        nota: document.getElementById('regia-f-nota').value.trim(),
+        tempini: dbState.partite[idx]?.tempini || [
+          { t: 1, casa: 4, ospite: 4, esito: "Pareggio" },
+          { t: 2, casa: 4, ospite: 4, esito: "Pareggio" },
+          { t: 3, casa: 4, ospite: 4, esito: "Pareggio" },
+          { t: 4, casa: 4, ospite: 4, esito: "Pareggio" },
+          { t: 5, casa: 4, ospite: 4, esito: "Pareggio" },
+          { t: 6, casa: 4, ospite: 4, esito: "Pareggio" }
+        ],
+        totaleCanestri: dbState.partite[idx]?.totaleCanestri || "24 - 24"
       };
 
       if (idx === -1) {
