@@ -94,8 +94,8 @@
         
         <div class="flex items-center gap-1 bg-slate-200/80 p-1.5 rounded-2xl overflow-x-auto">
           <button onclick="filterNews('all')" id="tab-all" class="px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-bold bg-[#0f2544] text-white shadow transition cursor-pointer whitespace-nowrap">Panoramica</button>
-          <button onclick="filterNews('recenti')" id="tab-recenti" class="px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap">Recenti</button>
-          <button onclick="filterNews('prossimi')" id="tab-prossimi" class="px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap">Prossimi</button>
+          <button onclick="filterNews('recenti')" id="tab-recenti" class="px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap">Recenti (Ultime 3)</button>
+          <button onclick="filterNews('prossimi')" id="tab-prossimi" class="px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap">Prossimi (Prossime 3)</button>
         </div>
       </div>
 
@@ -576,18 +576,15 @@
       if (db) {
         const docRef = db.collection("asa_portal").doc("scoiattoli_data");
         
-        // Ascolta in tempo reale le modifiche sul DB per tutti i visitatori
         docRef.onSnapshot((doc) => {
           if (doc.exists) {
             dbState = doc.data();
             sortPartite();
             renderAllPublicViews();
-            // Se l'area dirigente o coach è aperta, aggiorna la vista attiva
             if (!document.getElementById('view-dirigente').classList.contains('hidden')) {
               renderRegiaMatchesList();
             }
           } else {
-            // Se il documento non esiste sul DB, lo crea con i dati iniziali
             docRef.set(defaultDbState);
           }
         }, (error) => {
@@ -616,7 +613,6 @@
       if (db) {
         try {
           await db.collection("asa_portal").doc("scoiattoli_data").set(dbState);
-          console.log("[Firestore] Dati aggiornati e pubblicati sul cloud per tutti.");
         } catch (e) {
           console.error("[Firestore] Errore salvataggio:", e);
         }
@@ -738,47 +734,66 @@
 
     function renderNewsCards() {
       const container = document.getElementById('news-cards-container');
-      if (!container) return;
+      if (!container || !dbState.partite) return;
 
       const concluse = dbState.partite.filter(p => p.stato === 'conclusa');
-      const ultimaConclusa = concluse.length > 0 ? concluse[concluse.length - 1] : null;
-      const prossime = dbState.partite.filter(p => p.stato !== 'conclusa');
+      // Prendi le ultime 3 concluse (in ordine inverso rispetto alla cronologia per avere le più recenti per prime)
+      const ultimeConcluse = concluse.slice(-3).reverse();
 
-      const cardsToDisplay = [];
-      if (ultimaConclusa) cardsToDisplay.push({ ...ultimaConclusa, cardRole: 'conclusa' });
-      
-      prossime.slice(0, 2).forEach((p, idx) => {
-        if (p.stato === 'rimandata') {
-          cardsToDisplay.push({ ...p, cardRole: 'rimandata' });
-        } else if (idx === 0) {
-          cardsToDisplay.push({ ...p, cardRole: 'confermata' });
-        } else {
-          cardsToDisplay.push({ ...p, cardRole: 'futura' });
-        }
+      const prossime = dbState.partite.filter(p => p.stato !== 'conclusa');
+      // Prendi le prossime 3 da giocare
+      const prossimeTre = prossime.slice(0, 3);
+
+      let htmlContent = "";
+
+      // Renderizza le partite recenti (fino a 3)
+      ultimeConcluse.forEach((item, idx) => {
+        let etichettaTop = idx === 0 ? "Ultima Partita Giocata" : "Partita Recente";
+        let cardWrapperClass = "bg-white border-2 border-slate-200 hover:border-[#0f2544]";
+        let badgeHTML = `<span class="px-3 py-1 rounded-full text-[10px] font-black bg-slate-100 text-slate-700 uppercase tracking-widest">Conclusa</span>`;
+        let centralBoxClass = "bg-slate-50 border border-slate-200 transition-colors";
+        let centralLabel = "Full Time";
+        let centralMainText = item.risultato || "Conclusa";
+        let centralSubText = item.tipo === 'In Casa' ? `ASA Cinisello vs ${item.avversario}` : `${item.avversario} vs ASA Cinisello`;
+        let buttonHTML = `<button onclick="openMatchModal('${item.id}')" class="w-full py-3 bg-[#0f2544] hover:bg-slate-800 text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">DETTAGLI & STATISTICHE</button>`;
+
+        htmlContent += `
+          <div class="news-card card-recenti ${cardWrapperClass} rounded-3xl p-6 sm:p-7 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group relative overflow-hidden">
+            <div class="space-y-4">
+              <div class="flex items-center justify-between border-b border-slate-200/60 pb-3">
+                <span class="text-xs font-extrabold text-slate-700 uppercase tracking-wider">${etichettaTop}</span>
+                ${badgeHTML}
+              </div>
+              <div>
+                <span class="text-xs font-bold text-slate-500">${item.data}${item.ora ? ' • Ore ' + item.ora : ''}</span>
+                <h3 class="text-xl font-black text-[#0f2544] tracking-tight mt-0.5">${item.id}</h3>
+                <p class="text-xs text-slate-600 mt-1">${item.sede}</p>
+              </div>
+              <div class="${centralBoxClass} rounded-2xl p-5 text-center space-y-2">
+                <div class="text-[10px] font-black uppercase tracking-widest text-slate-500">${centralLabel}</div>
+                <div class="text-3xl font-black tracking-tighter text-[#0f2544]">${centralMainText}</div>
+                <div class="text-xs font-bold text-slate-700">${centralSubText}</div>
+              </div>
+            </div>
+            <div class="pt-6">
+              ${buttonHTML}
+            </div>
+          </div>
+        `;
       });
 
-      container.innerHTML = cardsToDisplay.map(item => {
-        const isConclusa = item.cardRole === 'conclusa';
-        const isRimandata = item.cardRole === 'rimandata';
-        const isConfermata = item.cardRole === 'confermata';
-        const isFutura = item.cardRole === 'futura';
-        const tipoCard = isConclusa ? 'card-recenti' : 'card-prossimi';
+      // Renderizza le prossime partite (fino a 3)
+      prossimeTre.forEach((item, idx) => {
+        const isRimandata = item.stato === 'rimandata';
+        const isConfermata = idx === 0 && !isRimandata;
 
-        let etichettaTop = "In Programma";
-        if (isConclusa) etichettaTop = "Ultima Partita";
-        else if (isConfermata) etichettaTop = "Prossimo Incontro";
-        else if (isFutura) etichettaTop = "In Agenda";
-
+        let etichettaTop = isConfermata ? "Prossimo Incontro" : "In Agenda";
         let cardWrapperClass = "bg-white border-2 border-slate-200 hover:border-[#0f2544]";
-        let badgeHTML = "";
-        let centralBoxClass = "bg-slate-50 border border-slate-200 transition-colors";
-        let centralLabel = isConclusa ? "Full Time" : "Gara Ufficiale";
-        let centralMainText = isConclusa 
-          ? (item.risultato || "Conclusa") 
-          : (item.tipo === 'In Casa' ? `ASA Cinisello vs ${item.avversario}` : `${item.avversario} vs ASA Cinisello`);
-        let centralSubText = isConclusa 
-          ? (item.tipo === 'In Casa' ? `ASA Cinisello vs ${item.avversario}` : `${item.avversario} vs ASA Cinisello`)
-          : "Incontro Ufficiale";
+        let badgeHTML = `<span class="px-3 py-1 rounded-full text-[10px] font-black bg-amber-500 text-white uppercase tracking-widest shadow-xs">Programmata (${item.tipo})</span>`;
+        let centralBoxClass = "bg-amber-100/70 border border-amber-200 text-amber-950";
+        let centralLabel = "Prossima Gara • " + item.tipo.toUpperCase();
+        let centralMainText = item.tipo === 'In Casa' ? `ASA Cinisello vs ${item.avversario}` : `${item.avversario} vs ASA Cinisello`;
+        let centralSubText = "Incontro Ufficiale";
 
         if (isRimandata) {
           cardWrapperClass = "bg-sky-50/80 border-2 border-sky-400 shadow-sky-100";
@@ -796,30 +811,15 @@
               <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> Confermata (${item.tipo})
             </span>`;
           centralBoxClass = "bg-emerald-100/70 border border-emerald-300 text-emerald-950";
-          centralLabel = "Prossima Gara • " + item.tipo.toUpperCase();
-        } else if (isFutura) {
-          cardWrapperClass = "bg-amber-50/70 border-2 border-amber-300 shadow-amber-50";
-          badgeHTML = `
-            <span class="px-3 py-1 rounded-full text-[10px] font-black bg-amber-500 text-white uppercase tracking-widest shadow-xs">
-              Programmata (${item.tipo})
-            </span>`;
-          centralBoxClass = "bg-amber-100/70 border border-amber-200 text-amber-950";
-        } else if (isConclusa) {
-          badgeHTML = `<span class="px-3 py-1 rounded-full text-[10px] font-black bg-slate-100 text-slate-700 uppercase tracking-widest">Conclusa</span>`;
         }
 
-        let buttonHTML = "";
-        if (isConclusa) {
-          buttonHTML = `<button onclick="openMatchModal('${item.id}')" class="w-full py-3 bg-[#0f2544] hover:bg-slate-800 text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">DETTAGLI & STATISTICHE</button>`;
-        } else {
-          const convocatiList = dbState.convocazioni[item.id] || [];
-          buttonHTML = convocatiList.length > 0 
-            ? `<button onclick="openMatchModal('${item.id}')" class="w-full py-3 bg-slate-900 hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">CONVOCAZIONI UFFICIALI</button>`
-            : `<button disabled class="w-full py-3 bg-slate-200 text-slate-400 rounded-2xl text-xs font-extrabold uppercase tracking-wider cursor-not-allowed opacity-75">IN ATTESA CONVOCAZIONI</button>`;
-        }
+        const convocatiList = dbState.convocazioni[item.id] || [];
+        let buttonHTML = convocatiList.length > 0 
+          ? `<button onclick="openMatchModal('${item.id}')" class="w-full py-3 bg-slate-900 hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">CONVOCAZIONI UFFICIALI</button>`
+          : `<button disabled class="w-full py-3 bg-slate-200 text-slate-400 rounded-2xl text-xs font-extrabold uppercase tracking-wider cursor-not-allowed opacity-75">IN ATTESA CONVOCAZIONI</button>`;
 
-        return `
-          <div class="news-card ${tipoCard} ${cardWrapperClass} rounded-3xl p-6 sm:p-7 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group relative overflow-hidden">
+        htmlContent += `
+          <div class="news-card card-prossimi ${cardWrapperClass} rounded-3xl p-6 sm:p-7 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group relative overflow-hidden">
             <div class="space-y-4">
               <div class="flex items-center justify-between border-b border-slate-200/60 pb-3">
                 <span class="text-xs font-extrabold text-slate-700 uppercase tracking-wider">${etichettaTop}</span>
@@ -832,7 +832,7 @@
               </div>
               <div class="${centralBoxClass} rounded-2xl p-5 text-center space-y-2">
                 <div class="text-[10px] font-black uppercase tracking-widest text-slate-500">${centralLabel}</div>
-                <div class="${isConclusa ? 'text-3xl font-black tracking-tighter' : 'text-xl font-black tracking-tight'} text-[#0f2544]">${centralMainText}</div>
+                <div class="text-xl font-black tracking-tight text-[#0f2544]">${centralMainText}</div>
                 <div class="text-xs font-bold text-slate-700">${centralSubText}</div>
               </div>
             </div>
@@ -841,7 +841,9 @@
             </div>
           </div>
         `;
-      }).join('');
+      });
+
+      container.innerHTML = htmlContent;
     }
 
     function renderRosterMain() {
@@ -1203,7 +1205,9 @@
 
       renderRegiaMatchesList();
       if (dbState.partite && dbState.partite.length > 0) {
-        selectMatchInRegia(dbState.partite[0].id);
+        // Selezione intelligente: seleziona la prima partita programmata/rimandata, o l'ultima conclusa
+        const target = dbState.partite.find(p => p.stato !== 'conclusa') || dbState.partite[dbState.partite.length - 1];
+        selectMatchInRegia(target.id);
       }
       renderRegiaRosterEditor();
     }
