@@ -477,12 +477,12 @@
   <!-- SCRIPT -->
   <script>
     const firebaseConfig = {
-      apiKey: "INSERISCI_TUA_API_KEY",
-      authDomain: "tuo-progetto.firebaseapp.com",
-      projectId: "tuo-progetto",
-      storageBucket: "tuo-progetto.appspot.com",
-      messagingSenderId: "...",
-      appId: "..."
+      apiKey: "AIzaSyDBUQzZ1EMsDH3rHxSB_9tcJSqadaQu8HY",
+      authDomain: "asa-basket-scoiattoli.firebaseapp.com",
+      projectId: "asa-basket-scoiattoli",
+      storageBucket: "asa-basket-scoiattoli.firebasestorage.app",
+      messagingSenderId: "199036591405",
+      appId: "1:199036591405:web:4c02d7ea6be97312bc87a4"
     };
 
     let db = null;
@@ -1296,14 +1296,12 @@
 
       let dispCount = 0;
       
-      // Controllo se ci sono convocazioni già salvate in precedenza per questa partita
       const hasExistingConvocazioni = convocatiMatch !== undefined && convocatiMatch.length > 0;
 
       document.querySelectorAll('.coach-player-chk').forEach(chk => {
         if (hasExistingConvocazioni) {
           chk.checked = convocatiMatch.includes(chk.value);
         } else {
-          // SE NON SALVATE: Parte di base spuntando SOLO gli atleti segnalati come disponibili dalle famiglie!
           chk.checked = dispMap[chk.value] === true;
         }
       });
