@@ -803,7 +803,7 @@
       }
 
       // Helper per renderizzare una card attiva (programmata o rimandata)
-      function renderActiveCard(item, etichettaTop, isProssimoIncontro, cardClasses) {
+      function renderActiveCard(item, etichettaTop, cardClasses) {
         const isRimandata = item.stato === 'rimandata';
         let cardWrapperClass = "bg-white border-2 border-slate-200 hover:border-[#0f2544]";
         let badgeHTML = `<span class="px-3 py-1 rounded-full text-[10px] font-black bg-amber-500 text-white uppercase tracking-widest shadow-xs">Programmata (${item.tipo})</span>`;
@@ -811,16 +811,6 @@
         let centralLabel = "In Agenda • " + item.tipo.toUpperCase();
         let centralMainText = item.tipo === 'In Casa' ? `ASA Cinisello vs ${item.avversario}` : `${item.avversario} vs ASA Cinisello`;
         let centralSubText = "Partita di campionato";
-
-        if (isProssimoIncontro && !isRimandata) {
-          cardWrapperClass = "bg-emerald-50/70 border-2 border-emerald-400 shadow-emerald-100";
-          badgeHTML = `
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black bg-emerald-600 text-white uppercase tracking-widest shadow-xs">
-              <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> Confermata (${item.tipo})
-            </span>`;
-          centralBoxClass = "bg-emerald-100/70 border border-emerald-300 text-emerald-950";
-          centralLabel = "Prossima Gara • " + item.tipo.toUpperCase();
-        }
 
         if (isRimandata) {
           cardWrapperClass = "bg-sky-50/80 border-2 border-sky-400 shadow-sky-100";
@@ -833,7 +823,6 @@
           centralSubText = item.nota ? item.nota : "Nuova data in fase di definizione";
         }
 
-        // Se la partita è in stato programmata, mostriamo sempre il tasto di conferma disponibilità
         const convocatiList = (item.stato !== 'programmata') ? (dbState.convocazioni[item.id] || []) : [];
         let buttonHTML = "";
         if (convocatiList.length > 0 && !isRimandata) {
@@ -868,25 +857,28 @@
         `;
       }
 
-      // 2. Render delle partite attive con assegnazione corretta alle viste Panoramica e Prossimi
+      // 2. Render delle partite attive in perfetto ordine cronologico
       for (let i = 0; i < attive.length; i++) {
         const item = attive[i];
         let inPanoramica = false;
         let inProssimi = false;
         let etichettaTop = "In Agenda";
-        let isProssimo = false;
 
         if (concluse.length > 0) {
-          // Con concluse: Panoramica mostra attive[0] e attive[1]
-          if (i === 0) { inPanoramica = true; inProssimi = true; etichettaTop = "Prossimo Incontro"; isProssimo = true; }
-          else if (i === 1) { inPanoramica = true; inProssimi = true; etichettaTop = "In Agenda"; isProssimo = false; }
-          else { inPanoramica = false; inProssimi = true; etichettaTop = "In Agenda"; isProssimo = false; }
+          if (i === 0) { inPanoramica = true; inProssimi = true; etichettaTop = "Ultima da Giocare"; }
+          else if (i === 1) { inPanoramica = true; inProssimi = true; etichettaTop = "In Agenda"; }
+          else { inPanoramica = false; inProssimi = true; etichettaTop = "In Agenda"; }
         } else {
-          // Senza concluse (tutte programmate): Panoramica e Prossimi mostrano entrambe le prime 3 partite (attive[0], attive[1], attive[2])
-          if (i === 0) { inPanoramica = true; inProssimi = true; etichettaTop = "Prossimo Incontro"; isProssimo = true; }
-          else if (i === 1) { inPanoramica = true; inProssimi = true; etichettaTop = "In Agenda"; isProssimo = false; }
-          else if (i === 2) { inPanoramica = true; inProssimi = true; etichettaTop = "In Agenda"; isProssimo = false; }
-          else { inPanoramica = false; inProssimi = true; etichettaTop = "In Agenda"; isProssimo = false; }
+          // Senza concluse: le prime 3 in agenda vanno sia in Panoramica che in Prossimi con etichetta "In Agenda"
+          if (i === 0 || i === 1 || i === 2) { 
+            inPanoramica = true; 
+            inProssimi = true; 
+            etichettaTop = "In Agenda"; 
+          } else { 
+            inPanoramica = false; 
+            inProssimi = true; 
+            etichettaTop = "In Agenda"; 
+          }
         }
 
         let cardClasses = "";
@@ -894,7 +886,7 @@
         if (inProssimi) cardClasses += " card-prossimi";
 
         if (inPanoramica || inProssimi) {
-          htmlContent += renderActiveCard(item, etichettaTop, isProssimo, cardClasses);
+          htmlContent += renderActiveCard(item, etichettaTop, cardClasses);
         }
       }
 
