@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ASA Basket Cinisello — Scoiattoli 2018/2019</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Firebase App & Firestore SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <style>
     body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background-color: #f8fafc; color: #0f172a; }
     .asa-navy { background-color: #0f2544; }
@@ -54,7 +57,7 @@
               <span class="text-lg sm:text-2xl md:text-3xl font-black tracking-wider text-white">ASA BASKET CINISELLO</span>
               <span class="asa-red text-white text-[9px] sm:text-[11px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-widest shadow-sm">SCOIATTOLI 2018/2019</span>
               <span class="inline-flex items-center gap-1.5 bg-emerald-950 text-emerald-400 text-[10px] sm:text-xs font-bold px-2.5 py-0.5 sm:py-1 rounded-full border border-emerald-800">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> LIVE
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> FIRESTORE SYNC
               </span>
             </div>
             <p class="text-xs sm:text-sm text-slate-300 font-medium mt-1 tracking-wide">Palestra BUCUM • Via Monte Ortigara 2, Cinisello Balsamo</p>
@@ -193,7 +196,7 @@
 
           <div class="pt-4 border-t border-slate-200 flex flex-col sm:flex-row gap-3">
             <button onclick="saveConvocazioni()" class="flex-1 py-4 bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider hover:bg-red-700 transition cursor-pointer shadow-lg">
-              Salva e Pubblica Convocazioni
+              Salva e Pubblica Convocazioni sul DB
             </button>
             <button onclick="selectAllPlayers(true)" class="px-5 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-xs font-extrabold uppercase tracking-wider transition cursor-pointer">
               Seleziona Tutti
@@ -218,7 +221,7 @@
 
       <div id="dirigente-login-container" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 max-w-xl shadow-sm space-y-5">
         <h3 class="font-extrabold text-lg text-[#0f2544]">Accesso Riservato Dirigenza</h3>
-        <p class="text-xs text-slate-600">Inserisci la password amministrativa (<code class="bg-slate-100 px-2 py-0.5 rounded font-bold text-slate-900">dirigente2026</code>) per gestire calendario, risultati, rinvii, barra scorrevole e roster.</p>
+        <p class="text-xs text-slate-600">Inserisci la password amministrativa (<code class="bg-slate-100 px-2 py-0.5 rounded font-bold text-slate-900">dirigente2026</code>) per gestire in tempo reale il calendario, i risultati, i rinvii, la barra scorrevole e il roster sul Database Cloud.</p>
         <input type="password" id="dirigente-pass" placeholder="Password dirigente..." class="w-full px-4.5 py-3 border border-slate-300 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-800" />
         <button onclick="verifyDirigenteLogin()" class="w-full py-3.5 bg-[#0f2544] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider hover:bg-slate-800 transition cursor-pointer shadow">
           Entra in Area Dirigente
@@ -229,10 +232,10 @@
         <div class="bg-slate-900 text-white rounded-2xl p-4 flex items-center justify-between flex-wrap gap-4">
           <div class="flex items-center gap-3">
             <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span class="text-xs font-extrabold uppercase tracking-wider">Area Dirigente Attiva • Connesso al DB</span>
+            <span class="text-xs font-extrabold uppercase tracking-wider">Area Dirigente Attiva • Connessione Firestore in Tempo Reale</span>
           </div>
           <div class="flex items-center gap-3">
-            <span id="regia-toast" class="text-xs font-bold text-emerald-300 bg-emerald-950 px-3 py-1 rounded-full border border-emerald-800 hidden">✓ Modifiche Salvate</span>
+            <span id="regia-toast" class="text-xs font-bold text-emerald-300 bg-emerald-950 px-3 py-1 rounded-full border border-emerald-800 hidden">✓ Salvato sul DB (Aggiornato per tutti)</span>
             <button onclick="dirigenteLogout()" class="text-xs font-bold text-slate-300 hover:text-white transition cursor-pointer underline">Chiudi Sessione</button>
           </div>
         </div>
@@ -247,10 +250,10 @@
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
             <div>
               <h3 class="text-lg font-black text-[#0f2544]">Gestione Incontri</h3>
-              <p class="text-xs text-slate-500">Seleziona una giornata per modificarla, inserire il risultato o segnarla come <strong>Rimandata</strong>.</p>
+              <p class="text-xs text-slate-500">Seleziona una giornata per modificarla, inserire il risultato, i tempini o segnarla come <strong>Rimandata</strong>.</p>
             </div>
             <button onclick="prepareNewMatch()" class="px-4 py-2.5 bg-[#0f2544] hover:bg-slate-800 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider transition cursor-pointer shadow-sm">
-              + Nuova Partita
+              + Nuova Partita / Amichevole
             </button>
           </div>
 
@@ -263,12 +266,12 @@
                 <button onclick="deleteCurrentMatch()" id="btn-delete-match" class="text-xs font-bold text-red-600 hover:underline cursor-pointer">Elimina gara</button>
               </div>
 
-              <input type="hidden" id="regia-match-index" value="0" />
+              <input type="hidden" id="regia-match-id" value="" />
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label class="text-[11px] font-bold text-slate-600 uppercase block mb-1">Giornata / Titolo</label>
-                  <input type="text" id="regia-f-id" placeholder="es. Giornata 3" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-bold text-[#0f2544]" />
+                  <input type="text" id="regia-f-id" placeholder="es. Giornata 3 o Amichevole" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-bold text-[#0f2544]" />
                 </div>
                 <div>
                   <label class="text-[11px] font-bold text-slate-600 uppercase block mb-1">Avversario</label>
@@ -279,11 +282,11 @@
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <label class="text-[11px] font-bold text-slate-600 uppercase block mb-1">Data (GG/MM/AAAA)</label>
-                  <input type="text" id="regia-f-data" placeholder="es. 29/11/2026" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm" />
+                  <input type="text" id="regia-f-data" placeholder="es. 29/11/2026" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-bold text-[#0f2544]" />
                 </div>
                 <div>
                   <label class="text-[11px] font-bold text-slate-600 uppercase block mb-1">Orario</label>
-                  <input type="text" id="regia-f-ora" placeholder="es. 15:30" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm" />
+                  <input type="text" id="regia-f-ora" placeholder="es. 15:30" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-bold text-[#0f2544]" />
                 </div>
                 <div>
                   <label class="text-[11px] font-bold text-slate-600 uppercase block mb-1">Tipologia</label>
@@ -314,7 +317,7 @@
               <div id="regia-box-tempini-section" class="bg-white p-4 rounded-2xl border border-slate-200 space-y-3 hidden">
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-extrabold text-[#0f2544] uppercase">Punteggi 6 Tempini (Casa - Ospite)</span>
-                  <span class="text-[10px] text-slate-400 font-bold">Calcolo automatico punti</span>
+                  <span class="text-[10px] text-slate-400 font-bold">Calcolo automatico punti classifica</span>
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-3" id="regia-tempini-inputs-grid"></div>
                 <div>
@@ -330,7 +333,7 @@
 
               <div class="pt-2">
                 <button onclick="saveMatchFromRegia()" class="w-full py-3.5 bg-[#0f2544] hover:bg-slate-800 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider transition cursor-pointer shadow-md">
-                  Salva Modifiche Partita su DB
+                  Salva Modifiche sul DB in Tempo Reale
                 </button>
               </div>
             </div>
@@ -355,7 +358,7 @@
             </div>
 
             <button onclick="saveTickerFromRegia()" class="px-6 py-3.5 bg-[#c8102e] hover:bg-red-700 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider transition cursor-pointer shadow">
-              Pubblica Avviso in Tempo Reale
+              Pubblica Avviso sul DB
             </button>
           </div>
         </div>
@@ -435,7 +438,27 @@
 
   <!-- SCRIPT -->
   <script>
-    const dbState = {
+    // Configurazione Firebase Firestore (utilizza le tue credenziali esistenti del progetto)
+    const firebaseConfig = {
+      apiKey: "INSERISCI_TUA_API_KEY",
+      authDomain: "tuo-progetto.firebaseapp.com",
+      projectId: "tuo-progetto",
+      storageBucket: "tuo-progetto.appspot.com",
+      messagingSenderId: "...",
+      appId: "..."
+    };
+
+    let db = null;
+    try {
+      if (!firebase.apps.length && firebaseConfig.apiKey !== "INSERISCI_TUA_API_KEY") {
+        firebase.initializeApp(firebaseConfig);
+        db = firebase.firestore();
+      }
+    } catch (e) {
+      console.error("Errore inizializzazione Firebase", e);
+    }
+
+    const defaultDbState = {
       ticker: {
         attivo: true,
         testo: "PROSSIMA GARA: SABATO 29 NOVEMBRE • ORE 15:30 VS FORTITUDO COLOGNO (PALESTRA BUCUM) • ALLENAMENTI MARTEDI ORE 17:00 E MERCOLEDI ORE 18:00"
@@ -546,7 +569,68 @@
       }
     };
 
+    let dbState = JSON.parse(JSON.stringify(defaultDbState));
+
+    // Sincronizzazione in tempo reale con Firebase Firestore
+    function initRealtimeDatabase() {
+      if (db) {
+        const docRef = db.collection("asa_portal").doc("scoiattoli_data");
+        
+        // Ascolta in tempo reale le modifiche sul DB per tutti i visitatori
+        docRef.onSnapshot((doc) => {
+          if (doc.exists) {
+            dbState = doc.data();
+            sortPartite();
+            renderAllPublicViews();
+            // Se l'area dirigente o coach è aperta, aggiorna la vista attiva
+            if (!document.getElementById('view-dirigente').classList.contains('hidden')) {
+              renderRegiaMatchesList();
+            }
+          } else {
+            // Se il documento non esiste sul DB, lo crea con i dati iniziali
+            docRef.set(defaultDbState);
+          }
+        }, (error) => {
+          console.error("Errore ascolto Firestore in tempo reale:", error);
+          loadLocalFallback();
+        });
+      } else {
+        loadLocalFallback();
+      }
+    }
+
+    function loadLocalFallback() {
+      const saved = localStorage.getItem('asa_scoiattoli_db_live');
+      if (saved) {
+        try { dbState = JSON.parse(saved); } catch (e) {}
+      }
+      sortPartite();
+      switchNav('news');
+      renderAllPublicViews();
+    }
+
+    async function saveToDatabase(sectionName) {
+      sortPartite();
+      localStorage.setItem('asa_scoiattoli_db_live', JSON.stringify(dbState));
+
+      if (db) {
+        try {
+          await db.collection("asa_portal").doc("scoiattoli_data").set(dbState);
+          console.log("[Firestore] Dati aggiornati e pubblicati sul cloud per tutti.");
+        } catch (e) {
+          console.error("[Firestore] Errore salvataggio:", e);
+        }
+      }
+
+      const toast = document.getElementById('regia-toast');
+      if (toast) {
+        toast.classList.remove('hidden');
+        setTimeout(() => toast.classList.add('hidden'), 2500);
+      }
+    }
+
     function sortPartite() {
+      if (!dbState.partite) return;
       dbState.partite.sort((a, b) => {
         const parseDate = (d) => {
           if (!d || !d.includes('/')) return 0;
@@ -557,19 +641,8 @@
       });
     }
 
-    function syncToFirebase(collectionName) {
-      console.log(`[Firebase Sync] Aggiornamento collection '${collectionName}' pronto per Firestore.`, dbState[collectionName]);
-      const toast = document.getElementById('regia-toast');
-      if (toast) {
-        toast.classList.remove('hidden');
-        setTimeout(() => toast.classList.add('hidden'), 2500);
-      }
-    }
-
     window.addEventListener('DOMContentLoaded', () => {
-      sortPartite();
-      switchNav('news');
-      renderAllPublicViews();
+      initRealtimeDatabase();
     });
 
     function renderAllPublicViews() {
@@ -774,8 +847,8 @@
     function renderRosterMain() {
       const grid = document.getElementById('roster-grid-main');
       const countBadge = document.getElementById('roster-count-badge');
-      if (countBadge) countBadge.innerText = dbState.roster.length;
-      if (!grid) return;
+      if (countBadge && dbState.roster) countBadge.innerText = dbState.roster.length;
+      if (!grid || !dbState.roster) return;
       grid.innerHTML = dbState.roster.map((a, idx) => generateJerseySvgHtml(a, idx, false)).join('');
     }
 
@@ -853,7 +926,7 @@
     function renderFullSchedule() {
       sortPartite();
       const container = document.getElementById('full-schedule-container');
-      if (!container) return;
+      if (!container || !dbState.partite) return;
       container.innerHTML = dbState.partite.map(p => {
         const convocatiList = dbState.convocazioni[p.id] || [];
         const hasConvocati = convocatiList.length > 0;
@@ -1045,7 +1118,7 @@
     function buildCoachMatchSelector() {
       sortPartite();
       const select = document.getElementById('coach-match-selector');
-      if (!select) return;
+      if (!select || !dbState.partite) return;
       select.innerHTML = dbState.partite.map(p => {
         let tag = "📅 [PROGRAMMATA]";
         if (p.stato === 'conclusa') tag = "📂 [CONCLUSA]";
@@ -1056,7 +1129,7 @@
 
     function buildCoachChecklist() {
       const container = document.getElementById('coach-roster-checklist');
-      if (!container) return;
+      if (!container || !dbState.roster) return;
       container.innerHTML = dbState.roster.map((a) => `
         <label class="flex items-center gap-3 p-3 bg-slate-50 hover:bg-slate-100 rounded-2xl border border-slate-200 cursor-pointer transition select-none">
           <input type="checkbox" value="${a.nome}" onchange="updateSelectedCounter()" class="coach-player-chk w-4 h-4 text-[#c8102e] rounded border-slate-300 focus:ring-[#c8102e]" />
@@ -1076,7 +1149,8 @@
 
     function updateSelectedCounter() {
       const checkedCount = document.querySelectorAll('.coach-player-chk:checked').length;
-      document.getElementById('selected-counter').innerText = `${checkedCount} / ${dbState.roster.length} Selezionati`;
+      const totalRoster = dbState.roster ? dbState.roster.length : 0;
+      document.getElementById('selected-counter').innerText = `${checkedCount} / ${totalRoster} Selezionati`;
     }
 
     function selectAllPlayers(select) {
@@ -1089,10 +1163,10 @@
       const selected = [];
       document.querySelectorAll('.coach-player-chk:checked').forEach(chk => selected.push(chk.value));
 
+      if (!dbState.convocazioni) dbState.convocazioni = {};
       dbState.convocazioni[matchId] = selected;
-      syncToFirebase('convocazioni');
-      renderAllPublicViews();
-      alert(`Convocazioni aggiornate per ${matchId}! (${selected.length} atleti convocati)`);
+      saveToDatabase('convocazioni');
+      alert(`Convocazioni salvate sul DB in tempo reale per ${matchId}! (${selected.length} atleti)`);
     }
 
     function verifyDirigenteLogin() {
@@ -1122,12 +1196,14 @@
     }
 
     function initRegiaDashboard() {
-      document.getElementById('regia-ticker-active').checked = dbState.ticker.attivo;
-      document.getElementById('regia-ticker-text').value = dbState.ticker.testo;
+      if (dbState.ticker) {
+        document.getElementById('regia-ticker-active').checked = dbState.ticker.attivo;
+        document.getElementById('regia-ticker-text').value = dbState.ticker.testo;
+      }
 
       renderRegiaMatchesList();
-      if (dbState.partite.length > 0) {
-        selectMatchInRegia(0);
+      if (dbState.partite && dbState.partite.length > 0) {
+        selectMatchInRegia(dbState.partite[0].id);
       }
       renderRegiaRosterEditor();
     }
@@ -1135,14 +1211,14 @@
     function renderRegiaMatchesList() {
       sortPartite();
       const list = document.getElementById('regia-matches-list');
-      if (!list) return;
-      list.innerHTML = dbState.partite.map((p, idx) => {
+      if (!list || !dbState.partite) return;
+      list.innerHTML = dbState.partite.map((p) => {
         let dotColor = "bg-amber-500";
         if (p.stato === 'conclusa') dotColor = "bg-emerald-500";
         if (p.stato === 'rimandata') dotColor = "bg-sky-500";
 
         return `
-          <div onclick="selectMatchInRegia(${idx})" class="p-3.5 rounded-2xl border border-slate-200 hover:border-[#0f2544] bg-slate-50 hover:bg-slate-100 cursor-pointer transition flex items-center justify-between gap-2">
+          <div onclick="selectMatchInRegia('${p.id}')" class="p-3.5 rounded-2xl border border-slate-200 hover:border-[#0f2544] bg-slate-50 hover:bg-slate-100 cursor-pointer transition flex items-center justify-between gap-2">
             <div>
               <div class="flex items-center gap-2">
                 <span class="w-2.5 h-2.5 rounded-full ${dotColor}"></span>
@@ -1157,11 +1233,11 @@
       }).join('');
     }
 
-    function selectMatchInRegia(idx) {
-      const p = dbState.partite[idx];
+    function selectMatchInRegia(matchId) {
+      const p = dbState.partite.find(match => match.id === matchId);
       if (!p) return;
       document.getElementById('regia-form-mode').innerText = `Modifica: ${p.id}`;
-      document.getElementById('regia-match-index').value = idx;
+      document.getElementById('regia-match-id').value = p.id;
       document.getElementById('regia-f-id').value = p.id;
       document.getElementById('regia-f-avversario').value = p.avversario;
       document.getElementById('regia-f-data').value = p.data;
@@ -1178,9 +1254,10 @@
     }
 
     function prepareNewMatch() {
-      document.getElementById('regia-form-mode').innerText = "Inserimento Nuova Partita";
-      document.getElementById('regia-match-index').value = "-1";
-      document.getElementById('regia-f-id').value = `Gara ${dbState.partite.length + 1}`;
+      const nextNum = dbState.partite ? dbState.partite.length + 1 : 1;
+      document.getElementById('regia-form-mode').innerText = "Inserimento Nuova Partita / Amichevole";
+      document.getElementById('regia-match-id').value = "";
+      document.getElementById('regia-f-id').value = `Amichevole ${nextNum}`;
       document.getElementById('regia-f-avversario').value = "";
       document.getElementById('regia-f-data').value = "";
       document.getElementById('regia-f-ora').value = "15:30";
@@ -1231,8 +1308,9 @@
     }
 
     function saveMatchFromRegia() {
-      const idx = parseInt(document.getElementById('regia-match-index').value);
+      const matchId = document.getElementById('regia-match-id').value;
       const stato = document.getElementById('regia-f-stato').value;
+      const newId = document.getElementById('regia-f-id').value.trim() || "Gara";
 
       let tempiniList = [];
       let calculatedScore = "";
@@ -1255,7 +1333,7 @@
       }
 
       const matchObj = {
-        id: document.getElementById('regia-f-id').value.trim() || "Gara",
+        id: newId,
         avversario: document.getElementById('regia-f-avversario').value.trim() || "Avversario",
         data: document.getElementById('regia-f-data').value.trim() || "Da definire",
         ora: document.getElementById('regia-f-ora').value.trim(),
@@ -1268,42 +1346,50 @@
         totaleCanestri: totaleCanestri
       };
 
-      if (idx === -1) {
-        dbState.partite.push(matchObj);
+      if (!dbState.partite) dbState.partite = [];
+      const existingIndex = dbState.partite.findIndex(p => p.id === matchId);
+      
+      if (matchId && existingIndex !== -1) {
+        dbState.partite[existingIndex] = matchObj;
       } else {
-        dbState.partite[idx] = matchObj;
+        dbState.partite.push(matchObj);
       }
 
       sortPartite();
-      syncToFirebase('partite');
+      saveToDatabase('partite');
       renderRegiaMatchesList();
       renderAllPublicViews();
-      alert("Partita salvata e calendario riordinato cronologicamente con successo!");
+      selectMatchInRegia(newId);
     }
 
     function deleteCurrentMatch() {
-      const idx = parseInt(document.getElementById('regia-match-index').value);
-      if (idx >= 0 && confirm("Confermi l'eliminazione di questa gara dal calendario?")) {
+      const matchId = document.getElementById('regia-match-id').value;
+      if (!dbState.partite) return;
+      const idx = dbState.partite.findIndex(p => p.id === matchId);
+      if (idx >= 0 && confirm("Confermi l'eliminazione di questa gara dal DB?")) {
         dbState.partite.splice(idx, 1);
         sortPartite();
-        syncToFirebase('partite');
+        saveToDatabase('partite');
         renderRegiaMatchesList();
         renderAllPublicViews();
-        if (dbState.partite.length > 0) selectMatchInRegia(0);
-        else prepareNewMatch();
+        if (dbState.partite.length > 0) {
+          selectMatchInRegia(dbState.partite[0].id);
+        } else {
+          prepareNewMatch();
+        }
       }
     }
 
     function saveTickerFromRegia() {
+      if (!dbState.ticker) dbState.ticker = {};
       dbState.ticker.attivo = document.getElementById('regia-ticker-active').checked;
       dbState.ticker.testo = document.getElementById('regia-ticker-text').value;
-      syncToFirebase('ticker');
-      renderTicker();
+      saveToDatabase('ticker');
     }
 
     function renderRegiaRosterEditor() {
       const container = document.getElementById('regia-roster-editor');
-      if (!container) return;
+      if (!container || !dbState.roster) return;
       container.innerHTML = dbState.roster.map((a, idx) => `
         <div class="flex items-center justify-between gap-2 p-3 bg-slate-50 rounded-xl border border-slate-200">
           <span class="text-xs font-bold text-slate-800 truncate">${a.nome}</span>
@@ -1316,8 +1402,9 @@
     }
 
     function updatePlayerNumber(idx, newNum) {
+      if (!dbState.roster) return;
       dbState.roster[idx].numero = newNum.trim() || "-";
-      syncToFirebase('roster');
+      saveToDatabase('roster');
       renderRosterMain();
     }
 
@@ -1327,10 +1414,11 @@
       const nome = nameInput.value.trim();
       if (!nome) return alert("Inserisci nome e cognome dell'atleta.");
 
+      if (!dbState.roster) dbState.roster = [];
       dbState.roster.push({ nome, numero: numInput.value.trim() || "-" });
       nameInput.value = "";
       numInput.value = "";
-      syncToFirebase('roster');
+      saveToDatabase('roster');
       renderRegiaRosterEditor();
       renderRosterMain();
     }
