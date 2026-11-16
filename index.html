@@ -186,6 +186,16 @@
             <select id="coach-match-selector" onchange="loadMatchConvocazioni()" class="w-full px-4.5 py-3 border border-slate-300 rounded-2xl text-sm font-bold text-[#0f2544] bg-slate-50 focus:outline-none focus:ring-2 focus:ring-[#0f2544]"></select>
           </div>
 
+          <div class="bg-blue-50 border border-blue-200 p-4 rounded-2xl flex items-center justify-between flex-wrap gap-3">
+            <div>
+              <div class="text-[10px] font-bold text-blue-900 uppercase">Riepilogo Disponibilità Famiglie</div>
+              <div class="text-xs font-bold text-[#0f2544]" id="coach-disponibili-counter">0 Atleti disponibili segnalati</div>
+            </div>
+            <button onclick="selectAvailablePlayers()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider transition cursor-pointer shadow-sm">
+              ✨ Seleziona Disponibili
+            </button>
+          </div>
+
           <div class="flex items-center justify-between border-b border-slate-200 pb-3">
             <h4 class="font-black text-[#0f2544] text-lg">Seleziona Atleti Convocati</h4>
             <span id="selected-counter" class="text-xs font-extrabold text-asa-red bg-red-50 px-3 py-1 rounded-full">0 Selezionati</span>
@@ -406,7 +416,7 @@
     </div>
   </footer>
 
-  <!-- MODAL -->
+  <!-- MODAL PARTITA / CONVOCAZIONI -->
   <div id="match-modal" class="fixed inset-0 bg-slate-950/70 z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-4xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-200 relative max-h-[92vh] overflow-y-auto">
       <button onclick="closeMatchModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-700 font-extrabold text-lg cursor-pointer">✕</button>
@@ -435,9 +445,31 @@
     </div>
   </div>
 
+  <!-- MODAL DISPONIBILITA' ATLETI (PER FAMIGLIE) -->
+  <div id="availability-modal" class="fixed inset-0 bg-slate-950/70 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-200 relative max-h-[92vh] overflow-y-auto">
+      <button onclick="closeAvailabilityModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-700 font-extrabold text-lg cursor-pointer">✕</button>
+      
+      <div class="space-y-1 text-center border-b border-slate-200 pb-4">
+        <span class="text-xs font-extrabold text-amber-600 uppercase tracking-widest">Segna la tua Presenza</span>
+        <h3 class="text-xl font-black text-[#0f2544]" id="avail-modal-title">Disponibilità Atleti</h3>
+        <p class="text-xs text-slate-500">Clicca sul nome del bambino per confermare la presenza o segnalare l'assenza per questa data.</p>
+      </div>
+
+      <input type="hidden" id="avail-match-id" value="" />
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-80 overflow-y-auto p-1" id="avail-roster-grid"></div>
+
+      <div class="pt-2">
+        <button onclick="closeAvailabilityModal()" class="w-full py-3.5 bg-[#0f2544] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider hover:bg-slate-800 transition cursor-pointer shadow">
+          Salva e Chiudi
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- SCRIPT -->
   <script>
-    // Configurazione Firebase Firestore (utilizza le tue credenziali esistenti del progetto)
     const firebaseConfig = {
       apiKey: "INSERISCI_TUA_API_KEY",
       authDomain: "tuo-progetto.firebaseapp.com",
@@ -563,19 +595,20 @@
       ],
       convocazioni: {
         "Giornata 1": ["Filippo Bertinazzi", "Mattia Caruso", "Mirko d'Elia", "Riccardo Grasso", "Andrea Insisa", "Jacopo Morselli", "Francesco Nicotra", "Lorenzo Perrone", "Daniel Prudenzano", "Gabriele Riccobene"],
-        "Giornata 2": ["Filippo Bertinazzi", "Mattia Caruso", "Riccardo Grasso", "Andrea Insisa", "Lorenzo Perrone", "Daniel Prudenzano", "Gabriele Riccobene", "Youness Rizki", "Nathan Sala", "Gabriele Stavola"],
-        "Giornata 3": ["Filippo Bertinazzi", "Mattia Caruso", "Mirko d'Elia", "Riccardo Grasso", "Andrea Insisa", "Jacopo Morselli", "Francesco Nicotra", "Mattia Oliverio", "Lorenzo Perrone", "Daniel Prudenzano", "Gabriele Riccobene", "Nathan Sala"]
+        "Giornata 2": ["Filippo Bertinazzi", "Mattia Caruso", "Riccardo Grasso", "Andrea Insisa", "Lorenzo Perrone", "Daniel Prudenzano", "Gabriele Riccobene", "Youness Rizki", "Nathan Sala", "Gabriele Stavola"]
+      },
+      disponibilita: {
+        "Giornata 3": { "Lorenzo Perrone": true, "Mattia Caruso": true, "Filippo Bertinazzi": false },
+        "Giornata 4": { "Lorenzo Perrone": true }
       }
     };
 
     let dbState = JSON.parse(JSON.stringify(defaultDbState));
     let currentNewsFilter = 'all';
 
-    // Sincronizzazione in tempo reale con Firebase Firestore
     function initRealtimeDatabase() {
       if (db) {
         const docRef = db.collection("asa_portal").doc("scoiattoli_data");
-        
         docRef.onSnapshot((doc) => {
           if (doc.exists) {
             dbState = doc.data();
@@ -743,7 +776,7 @@
 
       let htmlContent = "";
 
-      // Renderizza le recenti (fino a 3)
+      // Renderizza le recenti
       ultimeConcluse.forEach((item, idx) => {
         let etichettaTop = idx === 0 ? "Ultima Partita Giocata" : "Partita Recente";
         let cardWrapperClass = "bg-white border-2 border-slate-200 hover:border-[#0f2544]";
@@ -782,7 +815,7 @@
         `;
       });
 
-      // Renderizza le prossime (fino a 3)
+      // Renderizza le prossime
       prossimeTre.forEach((item, idx) => {
         const isRimandata = item.stato === 'rimandata';
         const isConfermata = idx === 0 && !isRimandata;
@@ -793,7 +826,7 @@
         let centralBoxClass = "bg-amber-100/70 border border-amber-200 text-amber-950";
         let centralLabel = "Prossima Gara • " + item.tipo.toUpperCase();
         let centralMainText = item.tipo === 'In Casa' ? `ASA Cinisello vs ${item.avversario}` : `${item.avversario} vs ASA Cinisello`;
-        let centralSubText = "Incontro Ufficiale";
+        let centralSubText = "Partita di campionato";
 
         if (isRimandata) {
           cardWrapperClass = "bg-sky-50/80 border-2 border-sky-400 shadow-sky-100";
@@ -808,15 +841,20 @@
           cardWrapperClass = "bg-emerald-50/70 border-2 border-emerald-400 shadow-emerald-100";
           badgeHTML = `
             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black bg-emerald-600 text-white uppercase tracking-widest shadow-xs">
-              <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> Confermata (${item.tipo})
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Confermata (${item.tipo})
             </span>`;
           centralBoxClass = "bg-emerald-100/70 border border-emerald-300 text-emerald-950";
         }
 
         const convocatiList = dbState.convocazioni[item.id] || [];
-        let buttonHTML = convocatiList.length > 0 
-          ? `<button onclick="openMatchModal('${item.id}')" class="w-full py-3 bg-slate-900 hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">CONVOCAZIONI UFFICIALI</button>`
-          : `<button disabled class="w-full py-3 bg-slate-200 text-slate-400 rounded-2xl text-xs font-extrabold uppercase tracking-wider cursor-not-allowed opacity-75">IN ATTESA CONVOCAZIONI</button>`;
+        let buttonHTML = "";
+        if (convocatiList.length > 0) {
+          buttonHTML = `<button onclick="openMatchModal('${item.id}')" class="w-full py-3 bg-slate-900 hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">CONVOCAZIONI UFFICIALI</button>`;
+        } else {
+          // Se non ci sono convocazioni ufficiali pubblicate dal coach, mostra il pulsante di disponibilità per le famiglie!
+          const dispCount = dbState.disponibilita && dbState.disponibilita[item.id] ? Object.values(dbState.disponibilita[item.id]).filter(Boolean).length : 0;
+          buttonHTML = `<button onclick="openAvailabilityModal('${item.id}')" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow flex items-center justify-center gap-2"><span>✋ Segna Disponibilità</span> <span class="bg-slate-950 text-amber-300 px-2 py-0.5 rounded-full text-[10px]">${dispCount} pronti</span></button>`;
+        }
 
         let extraClasses = "card-prossimi";
         if (idx === 0 || idx === 1) extraClasses += " card-panoramica";
@@ -848,6 +886,54 @@
 
       container.innerHTML = htmlContent;
       filterNews(currentNewsFilter);
+    }
+
+    function openAvailabilityModal(matchId) {
+      const match = dbState.partite.find(p => p.id === matchId);
+      if (!match) return;
+
+      document.getElementById('avail-modal-title').innerText = `Disponibilità Atleti — ${match.id} vs ${match.avversario}`;
+      document.getElementById('avail-match-id').value = matchId;
+
+      const grid = document.getElementById('avail-roster-grid');
+      if (!grid || !dbState.roster) return;
+
+      if (!dbState.disponibilita) dbState.disponibilita = {};
+      if (!dbState.disponibilita[matchId]) dbState.disponibilita[matchId] = {};
+
+      grid.innerHTML = dbState.roster.map(a => {
+        const isDisponibile = dbState.disponibilita[matchId][a.nome] === true;
+        const btnClass = isDisponibile 
+          ? "bg-emerald-50 border-emerald-400 text-emerald-950 font-black shadow-xs ring-2 ring-emerald-400/50" 
+          : "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100 font-bold";
+        const statusText = isDisponibile ? "✓ Disponibile" : "Assente / Non disponibile";
+        const statusColor = isDisponibile ? "text-emerald-700" : "text-slate-400";
+
+        return `
+          <div onclick="togglePlayerAvailability('${matchId}', '${a.nome.replace(/'/g, "\\'")}')" class="p-3.5 rounded-2xl border ${btnClass} cursor-pointer transition flex items-center justify-between select-none">
+            <div class="text-xs">${a.nome} <span class="text-slate-400 font-normal">(${a.numero})</span></div>
+            <span class="text-[11px] ${statusColor}">${statusText}</span>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('availability-modal').classList.remove('hidden');
+    }
+
+    function togglePlayerAvailability(matchId, playerName) {
+      if (!dbState.disponibilita) dbState.disponibilita = {};
+      if (!dbState.disponibilita[matchId]) dbState.disponibilita[matchId] = {};
+
+      const current = dbState.disponibilita[matchId][playerName] === true;
+      dbState.disponibilita[matchId][playerName] = !current;
+      
+      saveToDatabase('disponibilita');
+      openAvailabilityModal(matchId); // Ricarica modale al volo
+      renderNewsCards();
+    }
+
+    function closeAvailabilityModal() {
+      document.getElementById('availability-modal').classList.add('hidden');
     }
 
     function renderRosterMain() {
@@ -956,7 +1042,7 @@
         } else if (hasConvocati) {
           actionBtn = `<button onclick="openMatchModal('${p.id}')" class="px-4 py-1.5 bg-[#0f2544] hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition cursor-pointer shadow">Convocazioni Ufficiali</button>`;
         } else {
-          actionBtn = `<button disabled class="px-4 py-1.5 bg-slate-100 text-slate-400 rounded-xl text-xs font-bold cursor-not-allowed">In Attesa</button>`;
+          actionBtn = `<button onclick="openAvailabilityModal('${p.id}')" class="px-4 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl text-xs font-extrabold transition cursor-pointer shadow">✋ Segna Disponibilità</button>`;
         }
 
         return `
@@ -1137,9 +1223,12 @@
       const container = document.getElementById('coach-roster-checklist');
       if (!container || !dbState.roster) return;
       container.innerHTML = dbState.roster.map((a) => `
-        <label class="flex items-center gap-3 p-3 bg-slate-50 hover:bg-slate-100 rounded-2xl border border-slate-200 cursor-pointer transition select-none">
-          <input type="checkbox" value="${a.nome}" onchange="updateSelectedCounter()" class="coach-player-chk w-4 h-4 text-[#c8102e] rounded border-slate-300 focus:ring-[#c8102e]" />
-          <div class="text-xs font-bold text-slate-800">${a.nome} <span class="text-slate-400 font-normal">(${a.numero})</span></div>
+        <label class="flex items-center justify-between p-3 bg-slate-50 hover:bg-slate-100 rounded-2xl border border-slate-200 cursor-pointer transition select-none">
+          <div class="flex items-center gap-3">
+            <input type="checkbox" value="${a.nome}" onchange="updateSelectedCounter()" class="coach-player-chk w-4 h-4 text-[#c8102e] rounded border-slate-300 focus:ring-[#c8102e]" />
+            <div class="text-xs font-bold text-slate-800">${a.nome} <span class="text-slate-400 font-normal">(${a.numero})</span></div>
+          </div>
+          <span class="coach-avail-badge text-[10px] font-extrabold px-2 py-0.5 rounded-full" data-player="${a.nome}">-</span>
         </label>
       `).join('');
     }
@@ -1147,8 +1236,38 @@
     function loadMatchConvocazioni() {
       const matchId = document.getElementById('coach-match-selector').value;
       const convocatiMatch = dbState.convocazioni[matchId] || [];
+      const dispMap = dbState.disponibilita && dbState.disponibilita[matchId] ? dbState.disponibilita[matchId] : {};
+
+      let dispCount = 0;
       document.querySelectorAll('.coach-player-chk').forEach(chk => {
         chk.checked = convocatiMatch.includes(chk.value);
+      });
+
+      document.querySelectorAll('.coach-avail-badge').forEach(badge => {
+        const playerName = badge.getAttribute('data-player');
+        const isDisp = dispMap[playerName] === true;
+        if (isDisp) {
+          dispCount++;
+          badge.className = "coach-avail-badge text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900";
+          badge.innerText = "✓ Disponibile";
+        } else {
+          badge.className = "coach-avail-badge text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-slate-200 text-slate-600";
+          badge.innerText = "Non risponde / Assente";
+        }
+      });
+
+      document.getElementById('coach-disponibili-counter').innerText = `${dispCount} Atleti disponibili segnalati dalle famiglie`;
+      updateSelectedCounter();
+    }
+
+    function selectAvailablePlayers() {
+      const matchId = document.getElementById('coach-match-selector').value;
+      const dispMap = dbState.disponibilita && dbState.disponibilita[matchId] ? dbState.disponibilita[matchId] : {};
+
+      document.querySelectorAll('.coach-player-chk').forEach(chk => {
+        if (dispMap[chk.value] === true) {
+          chk.checked = true;
+        }
       });
       updateSelectedCounter();
     }
