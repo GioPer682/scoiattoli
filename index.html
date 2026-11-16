@@ -323,7 +323,6 @@
                 </div>
               </div>
 
-              <!-- GESTIONE TEMPINI IN AREA DIRIGENTE (AZZERATI + CALCOLO AUTOMATICO) -->
               <div id="regia-box-tempini-section" class="bg-white p-4 rounded-2xl border border-slate-200 space-y-4 hidden">
                 <div class="flex items-center justify-between flex-wrap gap-2">
                   <span class="text-xs font-extrabold text-[#0f2544] uppercase">Punteggi 6 Tempini (ASA - Avversario)</span>
@@ -778,7 +777,6 @@
 
       let htmlContent = "";
 
-      // 1. RECENTI TAB CARDS (CONCLUSA)
       if (concluse.length > 0) {
         [...concluse].reverse().forEach((item, idx) => {
           let etichettaTop = idx === 0 ? "Ultima Partita Giocata" : "Partita Recente";
@@ -1293,12 +1291,21 @@
 
     function loadMatchConvocazioni() {
       const matchId = document.getElementById('coach-match-selector').value;
-      const convocatiMatch = dbState.convocazioni[matchId] || [];
+      const convocatiMatch = dbState.convocazioni[matchId];
       const dispMap = dbState.disponibilita && dbState.disponibilita[matchId] ? dbState.disponibilita[matchId] : {};
 
       let dispCount = 0;
+      
+      // Controllo se ci sono convocazioni già salvate in precedenza per questa partita
+      const hasExistingConvocazioni = convocatiMatch !== undefined && convocatiMatch.length > 0;
+
       document.querySelectorAll('.coach-player-chk').forEach(chk => {
-        chk.checked = convocatiMatch.includes(chk.value);
+        if (hasExistingConvocazioni) {
+          chk.checked = convocatiMatch.includes(chk.value);
+        } else {
+          // SE NON SALVATE: Parte di base spuntando SOLO gli atleti segnalati come disponibili dalle famiglie!
+          chk.checked = dispMap[chk.value] === true;
+        }
       });
 
       document.querySelectorAll('.coach-avail-badge').forEach(badge => {
@@ -1434,7 +1441,6 @@
       document.getElementById('regia-f-stato').value = p.stato;
       document.getElementById('regia-f-nota').value = p.nota || "";
       
-      // Se ha già tempini salvati (es. partita già conclusa) li carica, altrimenti azzera tutto a 0
       buildRegiaTempiniInputs(p.tempini && p.tempini.length === 6 ? p.tempini : []);
       document.getElementById('btn-delete-match').classList.remove('hidden');
       toggleRegiaStateFields();
