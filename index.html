@@ -11,14 +11,13 @@
     .asa-red { background-color: #c8102e; }
     .text-asa-red { color: #c8102e; }
     
-    /* Parquet chiaro effetto legno per il campo da basket nel modale */
-    .parquet-court {
-      background-color: #f3e5ab;
-      background-image: 
-        linear-gradient(90deg, rgba(0,0,0,0.03) 50%, transparent 50%),
-        linear-gradient(rgba(255,255,255,0.1) 50%, transparent 50%);
-      background-size: 30px 100%, 100% 30px;
-      box-shadow: inset 0 0 20px rgba(0,0,0,0.15);
+    /* Sfondo stadio arena illuminato per il modale delle convocazioni */
+    .arena-court-bg {
+      background: 
+        linear-gradient(180deg, rgba(15, 37, 68, 0.45) 0%, rgba(15, 37, 68, 0.72) 100%),
+        url('arena-bg.jpg') center center / cover no-repeat;
+      box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.15);
     }
 
     /* Tipografia sportiva per il numero (Rosso con bordo Blu Navy) */
@@ -67,7 +66,7 @@
         
         <!-- NAVIGATION RESPONSIVE -->
         <nav class="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold flex-wrap pt-2 lg:pt-0 border-t border-white/10 lg:border-t-0">
-          <button onclick="switchNav('news')" id="nav-news" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition text-white hover:bg-white/10 cursor-pointer">News</button>
+          <button onclick="switchNav('news')" id="nav-news" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-white text-[#0f2544] font-bold shadow-md cursor-pointer">News</button>
           <button onclick="switchNav('squadra')" id="nav-squadra" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition text-white hover:bg-white/10 cursor-pointer">Squadra</button>
           <button onclick="switchNav('stagione')" id="nav-stagione" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition text-white hover:bg-white/10 cursor-pointer">Stagione</button>
           <button onclick="switchNav('coach')" id="nav-coach" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/40 shadow-sm cursor-pointer">Area Coach</button>
@@ -93,8 +92,8 @@
   <!-- MAIN APP CONTAINER -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 w-full flex-grow space-y-8 sm:space-y-10">
 
-    <!-- NEWS VIEW -->
-    <section id="view-news" class="space-y-6 sm:space-y-8 hidden">
+    <!-- NEWS VIEW (DEFAULT LANDING PAGE) -->
+    <section id="view-news" class="space-y-6 sm:space-y-8">
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-300 pb-5">
         <div>
           <span class="text-xs font-extrabold text-asa-red uppercase tracking-widest block mb-1">Stagione Ufficiale 2026/2027</span>
@@ -166,7 +165,7 @@
     </section>
 
     <!-- AREA COACH VIEW -->
-    <section id="view-coach" class="space-y-8">
+    <section id="view-coach" class="space-y-8 hidden">
       <div class="border-b border-slate-300 pb-4">
         <span class="text-xs font-extrabold text-amber-600 uppercase tracking-widest block mb-1">Accesso Riservato Allenatori & Dirigenti</span>
         <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#0f2544] tracking-tight uppercase">Area Coach / Convocazioni</h2>
@@ -236,7 +235,7 @@
       
       <div class="space-y-1 text-center">
         <span class="text-xs font-extrabold text-asa-red uppercase tracking-widest" id="modal-giornata">Giornata</span>
-        <h3 class="text-2xl font-black text-[#0f2544]" id="modal-title">Squadra avversaria</h3>
+        <h3 class="text-2xl font-black text-[#0f2544]" id="modal-title">ASA Cinisello vs Squadra avversaria</h3>
       </div>
 
       <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex items-center justify-between flex-wrap gap-4 text-center">
@@ -250,22 +249,19 @@
         </div>
       </div>
 
-      <!-- EFFETTO WOW: CAMPO DA BASKET IN PARQUET CON MAGLIE SCHIERATE -->
+      <!-- EFFETTO WOW: STADIO ARENA ILLUMINATO CON MAGLIE SCHIERATE -->
       <div class="space-y-3 pt-2">
         <div class="flex items-center justify-between">
           <h4 class="text-xs font-extrabold text-[#0f2544] uppercase tracking-wider flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full bg-[#c8102e] animate-pulse"></span>
-            Schieramento Convocati Ufficiali (Parquet)
+            Schieramento Convocati Ufficiali
           </h4>
           <span id="modal-convocati-count" class="text-xs font-black text-white bg-[#0f2544] px-3 py-1 rounded-full shadow-sm">0 convocati</span>
         </div>
 
-        <!-- CAMPO DA BASKET IN PARQUET CHIARO -->
-        <div id="parquet-court-container" class="parquet-court rounded-3xl border-4 border-[#0f2544]/20 p-6 relative overflow-hidden min-h-[320px] flex flex-col justify-center">
-          <!-- Linee del campo decorative (Aerea / Key e Arco) -->
-          <div class="absolute inset-y-0 left-1/2 -translate-x-1/2 w-48 border-x-2 border-dashed border-red-600/30 pointer-events-none"></div>
-          
-          <!-- Contenitore Griglia delle Mini-Maglie sul Parquet -->
+        <!-- CONTENITORE SFONDO STADIO ARENA -->
+        <div id="arena-court-container" class="arena-court-bg rounded-3xl border-4 border-[#0f2544]/20 p-6 relative overflow-hidden min-h-[360px] flex flex-col justify-center">
+          <!-- Contenitore Griglia delle Mini-Maglie sullo Stadio -->
           <div id="parquet-jerseys-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 relative z-10">
             <!-- Popolato via JS con ordinamento per numero di maglia -->
           </div>
@@ -320,6 +316,7 @@
     };
 
     window.addEventListener('DOMContentLoaded', () => {
+      switchNav('news');
       renderRosterMain();
       renderFullSchedule();
       renderNewsCards();
@@ -327,7 +324,8 @@
 
     function switchNav(navId) {
       ['news', 'squadra', 'stagione', 'coach'].forEach(id => {
-        document.getElementById('view-' + id).classList.add('hidden');
+        const viewEl = document.getElementById('view-' + id);
+        if (viewEl) viewEl.classList.add('hidden');
         const btn = document.getElementById('nav-' + id);
         if (btn) {
           btn.className = id === 'coach' 
@@ -336,7 +334,8 @@
         }
       });
 
-      document.getElementById('view-' + navId).classList.remove('hidden');
+      const activeView = document.getElementById('view-' + navId);
+      if (activeView) activeView.classList.remove('hidden');
       const activeBtn = document.getElementById('nav-' + navId);
       if (activeBtn) {
         activeBtn.className = navId === 'coach'
@@ -386,19 +385,23 @@
     function renderRosterMain() {
       const grid = document.getElementById('roster-grid-main');
       if (!grid) return;
-      grid.innerHTML = rosterAtleti.map((a, idx) => generateJerseySvgHtml(a, idx)).join('');
+      grid.innerHTML = rosterAtleti.map((a, idx) => generateJerseySvgHtml(a, idx, false)).join('');
     }
 
-    // Helper riutilizzabile per generare la canotta SVG sia nel roster che nel modale del campo
-    function generateJerseySvgHtml(a, idx) {
+    // Helper riutilizzabile per generare la canotta SVG
+    function generateJerseySvgHtml(a, idx, isModal = false) {
       const parts = a.nome.split(' ');
       const cognome = parts.slice(1).join(' ').toUpperCase();
       const nome = parts[0];
       const clipId = `jersey-clip-${idx}`;
       const patternId = `wings-pattern-${idx}`;
 
+      const cardClass = isModal 
+        ? "bg-white/92 backdrop-blur-md p-3 rounded-2xl border border-white/70 shadow-xl flex flex-col items-center justify-between group transform hover:-translate-y-1 transition-all duration-300"
+        : "bg-white/90 backdrop-blur-xs p-3 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col items-center justify-between group";
+
       return `
-        <div class="bg-white/90 backdrop-blur-xs p-3 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col items-center justify-between group">
+        <div class="${cardClass}">
           <div class="relative w-28 h-36 flex items-center justify-center mb-1 transform group-hover:scale-105 transition-transform duration-300">
             <svg viewBox="0 0 220 270" class="w-full h-full drop-shadow-md">
               <defs>
@@ -653,9 +656,9 @@
       alert(`Convocazioni salvate e pubblicate con successo per la ${matchId}! (${selected.length} atleti convocati)`);
     }
 
-    // APERTURA MODALE CON EFFETTO WOW (PARQUET E ORDINAMENTO PER NUMERO DI MAGLIA)
+    // APERTURA MODALE CON SFONDO ARENA E ORDINAMENTO PER NUMERO DI MAGLIA
     function openMatchModal(giornataId, opponent, score, info) {
-      document.getElementById('modal-title').innerText = opponent;
+      document.getElementById('modal-title').innerHTML = `ASA Cinisello <span class="text-[#c8102e] font-bold text-lg">vs</span> ${opponent}`;
       document.getElementById('modal-score').innerText = score !== 'Da disputare' ? 'Risultato: ' + score : 'In attesa di svolgimento';
       document.getElementById('modal-giornata').innerText = giornataId.toUpperCase();
       document.getElementById('modal-info').innerText = info;
@@ -673,9 +676,9 @@
 
       const gridContainer = document.getElementById('parquet-jerseys-grid');
       if (convocatiObj.length > 0) {
-        gridContainer.innerHTML = convocatiObj.map((a, idx) => generateJerseySvgHtml(a, idx + 100)).join('');
+        gridContainer.innerHTML = convocatiObj.map((a, idx) => generateJerseySvgHtml(a, idx + 100, true)).join('');
       } else {
-        gridContainer.innerHTML = `<div class="col-span-full text-center py-10 text-slate-600 font-bold bg-white/80 rounded-2xl">Convocazioni non ancora pubblicate dallo staff tecnico.</div>`;
+        gridContainer.innerHTML = `<div class="col-span-full text-center py-10 text-slate-200 font-bold bg-[#0f2544]/80 backdrop-blur-md rounded-2xl">Convocazioni non ancora pubblicate dallo staff tecnico.</div>`;
       }
 
       document.getElementById('match-modal').classList.remove('hidden');
