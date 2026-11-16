@@ -308,9 +308,18 @@
                     <option value="rimandata">🔵 Rimandata (Evidenzia in azzurro)</option>
                   </select>
                 </div>
-                <div id="regia-box-risultato">
-                  <label class="text-[11px] font-bold text-slate-600 uppercase block mb-1">Risultato Finale</label>
-                  <input type="text" id="regia-f-risultato" placeholder="es. 14 - 10" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-black text-emerald-800" />
+              </div>
+
+              <!-- GESTIONE TEMPINI IN AREA DIRIGENTE -->
+              <div id="regia-box-tempini-section" class="bg-white p-4 rounded-2xl border border-slate-200 space-y-3 hidden">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-extrabold text-[#0f2544] uppercase">Punteggi 6 Tempini (Casa - Ospite)</span>
+                  <span class="text-[10px] text-slate-400 font-bold">Calcolo automatico punti</span>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3" id="regia-tempini-inputs-grid"></div>
+                <div>
+                  <label class="text-[11px] font-bold text-slate-600 uppercase block mb-1">Canestri Totali Realizzati (es. 32 - 24)</label>
+                  <input type="text" id="regia-f-canestri" placeholder="es. 32 - 24" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-bold text-[#0f2544]" />
                 </div>
               </div>
 
@@ -537,6 +546,17 @@
       }
     };
 
+    function sortPartite() {
+      dbState.partite.sort((a, b) => {
+        const parseDate = (d) => {
+          if (!d || !d.includes('/')) return 0;
+          const p = d.split('/');
+          return parseInt(p[2] + p[1] + p[0], 10);
+        };
+        return parseDate(a.data) - parseDate(b.data);
+      });
+    }
+
     function syncToFirebase(collectionName) {
       console.log(`[Firebase Sync] Aggiornamento collection '${collectionName}' pronto per Firestore.`, dbState[collectionName]);
       const toast = document.getElementById('regia-toast');
@@ -547,11 +567,13 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+      sortPartite();
       switchNav('news');
       renderAllPublicViews();
     });
 
     function renderAllPublicViews() {
+      sortPartite();
       renderTicker();
       renderNewsCards();
       renderRosterMain();
@@ -829,6 +851,7 @@
     }
 
     function renderFullSchedule() {
+      sortPartite();
       const container = document.getElementById('full-schedule-container');
       if (!container) return;
       container.innerHTML = dbState.partite.map(p => {
@@ -1020,6 +1043,7 @@
     }
 
     function buildCoachMatchSelector() {
+      sortPartite();
       const select = document.getElementById('coach-match-selector');
       if (!select) return;
       select.innerHTML = dbState.partite.map(p => {
@@ -1109,6 +1133,7 @@
     }
 
     function renderRegiaMatchesList() {
+      sortPartite();
       const list = document.getElementById('regia-matches-list');
       if (!list) return;
       list.innerHTML = dbState.partite.map((p, idx) => {
@@ -1144,8 +1169,10 @@
       document.getElementById('regia-f-tipo').value = p.tipo || "In Casa";
       document.getElementById('regia-f-sede').value = p.sede;
       document.getElementById('regia-f-stato').value = p.stato;
-      document.getElementById('regia-f-risultato').value = p.risultato || "";
+      document.getElementById('regia-f-canestri').value = p.totaleCanestri || "";
       document.getElementById('regia-f-nota').value = p.nota || "";
+      
+      buildRegiaTempiniInputs(p.tempini || []);
       document.getElementById('btn-delete-match').classList.remove('hidden');
       toggleRegiaStateFields();
     }
@@ -1153,30 +1180,80 @@
     function prepareNewMatch() {
       document.getElementById('regia-form-mode').innerText = "Inserimento Nuova Partita";
       document.getElementById('regia-match-index').value = "-1";
-      document.getElementById('regia-f-id').value = `Giornata ${dbState.partite.length + 1}`;
+      document.getElementById('regia-f-id').value = `Gara ${dbState.partite.length + 1}`;
       document.getElementById('regia-f-avversario').value = "";
       document.getElementById('regia-f-data').value = "";
       document.getElementById('regia-f-ora').value = "15:30";
       document.getElementById('regia-f-tipo').value = "In Casa";
       document.getElementById('regia-f-sede').value = "Palestra BUCUM - Via Monte Ortigara 2";
       document.getElementById('regia-f-stato').value = "programmata";
-      document.getElementById('regia-f-risultato').value = "";
+      document.getElementById('regia-f-canestri').value = "";
       document.getElementById('regia-f-nota').value = "";
+      
+      buildRegiaTempiniInputs([
+        { t: 1, casa: 4, ospite: 4 },
+        { t: 2, casa: 4, ospite: 4 },
+        { t: 3, casa: 4, ospite: 4 },
+        { t: 4, casa: 4, ospite: 4 },
+        { t: 5, casa: 4, ospite: 4 },
+        { t: 6, casa: 4, ospite: 4 }
+      ]);
       document.getElementById('btn-delete-match').classList.add('hidden');
       toggleRegiaStateFields();
     }
 
+    function buildRegiaTempiniInputs(tempiniArr) {
+      const grid = document.getElementById('regia-tempini-inputs-grid');
+      if (!grid) return;
+      grid.innerHTML = "";
+      for (let i = 1; i <= 6; i++) {
+        const existing = tempiniArr.find(tp => tp.t === i) || { casa: 4, ospite: 4 };
+        grid.innerHTML += `
+          <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-center space-y-1">
+            <div class="text-[10px] font-black text-slate-500 uppercase">Tempino ${i}</div>
+            <div class="flex items-center justify-center gap-1.5">
+              <input type="number" id="regia-tp-casa-${i}" value="${existing.casa}" class="w-12 px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-black text-center text-[#0f2544]" />
+              <span class="text-xs font-bold text-slate-400">-</span>
+              <input type="number" id="regia-tp-ospite-${i}" value="${existing.ospite}" class="w-12 px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-black text-center text-[#0f2544]" />
+            </div>
+          </div>
+        `;
+      }
+    }
+
     function toggleRegiaStateFields() {
       const stato = document.getElementById('regia-f-stato').value;
-      const boxRis = document.getElementById('regia-box-risultato');
+      const boxTempini = document.getElementById('regia-box-tempini-section');
       const boxNota = document.getElementById('regia-box-nota');
 
-      boxRis.style.opacity = stato === 'conclusa' ? '1' : '0.45';
+      boxTempini.style.display = stato === 'conclusa' ? 'block' : 'none';
       boxNota.style.display = stato === 'rimandata' ? 'block' : 'none';
     }
 
     function saveMatchFromRegia() {
       const idx = parseInt(document.getElementById('regia-match-index').value);
+      const stato = document.getElementById('regia-f-stato').value;
+
+      let tempiniList = [];
+      let calculatedScore = "";
+      let totaleCanestri = document.getElementById('regia-f-canestri').value.trim();
+
+      if (stato === 'conclusa') {
+        let asaPts = 0;
+        let oppPts = 0;
+        for (let i = 1; i <= 6; i++) {
+          const c = parseInt(document.getElementById(`regia-tp-casa-${i}`).value) || 0;
+          const o = parseInt(document.getElementById(`regia-tp-ospite-${i}`).value) || 0;
+          let esito = "PAREGGIATO";
+          if (c > o) { esito = "VINTO"; asaPts += 3; oppPts += 1; }
+          else if (c < o) { esito = "PERSO"; asaPts += 1; oppPts += 3; }
+          else { asaPts += 2; oppPts += 2; }
+
+          tempiniList.push({ t: i, casa: c, ospite: o, esito: esito });
+        }
+        calculatedScore = `${asaPts} - ${oppPts}`;
+      }
+
       const matchObj = {
         id: document.getElementById('regia-f-id').value.trim() || "Gara",
         avversario: document.getElementById('regia-f-avversario').value.trim() || "Avversario",
@@ -1184,36 +1261,31 @@
         ora: document.getElementById('regia-f-ora').value.trim(),
         tipo: document.getElementById('regia-f-tipo').value,
         sede: document.getElementById('regia-f-sede').value.trim() || "Palestra BUCUM",
-        stato: document.getElementById('regia-f-stato').value,
-        risultato: document.getElementById('regia-f-risultato').value.trim(),
+        stato: stato,
+        risultato: calculatedScore,
         nota: document.getElementById('regia-f-nota').value.trim(),
-        tempini: dbState.partite[idx]?.tempini || [
-          { t: 1, casa: 4, ospite: 4, esito: "PAREGGIATO" },
-          { t: 2, casa: 4, ospite: 4, esito: "PAREGGIATO" },
-          { t: 3, casa: 4, ospite: 4, esito: "PAREGGIATO" },
-          { t: 4, casa: 4, ospite: 4, esito: "PAREGGIATO" },
-          { t: 5, casa: 4, ospite: 4, esito: "PAREGGIATO" },
-          { t: 6, casa: 4, ospite: 4, esito: "PAREGGIATO" }
-        ],
-        totaleCanestri: dbState.partite[idx]?.totaleCanestri || "24 - 24"
+        tempini: tempiniList,
+        totaleCanestri: totaleCanestri
       };
 
       if (idx === -1) {
         dbState.partite.push(matchObj);
-        selectMatchInRegia(dbState.partite.length - 1);
       } else {
         dbState.partite[idx] = matchObj;
       }
 
+      sortPartite();
       syncToFirebase('partite');
       renderRegiaMatchesList();
       renderAllPublicViews();
+      alert("Partita salvata e calendario riordinato cronologicamente con successo!");
     }
 
     function deleteCurrentMatch() {
       const idx = parseInt(document.getElementById('regia-match-index').value);
       if (idx >= 0 && confirm("Confermi l'eliminazione di questa gara dal calendario?")) {
         dbState.partite.splice(idx, 1);
+        sortPartite();
         syncToFirebase('partite');
         renderRegiaMatchesList();
         renderAllPublicViews();
