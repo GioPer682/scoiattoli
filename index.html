@@ -386,7 +386,7 @@
       grid.innerHTML = rosterAtleti.map((a, idx) => generateJerseySvgHtml(a, idx, false)).join('');
     }
 
-    // Helper per generare la canotta (con nome allineato e concordante, senza #numero in basso)
+    // Helper per generare la canotta (nomi completi visibili senza troncamenti, altezza coordinata)
     function generateJerseySvgHtml(a, idx, isModal = false) {
       const parts = a.nome.split(' ');
       const cognome = parts.slice(1).join(' ').toUpperCase();
@@ -451,9 +451,9 @@
                     fill="none" stroke="#cbd5e1" stroke-width="2" />
             </svg>
           </div>
-          <!-- Etichetta inferiore uniforme, allineata e concordante senza numero -->
-          <div class="text-center border-t border-slate-200/60 pt-2 w-full">
-            <div class="font-extrabold text-xs text-[#0f2544] truncate">${nome} ${cognome}</div>
+          <!-- Etichetta inferiore uniforme con nome completo su due righe se lungo, senza troncamenti -->
+          <div class="text-center border-t border-slate-200/60 pt-2 w-full min-h-[42px] flex items-center justify-center">
+            <div class="font-extrabold text-[11px] sm:text-xs text-[#0f2544] leading-tight px-1">${nome} ${cognome}</div>
           </div>
         </div>
       `;
