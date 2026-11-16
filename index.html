@@ -57,7 +57,7 @@
               <span class="text-lg sm:text-2xl md:text-3xl font-black tracking-wider text-white">ASA BASKET CINISELLO</span>
               <span class="asa-red text-white text-[9px] sm:text-[11px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-widest shadow-sm">SCOIATTOLI 2018/2019</span>
               <span class="inline-flex items-center gap-1.5 bg-emerald-950 text-emerald-400 text-[10px] sm:text-xs font-bold px-2.5 py-0.5 sm:py-1 rounded-full border border-emerald-800">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> FIRESTORE SYNC
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> On Line
               </span>
             </div>
             <p class="text-xs sm:text-sm text-slate-300 font-medium mt-1 tracking-wide">Palestra BUCUM • Via Monte Ortigara 2, Cinisello Balsamo</p>
@@ -68,7 +68,6 @@
           <button onclick="switchNav('news')" id="nav-news" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-white text-[#0f2544] font-bold shadow-md cursor-pointer">News</button>
           <button onclick="switchNav('squadra')" id="nav-squadra" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition text-white hover:bg-white/10 cursor-pointer">Squadra</button>
           <button onclick="switchNav('stagione')" id="nav-stagione" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition text-white hover:bg-white/10 cursor-pointer">Stagione</button>
-          <div class="h-5 w-px bg-white/20 mx-0.5 hidden sm:block"></div>
           <button onclick="switchNav('coach')" id="nav-coach" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/40 shadow-sm cursor-pointer">Area Coach</button>
         </nav>
       </div>
@@ -94,8 +93,8 @@
         
         <div class="flex items-center gap-1 bg-slate-200/80 p-1.5 rounded-2xl overflow-x-auto">
           <button onclick="filterNews('all')" id="tab-all" class="px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-bold bg-[#0f2544] text-white shadow transition cursor-pointer whitespace-nowrap">Panoramica</button>
-          <button onclick="filterNews('recenti')" id="tab-recenti" class="px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap">Recenti (Ultime 3)</button>
-          <button onclick="filterNews('prossimi')" id="tab-prossimi" class="px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap">Prossimi (Prossime 3)</button>
+          <button onclick="filterNews('recenti')" id="tab-recenti" class="px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap">Recenti</button>
+          <button onclick="filterNews('prossimi')" id="tab-prossimi" class="px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap">Prossimi</button>
         </div>
       </div>
 
@@ -570,6 +569,7 @@
     };
 
     let dbState = JSON.parse(JSON.stringify(defaultDbState));
+    let currentNewsFilter = 'all';
 
     // Sincronizzazione in tempo reale con Firebase Firestore
     function initRealtimeDatabase() {
@@ -701,26 +701,26 @@
     }
 
     function filterNews(type) {
+      currentNewsFilter = type;
       ['all', 'recenti', 'prossimi'].forEach(t => {
         const btn = document.getElementById('tab-' + t);
-        btn.className = t === type
-          ? "px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-bold bg-[#0f2544] text-white shadow transition cursor-pointer whitespace-nowrap"
-          : "px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap";
+        if (btn) {
+          btn.className = t === type
+            ? "px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-bold bg-[#0f2544] text-white shadow transition cursor-pointer whitespace-nowrap"
+            : "px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap";
+        }
       });
 
-      const cardsRecent = document.querySelectorAll('.card-recenti');
-      const cardsProssimi = document.querySelectorAll('.card-prossimi');
-
-      if (type === 'all') {
-        cardsRecent.forEach(c => c.style.display = 'flex');
-        cardsProssimi.forEach(c => c.style.display = 'flex');
-      } else if (type === 'recenti') {
-        cardsRecent.forEach(c => c.style.display = 'flex');
-        cardsProssimi.forEach(c => c.style.display = 'none');
-      } else if (type === 'prossimi') {
-        cardsRecent.forEach(c => c.style.display = 'none');
-        cardsProssimi.forEach(c => c.style.display = 'flex');
-      }
+      const allCards = document.querySelectorAll('.news-card');
+      allCards.forEach(card => {
+        if (type === 'all') {
+          card.style.display = card.classList.contains('card-panoramica') ? 'flex' : 'none';
+        } else if (type === 'recenti') {
+          card.style.display = card.classList.contains('card-recenti') ? 'flex' : 'none';
+        } else if (type === 'prossimi') {
+          card.style.display = card.classList.contains('card-prossimi') ? 'flex' : 'none';
+        }
+      });
     }
 
     function switchSquadraTab(tab) {
@@ -737,16 +737,13 @@
       if (!container || !dbState.partite) return;
 
       const concluse = dbState.partite.filter(p => p.stato === 'conclusa');
-      // Prendi le ultime 3 concluse (in ordine inverso rispetto alla cronologia per avere le più recenti per prime)
       const ultimeConcluse = concluse.slice(-3).reverse();
-
       const prossime = dbState.partite.filter(p => p.stato !== 'conclusa');
-      // Prendi le prossime 3 da giocare
       const prossimeTre = prossime.slice(0, 3);
 
       let htmlContent = "";
 
-      // Renderizza le partite recenti (fino a 3)
+      // Renderizza le recenti (fino a 3)
       ultimeConcluse.forEach((item, idx) => {
         let etichettaTop = idx === 0 ? "Ultima Partita Giocata" : "Partita Recente";
         let cardWrapperClass = "bg-white border-2 border-slate-200 hover:border-[#0f2544]";
@@ -757,8 +754,11 @@
         let centralSubText = item.tipo === 'In Casa' ? `ASA Cinisello vs ${item.avversario}` : `${item.avversario} vs ASA Cinisello`;
         let buttonHTML = `<button onclick="openMatchModal('${item.id}')" class="w-full py-3 bg-[#0f2544] hover:bg-slate-800 text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">DETTAGLI & STATISTICHE</button>`;
 
+        let extraClasses = "card-recenti";
+        if (idx === 0) extraClasses += " card-panoramica";
+
         htmlContent += `
-          <div class="news-card card-recenti ${cardWrapperClass} rounded-3xl p-6 sm:p-7 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group relative overflow-hidden">
+          <div class="news-card ${extraClasses} ${cardWrapperClass} rounded-3xl p-6 sm:p-7 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group relative overflow-hidden">
             <div class="space-y-4">
               <div class="flex items-center justify-between border-b border-slate-200/60 pb-3">
                 <span class="text-xs font-extrabold text-slate-700 uppercase tracking-wider">${etichettaTop}</span>
@@ -782,7 +782,7 @@
         `;
       });
 
-      // Renderizza le prossime partite (fino a 3)
+      // Renderizza le prossime (fino a 3)
       prossimeTre.forEach((item, idx) => {
         const isRimandata = item.stato === 'rimandata';
         const isConfermata = idx === 0 && !isRimandata;
@@ -818,8 +818,11 @@
           ? `<button onclick="openMatchModal('${item.id}')" class="w-full py-3 bg-slate-900 hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">CONVOCAZIONI UFFICIALI</button>`
           : `<button disabled class="w-full py-3 bg-slate-200 text-slate-400 rounded-2xl text-xs font-extrabold uppercase tracking-wider cursor-not-allowed opacity-75">IN ATTESA CONVOCAZIONI</button>`;
 
+        let extraClasses = "card-prossimi";
+        if (idx === 0 || idx === 1) extraClasses += " card-panoramica";
+
         htmlContent += `
-          <div class="news-card card-prossimi ${cardWrapperClass} rounded-3xl p-6 sm:p-7 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group relative overflow-hidden">
+          <div class="news-card ${extraClasses} ${cardWrapperClass} rounded-3xl p-6 sm:p-7 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group relative overflow-hidden">
             <div class="space-y-4">
               <div class="flex items-center justify-between border-b border-slate-200/60 pb-3">
                 <span class="text-xs font-extrabold text-slate-700 uppercase tracking-wider">${etichettaTop}</span>
@@ -844,6 +847,7 @@
       });
 
       container.innerHTML = htmlContent;
+      filterNews(currentNewsFilter);
     }
 
     function renderRosterMain() {
@@ -1205,7 +1209,6 @@
 
       renderRegiaMatchesList();
       if (dbState.partite && dbState.partite.length > 0) {
-        // Selezione intelligente: seleziona la prima partita programmata/rimandata, o l'ultima conclusa
         const target = dbState.partite.find(p => p.stato !== 'conclusa') || dbState.partite[dbState.partite.length - 1];
         selectMatchInRegia(target.id);
       }
