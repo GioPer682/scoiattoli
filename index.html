@@ -11,27 +11,11 @@
     .asa-red { background-color: #c8102e; }
     .text-asa-red { color: #c8102e; }
     
-    /* Stile "Modern Arena" NBA Style in puro CSS */
+    /* Sfondo arena con sfumatura verticale dolce dal basso verso l'alto */
     .arena-court-bg {
-      background-color: #050b14;
-      background-image: 
-        radial-gradient(circle at 50% 50%, rgba(200, 16, 46, 0.22) 0%, rgba(15, 37, 68, 0.5) 45%, rgba(5, 11, 20, 0.95) 85%);
-      box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.95), 0 15px 35px rgba(0, 0, 0, 0.5);
-      border: 2px solid rgba(200, 16, 46, 0.5);
-    }
-
-    /* Cerchio di centrocampo stilizzato dell'arena */
-    .arena-court-bg::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 380px;
-      height: 380px;
-      border: 3px solid rgba(255, 255, 255, 0.08);
-      border-radius: 50%;
-      pointer-events: none;
+      background: linear-gradient(to top, #0f2544 0%, #1e3a6f 100%);
+      box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.15);
     }
 
     /* Tipografia sportiva per il numero (Rosso con bordo Blu Navy) */
@@ -242,7 +226,7 @@
     </div>
   </footer>
 
-  <!-- MODAL FOR MATCH DETAILS & WOW-EFFECT CONVOCAZIONI -->
+  <!-- MODAL FOR MATCH DETAILS & CONVOCAZIONI -->
   <div id="match-modal" class="fixed inset-0 bg-slate-950/70 z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-4xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-200 relative max-h-[92vh] overflow-y-auto">
       <button onclick="closeMatchModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-700 font-extrabold text-lg cursor-pointer">✕</button>
@@ -263,19 +247,19 @@
         </div>
       </div>
 
-      <!-- EFFETTO WOW: MODERN ARENA STYLE CON MAGLIE SCHIERATE -->
+      <!-- CONVOCAZIONI UFFICIALI -->
       <div class="space-y-3 pt-2">
         <div class="flex items-center justify-between">
           <h4 class="text-xs font-extrabold text-[#0f2544] uppercase tracking-wider flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full bg-[#c8102e] animate-pulse"></span>
-            Schieramento Convocati Ufficiali
+            Convocazioni Ufficiali
           </h4>
           <span id="modal-convocati-count" class="text-xs font-black text-white bg-[#0f2544] px-3 py-1 rounded-full shadow-sm">0 convocati</span>
         </div>
 
-        <!-- CONTENITORE MODERN ARENA CSS -->
+        <!-- CONTENITORE SFONDO ARENA CON SFUMATURA DOLCE -->
         <div id="arena-court-container" class="arena-court-bg rounded-3xl p-6 relative overflow-hidden min-h-[360px] flex flex-col justify-center">
-          <!-- Contenitore Griglia delle Mini-Maglie sul campo -->
+          <!-- Griglia delle Mini-Maglie -->
           <div id="parquet-jerseys-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 relative z-10">
             <!-- Popolato via JS con ordinamento per numero di maglia -->
           </div>
@@ -402,7 +386,7 @@
       grid.innerHTML = rosterAtleti.map((a, idx) => generateJerseySvgHtml(a, idx, false)).join('');
     }
 
-    // Helper riutilizzabile per generare la canotta SVG
+    // Helper per generare la canotta (con nome allineato e concordante, senza #numero in basso)
     function generateJerseySvgHtml(a, idx, isModal = false) {
       const parts = a.nome.split(' ');
       const cognome = parts.slice(1).join(' ').toUpperCase();
@@ -467,9 +451,9 @@
                     fill="none" stroke="#cbd5e1" stroke-width="2" />
             </svg>
           </div>
-          <div class="text-center border-t border-slate-200/60 pt-1.5 w-full">
-            <div class="font-extrabold text-[11px] text-slate-800 truncate">${nome}</div>
-            <div class="font-black text-xs text-[#0f2544]">${cognome} <span class="text-asa-red font-bold">#${a.numero}</span></div>
+          <!-- Etichetta inferiore uniforme, allineata e concordante senza numero -->
+          <div class="text-center border-t border-slate-200/60 pt-2 w-full">
+            <div class="font-extrabold text-xs text-[#0f2544] truncate">${nome} ${cognome}</div>
           </div>
         </div>
       `;
@@ -670,7 +654,7 @@
       alert(`Convocazioni salvate e pubblicate con successo per la ${matchId}! (${selected.length} atleti convocati)`);
     }
 
-    // APERTURA MODALE CON MODERNA ARENA E ORDINAMENTO PER NUMERO DI MAGLIA
+    // APERTURA MODALE CON CONVOCAZIONI E ORDINAMENTO PER NUMERO DI MAGLIA
     function openMatchModal(giornataId, opponent, score, info) {
       document.getElementById('modal-title').innerHTML = `ASA Cinisello <span class="text-[#c8102e] font-bold text-lg">vs</span> ${opponent}`;
       document.getElementById('modal-score').innerText = score !== 'Da disputare' ? 'Risultato: ' + score : 'In attesa di svolgimento';
