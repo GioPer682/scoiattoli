@@ -45,7 +45,7 @@
 
   <!-- TOP WRAPPER (TESTATA + TICKER) -->
   <div>
-    <!-- TOP HEADER RESPONSIVE -->
+    <!-- TOP HEADER RESPONSIVE (PULITO PER I VISITATORI) -->
     <header class="asa-navy text-white shadow-2xl sticky top-0 z-50 border-b border-white/10">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 sm:gap-6">
         <div class="flex items-center gap-3 sm:gap-5">
@@ -65,14 +65,13 @@
           </div>
         </div>
         
-        <!-- NAVIGATION RESPONSIVE (CON AREA COACH E REGIA SEPARATE) -->
+        <!-- NAVIGATION RESPONSIVE (SOLO SEZIONI PUBBLICHE + AREA COACH) -->
         <nav class="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold flex-wrap pt-2 lg:pt-0 border-t border-white/10 lg:border-t-0">
           <button onclick="switchNav('news')" id="nav-news" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-white text-[#0f2544] font-bold shadow-md cursor-pointer">News</button>
           <button onclick="switchNav('squadra')" id="nav-squadra" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition text-white hover:bg-white/10 cursor-pointer">Squadra</button>
           <button onclick="switchNav('stagione')" id="nav-stagione" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition text-white hover:bg-white/10 cursor-pointer">Stagione</button>
           <div class="h-5 w-px bg-white/20 mx-0.5 hidden sm:block"></div>
           <button onclick="switchNav('coach')" id="nav-coach" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/40 shadow-sm cursor-pointer">Area Coach</button>
-          <button onclick="switchNav('dirigente')" id="nav-dirigente" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-slate-800 hover:bg-slate-700 text-sky-300 border border-sky-500/40 shadow-sm cursor-pointer">Regia</button>
         </nav>
       </div>
     </header>
@@ -163,7 +162,7 @@
       <div class="space-y-4" id="full-schedule-container"></div>
     </section>
 
-    <!-- AREA COACH VIEW (DEDICATA SOLO ALLE CONVOCAZIONI) -->
+    <!-- AREA COACH VIEW (SOLO CONVOCAZIONI) -->
     <section id="view-coach" class="space-y-8 hidden">
       <div class="border-b border-slate-300 pb-4">
         <span class="text-xs font-extrabold text-amber-600 uppercase tracking-widest block mb-1">Accesso Riservato Allenatori</span>
@@ -216,66 +215,63 @@
       </div>
     </section>
 
-    <!-- CABINA DI REGIA / AREA DIRIGENTE (COMPLETAMENTE INDIPENDENTE) -->
+    <!-- AREA DIRIGENTE (CABINA DI REGIA RISERVATA NEL FOOTER) -->
     <section id="view-dirigente" class="space-y-8 hidden">
-      <div class="border-b border-slate-300 pb-4">
-        <span class="text-xs font-extrabold text-sky-600 uppercase tracking-widest block mb-1">Amministrazione & Controllo Dati</span>
-        <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#0f2544] tracking-tight uppercase">Cabina di Regia — Dirigente</h2>
+      <div class="border-b border-slate-300 pb-4 flex items-center justify-between">
+        <div>
+          <span class="text-xs font-extrabold text-slate-600 uppercase tracking-widest block mb-1">Amministrazione & Controllo Dati</span>
+          <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#0f2544] tracking-tight uppercase">Area Dirigente — Cabina di Regia</h2>
+        </div>
+        <button onclick="switchNav('news')" class="text-xs font-bold text-slate-500 hover:text-[#0f2544] transition cursor-pointer underline">← Torna al Sito Pubblico</button>
       </div>
 
-      <!-- LOGIN REGIA -->
+      <!-- LOGIN AREA DIRIGENTE -->
       <div id="dirigente-login-container" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 max-w-xl shadow-sm space-y-5">
-        <h3 class="font-extrabold text-lg text-[#0f2544]">Accesso Cabina di Regia</h3>
-        <p class="text-xs text-slate-600">Inserisci la password amministrativa (Default di prova: <code class="bg-slate-100 px-2 py-0.5 rounded font-bold text-sky-700">dirigente2026</code>) per gestire calendario, risultati, rinvii, barra scorrevole e roster.</p>
-        <input type="password" id="dirigente-pass" placeholder="Password regia..." class="w-full px-4.5 py-3 border border-slate-300 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-600" />
+        <h3 class="font-extrabold text-lg text-[#0f2544]">Accesso Riservato Dirigenza</h3>
+        <p class="text-xs text-slate-600">Inserisci la password amministrativa (Default di prova: <code class="bg-slate-100 px-2 py-0.5 rounded font-bold text-slate-900">dirigente2026</code>) per gestire calendario, risultati, rinvii, barra scorrevole e roster.</p>
+        <input type="password" id="dirigente-pass" placeholder="Password dirigente..." class="w-full px-4.5 py-3 border border-slate-300 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-800" />
         <button onclick="verifyDirigenteLogin()" class="w-full py-3.5 bg-[#0f2544] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider hover:bg-slate-800 transition cursor-pointer shadow">
-          Entra in Regia
+          Entra in Area Dirigente
         </button>
       </div>
 
-      <!-- DASHBOARD REGIA -->
+      <!-- DASHBOARD AREA DIRIGENTE -->
       <div id="dirigente-dashboard-container" class="space-y-6 hidden">
-        <!-- Barra Stato Regia & Navigation Tab -->
-        <div class="bg-sky-50 border border-sky-200 rounded-2xl p-4 flex items-center justify-between flex-wrap gap-4">
+        <div class="bg-slate-900 text-white rounded-2xl p-4 flex items-center justify-between flex-wrap gap-4">
           <div class="flex items-center gap-3">
-            <span class="w-3 h-3 rounded-full bg-sky-600 animate-pulse"></span>
-            <span class="text-xs font-extrabold text-sky-950 uppercase">Cabina di Regia Attiva • Sincronizzazione Pronto-DB</span>
+            <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-xs font-extrabold uppercase tracking-wider">Area Dirigente Attiva • Connesso al DB</span>
           </div>
           <div class="flex items-center gap-3">
-            <span id="regia-toast" class="text-xs font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full hidden">✓ Salvato sul Database</span>
-            <button onclick="dirigenteLogout()" class="text-xs font-bold text-slate-600 hover:text-red-600 transition cursor-pointer underline">Esci dalla Regia</button>
+            <span id="regia-toast" class="text-xs font-bold text-emerald-300 bg-emerald-950 px-3 py-1 rounded-full border border-emerald-800 hidden">✓ Modifiche Salvate</span>
+            <button onclick="dirigenteLogout()" class="text-xs font-bold text-slate-300 hover:text-white transition cursor-pointer underline">Chiudi Sessione</button>
           </div>
         </div>
 
-        <!-- SELETTORE SEZIONI REGIA -->
         <div class="flex items-center gap-2 bg-slate-200/80 p-1.5 rounded-2xl overflow-x-auto">
           <button onclick="switchRegiaTab('partite')" id="regia-tab-partite" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-[#0f2544] text-white shadow transition cursor-pointer whitespace-nowrap">1. Calendario, Risultati & Rinvii</button>
           <button onclick="switchRegiaTab('ticker')" id="regia-tab-ticker" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap">2. Barra Avvisi (Ticker)</button>
           <button onclick="switchRegiaTab('roster')" id="regia-tab-roster" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap">3. Roster & Numeri Maglia</button>
         </div>
 
-        <!-- TAB 1 REGIA: GESTIONE PARTITE, RISULTATI E RINVII -->
+        <!-- TAB 1 REGIA: PARTITE -->
         <div id="regia-content-partite" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
             <div>
               <h3 class="text-lg font-black text-[#0f2544]">Gestione Incontri</h3>
               <p class="text-xs text-slate-500">Seleziona una giornata per modificarla, inserire il risultato o segnarla come <strong>Rimandata</strong>.</p>
             </div>
-            <button onclick="prepareNewMatch()" class="px-4 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider transition cursor-pointer shadow-sm">
+            <button onclick="prepareNewMatch()" class="px-4 py-2.5 bg-[#0f2544] hover:bg-slate-800 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider transition cursor-pointer shadow-sm">
               + Nuova Partita
             </button>
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Colonna Sinistra: Elenco Partite Cliccabili -->
-            <div class="space-y-2 max-h-[500px] overflow-y-auto pr-1" id="regia-matches-list">
-              <!-- Popolato da JS -->
-            </div>
+            <div class="space-y-2 max-h-[500px] overflow-y-auto pr-1" id="regia-matches-list"></div>
 
-            <!-- Colonna Destra: Form di Modifica Rapida -->
             <div class="lg:col-span-2 bg-slate-50 p-5 sm:p-6 rounded-2xl border border-slate-200 space-y-4">
               <div class="flex items-center justify-between">
-                <span class="text-xs font-extrabold text-sky-700 uppercase tracking-wider" id="regia-form-mode">Modifica Partita Selezionata</span>
+                <span class="text-xs font-extrabold text-slate-700 uppercase tracking-wider" id="regia-form-mode">Modifica Partita Selezionata</span>
                 <button onclick="deleteCurrentMatch()" id="btn-delete-match" class="text-xs font-bold text-red-600 hover:underline cursor-pointer">Elimina gara</button>
               </div>
 
@@ -315,14 +311,13 @@
                 <input type="text" id="regia-f-sede" placeholder="es. Palestra BUCUM - Via Monte Ortigara 2" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm" />
               </div>
 
-              <!-- STATO GARA E RISULTATO -->
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-200">
                 <div>
                   <label class="text-[11px] font-bold text-slate-600 uppercase block mb-1">Stato Incontro</label>
                   <select id="regia-f-stato" onchange="toggleRegiaStateFields()" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-extrabold text-[#0f2544]">
                     <option value="programmata">🟢 Programmata (Da giocare)</option>
                     <option value="conclusa">🏁 Conclusa (Con risultato)</option>
-                    <option value="rimandata">🔵 Rimandata (Evidenzia in blu)</option>
+                    <option value="rimandata">🔵 Rimandata (Evidenzia in azzurro)</option>
                   </select>
                 </div>
                 <div id="regia-box-risultato">
@@ -337,7 +332,7 @@
               </div>
 
               <div class="pt-2">
-                <button onclick="saveMatchFromRegia()" class="w-full py-3.5 bg-[#0f2544] hover:bg-sky-900 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider transition cursor-pointer shadow-md">
+                <button onclick="saveMatchFromRegia()" class="w-full py-3.5 bg-[#0f2544] hover:bg-slate-800 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider transition cursor-pointer shadow-md">
                   Salva Modifiche Partita su DB
                 </button>
               </div>
@@ -345,7 +340,7 @@
           </div>
         </div>
 
-        <!-- TAB 2 REGIA: GESTIONE BARRA SCORREVOLE (TICKER) -->
+        <!-- TAB 2 REGIA: TICKER -->
         <div id="regia-content-ticker" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-5 hidden">
           <div>
             <h3 class="text-lg font-black text-[#0f2544]">Barra Avvisi Scorrevole (Fascia Rossa)</h3>
@@ -369,7 +364,7 @@
           </div>
         </div>
 
-        <!-- TAB 3 REGIA: GESTIONE ROSTER & NUMERI DI MAGLIA -->
+        <!-- TAB 3 REGIA: ROSTER -->
         <div id="regia-content-roster" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6 hidden">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
             <div>
@@ -378,7 +373,6 @@
             </div>
           </div>
 
-          <!-- Form Aggiungi Nuovo Atleta -->
           <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col sm:flex-row gap-3 items-end">
             <div class="flex-1 w-full">
               <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Nome e Cognome Nuovo Atleta</label>
@@ -393,21 +387,25 @@
             </button>
           </div>
 
-          <!-- Lista Editabile Giocatori -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3" id="regia-roster-editor">
-            <!-- Popolato da JS -->
-          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3" id="regia-roster-editor"></div>
         </div>
       </div>
     </section>
 
   </main>
 
-  <!-- FOOTER -->
+  <!-- FOOTER (CON ACCESSO DISCRETO AREA DIRIGENTE) -->
   <footer class="asa-navy text-white text-xs py-8 text-center mt-16 border-t border-slate-800">
-    <div class="max-w-7xl mx-auto px-6 space-y-2">
+    <div class="max-w-7xl mx-auto px-6 space-y-3">
       <p class="font-bold tracking-wider">ASA Basket Cinisello • Settore Minibasket • Scoiattoli 2018/2019</p>
       <p class="text-slate-400">Palestra BUCUM • Via Monte Ortigara 2, Cinisello Balsamo (MI)</p>
+      <div class="pt-3 border-t border-slate-800/80 flex items-center justify-center gap-4 text-slate-500 text-[11px]">
+        <span>Portale Ufficiale Scoiattoli</span>
+        <span>•</span>
+        <button onclick="switchNav('dirigente')" class="hover:text-slate-300 transition cursor-pointer flex items-center gap-1 font-semibold">
+          ⚙️ Area Dirigente
+        </button>
+      </div>
     </div>
   </footer>
 
@@ -456,9 +454,6 @@
 
   <!-- SCRIPT -->
   <script>
-    // =========================================================================
-    // STATO CENTRALIZZATO (PRONTO PER SINCRONIZZAZIONE CON FIREBASE FIRESTORE)
-    // =========================================================================
     const dbState = {
       ticker: {
         attivo: true,
@@ -495,7 +490,7 @@
           ora: "15:30",
           avversario: "Pallacanestro Cinisello", 
           tipo: "In Casa",
-          stato: "conclusa", // 'programmata' | 'conclusa' | 'rimandata'
+          stato: "conclusa", 
           risultato: "14 - 18", 
           sede: "Palestra BUCUM - Via Monte Ortigara 2",
           nota: ""
@@ -552,7 +547,6 @@
       }
     };
 
-    // Hook pronto per inviare i dati a Firestore quando collegheremo l'SDK
     function syncToFirebase(collectionName) {
       console.log(`[Firebase Sync] Aggiornamento collection '${collectionName}' pronto per Firestore.`, dbState[collectionName]);
       const toast = document.getElementById('regia-toast');
@@ -562,9 +556,6 @@
       }
     }
 
-    // =========================================================================
-    // INIZIALIZZAZIONE UI PUBBLICA
-    // =========================================================================
     window.addEventListener('DOMContentLoaded', () => {
       switchNav('news');
       renderAllPublicViews();
@@ -605,8 +596,6 @@
         if (btn) {
           if (id === 'coach') {
             btn.className = "px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/40 shadow-sm cursor-pointer";
-          } else if (id === 'dirigente') {
-            btn.className = "px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-slate-800 hover:bg-slate-700 text-sky-300 border border-sky-500/40 shadow-sm cursor-pointer";
           } else {
             btn.className = "px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition text-white hover:bg-white/10 cursor-pointer";
           }
@@ -619,9 +608,7 @@
       if (activeBtn) {
         if (navId === 'coach') {
           activeBtn.className = "px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-amber-400 text-slate-900 font-extrabold shadow cursor-pointer";
-        } else if (navId === 'dirigente') {
-          activeBtn.className = "px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-sky-400 text-slate-950 font-extrabold shadow cursor-pointer";
-        } else {
+        } else if (navId !== 'dirigente') {
           activeBtn.className = "px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-white text-[#0f2544] font-bold shadow-md cursor-pointer";
         }
       }
@@ -629,6 +616,7 @@
       if (navId === 'squadra') renderRosterMain();
       if (navId === 'stagione') renderFullSchedule();
       if (navId === 'news') renderNewsCards();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function filterNews(type) {
@@ -664,32 +652,43 @@
     }
 
     // =========================================================================
-    // RENDERING DINAMICO NEWS (CON SUPPORTO STATO "RIMANDATA" IN BLU)
+    // RENDERING NEWS CON CODICI COLORE (CONCLUSA, RIMANDATA, CONFERMATA, FUTURA)
     // =========================================================================
     function renderNewsCards() {
       const container = document.getElementById('news-cards-container');
       if (!container) return;
 
-      // Pesca automaticamente l'ultima partita conclusa e le prime due non ancora concluse (programmata o rimandata)
       const concluse = dbState.partite.filter(p => p.stato === 'conclusa');
       const ultimaConclusa = concluse.length > 0 ? concluse[concluse.length - 1] : null;
-      const prossime = dbState.partite.filter(p => p.stato !== 'conclusa').slice(0, 2);
+      const prossime = dbState.partite.filter(p => p.stato !== 'conclusa');
 
       const cardsToDisplay = [];
-      if (ultimaConclusa) cardsToDisplay.push({ ...ultimaConclusa, role: 'ultima' });
-      prossime.forEach((p, idx) => cardsToDisplay.push({ ...p, role: idx === 0 ? 'prossima' : 'successiva' }));
+      if (ultimaConclusa) cardsToDisplay.push({ ...ultimaConclusa, cardRole: 'conclusa' });
+      
+      // Prende fino a 2 prossime assegnando i ruoli per il codice colore
+      prossime.slice(0, 2).forEach((p, idx) => {
+        if (p.stato === 'rimandata') {
+          cardsToDisplay.push({ ...p, cardRole: 'rimandata' });
+        } else if (idx === 0) {
+          cardsToDisplay.push({ ...p, cardRole: 'confermata' }); // Verde Tenue (Prossima imminente)
+        } else {
+          cardsToDisplay.push({ ...p, cardRole: 'futura' }); // Giallo/Ambra Tenue (Successiva)
+        }
+      });
 
       container.innerHTML = cardsToDisplay.map(item => {
-        const isConclusa = item.stato === 'conclusa';
-        const isRimandata = item.stato === 'rimandata';
+        const isConclusa = item.cardRole === 'conclusa';
+        const isRimandata = item.cardRole === 'rimandata';
+        const isConfermata = item.cardRole === 'confermata';
+        const isFutura = item.cardRole === 'futura';
         const tipoCard = isConclusa ? 'card-recenti' : 'card-prossimi';
 
-        // Etichetta superiore
         let etichettaTop = "In Programma";
         if (isConclusa) etichettaTop = "Ultima Partita";
-        else if (item.role === 'prossima') etichettaTop = "Prossimo Incontro";
+        else if (isConfermata) etichettaTop = "Prossimo Incontro";
+        else if (isFutura) etichettaTop = "In Agenda";
 
-        // Stile Card e Badge in base allo stato (inclusa velatura blu per RIMANDATA)
+        // Colori dedicati in base alle 4 categorie concordate
         let cardWrapperClass = "bg-white border-2 border-slate-200 hover:border-[#0f2544]";
         let badgeHTML = "";
         let centralBoxClass = "bg-slate-50 border border-slate-200 group-hover:bg-[#0f2544] group-hover:text-white";
@@ -699,11 +698,10 @@
           : (item.tipo === 'In Casa' ? `ASA Cinisello vs ${item.avversario}` : `${item.avversario} vs ASA Cinisello`);
         let centralSubText = isConclusa 
           ? (item.tipo === 'In Casa' ? `ASA Cinisello vs ${item.avversario}` : `${item.avversario} vs ASA Cinisello`)
-          : "Incontro Confermato";
+          : "Incontro Ufficiale";
 
         if (isRimandata) {
-          // Stile dedicato con velatura azzurra e pallino blu
-          cardWrapperClass = "bg-sky-50/75 border-2 border-sky-400 shadow-sky-100";
+          cardWrapperClass = "bg-sky-50/80 border-2 border-sky-400 shadow-sky-100";
           badgeHTML = `
             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black bg-sky-600 text-white uppercase tracking-widest shadow-xs">
               <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> Rimandata
@@ -711,13 +709,23 @@
           centralBoxClass = "bg-sky-100/80 border border-sky-300 text-sky-950";
           centralLabel = "Avviso Gara Rimandata";
           centralSubText = item.nota ? item.nota : "Nuova data in fase di definizione";
+        } else if (isConfermata) {
+          cardWrapperClass = "bg-emerald-50/70 border-2 border-emerald-400 shadow-emerald-100";
+          badgeHTML = `
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black bg-emerald-600 text-white uppercase tracking-widest shadow-xs">
+              <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> Confermata (${item.tipo})
+            </span>`;
+          centralBoxClass = "bg-emerald-100/70 border border-emerald-300 text-emerald-950";
+          centralLabel = "Prossima Gara • " + item.tipo.toUpperCase();
+        } else if (isFutura) {
+          cardWrapperClass = "bg-amber-50/70 border-2 border-amber-300 shadow-amber-50";
+          badgeHTML = `
+            <span class="px-3 py-1 rounded-full text-[10px] font-black bg-amber-500 text-white uppercase tracking-widest shadow-xs">
+              Programmata (${item.tipo})
+            </span>`;
+          centralBoxClass = "bg-amber-100/70 border border-amber-200 text-amber-950";
         } else if (isConclusa) {
           badgeHTML = `<span class="px-3 py-1 rounded-full text-[10px] font-black bg-slate-100 text-slate-700 uppercase tracking-widest">Conclusa</span>`;
-        } else {
-          const luogoClass = item.tipo === 'In Casa' 
-            ? "bg-blue-50 text-blue-900 border border-blue-200" 
-            : "bg-purple-50 text-purple-900 border border-purple-200";
-          badgeHTML = `<span class="px-3 py-1 rounded-full text-[10px] font-black ${luogoClass} uppercase tracking-widest">${item.tipo}</span>`;
         }
 
         const convocatiList = dbState.convocazioni[item.id] || [];
@@ -730,19 +738,19 @@
         return `
           <div class="news-card ${tipoCard} ${cardWrapperClass} rounded-3xl p-6 sm:p-7 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group relative overflow-hidden">
             <div class="space-y-4">
-              <div class="flex items-center justify-between border-b ${isRimandata ? 'border-sky-200' : 'border-slate-100'} pb-3">
-                <span class="text-xs font-extrabold ${isRimandata ? 'text-sky-800' : 'text-asa-red'} uppercase tracking-wider">${etichettaTop}</span>
+              <div class="flex items-center justify-between border-b border-slate-200/60 pb-3">
+                <span class="text-xs font-extrabold text-slate-700 uppercase tracking-wider">${etichettaTop}</span>
                 ${badgeHTML}
               </div>
               <div>
-                <span class="text-xs font-bold ${isRimandata ? 'text-sky-700' : 'text-slate-400'}">${item.data}${item.ora ? ' • Ore ' + item.ora : ''}</span>
+                <span class="text-xs font-bold text-slate-500">${item.data}${item.ora ? ' • Ore ' + item.ora : ''}</span>
                 <h3 class="text-xl font-black text-[#0f2544] tracking-tight mt-0.5">${item.id}</h3>
                 <p class="text-xs text-slate-600 mt-1">${item.sede}</p>
               </div>
               <div class="${centralBoxClass} rounded-2xl p-5 text-center space-y-2 transition-colors duration-300">
-                <div class="text-[10px] font-black uppercase tracking-widest ${isRimandata ? 'text-sky-700' : 'text-slate-400 group-hover:text-slate-300'}">${centralLabel}</div>
-                <div class="${isConclusa ? 'text-4xl font-black tracking-tighter' : 'text-xl font-black tracking-tight'} text-[#0f2544] ${!isRimandata ? 'group-hover:text-white' : ''}">${centralMainText}</div>
-                <div class="text-xs font-bold ${isRimandata ? 'text-sky-900' : 'text-slate-700 group-hover:text-slate-200'}">${centralSubText}</div>
+                <div class="text-[10px] font-black uppercase tracking-widest text-slate-600">${centralLabel}</div>
+                <div class="${isConclusa ? 'text-4xl font-black tracking-tighter' : 'text-xl font-black tracking-tight'} text-[#0f2544]">${centralMainText}</div>
+                <div class="text-xs font-bold text-slate-700">${centralSubText}</div>
               </div>
             </div>
             <div class="pt-6">
@@ -844,17 +852,21 @@
         const isRimandata = p.stato === 'rimandata';
         const isConclusa = p.stato === 'conclusa';
 
-        let statusBadge = `<span class="px-4 py-1.5 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-amber-100 text-amber-900">Da disputare</span>`;
+        let statusBadge = `<span class="px-4 py-1.5 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-amber-100 text-amber-900">Programmata</span>`;
         if (isConclusa) {
           statusBadge = `<span class="px-4 py-1.5 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-emerald-100 text-emerald-900">Finale: ${p.risultato || 'Conclusa'}</span>`;
         } else if (isRimandata) {
           statusBadge = `<span class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-sky-600 text-white"><span class="w-2 h-2 rounded-full bg-white"></span> Rimandata</span>`;
         }
 
+        let rowClass = "bg-white border-slate-200";
+        if (isRimandata) rowClass = "bg-sky-50/70 border-sky-300";
+        else if (isConclusa) rowClass = "bg-slate-50 border-slate-200";
+
         return `
-          <div class="${isRimandata ? 'bg-sky-50/70 border-sky-300' : 'bg-white border-slate-200'} p-6 rounded-3xl border shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="${rowClass} p-6 rounded-3xl border shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
-              <span class="text-xs font-extrabold ${isRimandata ? 'text-sky-700' : 'text-asa-red'} uppercase tracking-wider">${p.id} • ${p.data}${p.ora ? ' (' + p.ora + ')' : ''} • ${p.tipo}</span>
+              <span class="text-xs font-extrabold ${isRimandata ? 'text-sky-700' : 'text-slate-600'} uppercase tracking-wider">${p.id} • ${p.data}${p.ora ? ' (' + p.ora + ')' : ''} • ${p.tipo}</span>
               <h4 class="text-lg font-black text-[#0f2544]">ASA Cinisello vs ${p.avversario}</h4>
               <p class="text-xs text-slate-600">Sede: ${p.sede}</p>
               ${isRimandata && p.nota ? `<p class="text-xs font-bold text-sky-800 mt-1">ℹ️ ${p.nota}</p>` : ''}
@@ -872,7 +884,7 @@
     }
 
     // =========================================================================
-    // MODALE CONVOCAZIONI UFFICIALI
+    // MODALE CONVOCAZIONI
     // =========================================================================
     function openMatchModal(giornataId) {
       const match = dbState.partite.find(p => p.id === giornataId);
@@ -909,7 +921,7 @@
     }
 
     // =========================================================================
-    // SEZIONE 1: AREA COACH (SOLO CONVOCAZIONI)
+    // AREA COACH (SOLO CONVOCAZIONI)
     // =========================================================================
     function verifyCoachLogin() {
       const pass = document.getElementById('coach-pass').value;
@@ -934,7 +946,7 @@
       const select = document.getElementById('coach-match-selector');
       if (!select) return;
       select.innerHTML = dbState.partite.map(p => {
-        let tag = "📅 [PROSSIMA]";
+        let tag = "📅 [PROGRAMMATA]";
         if (p.stato === 'conclusa') tag = "📂 [CONCLUSA]";
         else if (p.stato === 'rimandata') tag = "🔵 [RIMANDATA]";
         return `<option value="${p.id}">${tag} ${p.id} (${p.data}) vs ${p.avversario}</option>`;
@@ -983,7 +995,7 @@
     }
 
     // =========================================================================
-    // SEZIONE 2: CABINA DI REGIA / DIRIGENTE (INDIPENDENTE)
+    // AREA DIRIGENTE (CABINA DI REGIA NEL FOOTER)
     // =========================================================================
     function verifyDirigenteLogin() {
       const pass = document.getElementById('dirigente-pass').value;
@@ -992,7 +1004,7 @@
         document.getElementById('dirigente-dashboard-container').classList.remove('hidden');
         initRegiaDashboard();
       } else {
-        alert("Password regia non valida.");
+        alert("Password area dirigente non valida.");
       }
     }
 
@@ -1012,17 +1024,13 @@
     }
 
     function initRegiaDashboard() {
-      // Popola tab Ticker
       document.getElementById('regia-ticker-active').checked = dbState.ticker.attivo;
       document.getElementById('regia-ticker-text').value = dbState.ticker.testo;
 
-      // Popola tab Partite
       renderRegiaMatchesList();
       if (dbState.partite.length > 0) {
         selectMatchInRegia(0);
       }
-
-      // Popola tab Roster
       renderRegiaRosterEditor();
     }
 
@@ -1030,12 +1038,12 @@
       const list = document.getElementById('regia-matches-list');
       if (!list) return;
       list.innerHTML = dbState.partite.map((p, idx) => {
-        let dotColor = "bg-emerald-500";
-        if (p.stato === 'conclusa') dotColor = "bg-slate-400";
+        let dotColor = "bg-amber-500";
+        if (p.stato === 'conclusa') dotColor = "bg-emerald-500";
         if (p.stato === 'rimandata') dotColor = "bg-sky-500";
 
         return `
-          <div onclick="selectMatchInRegia(${idx})" class="p-3.5 rounded-2xl border border-slate-200 hover:border-sky-500 bg-slate-50 hover:bg-sky-50/50 cursor-pointer transition flex items-center justify-between gap-2">
+          <div onclick="selectMatchInRegia(${idx})" class="p-3.5 rounded-2xl border border-slate-200 hover:border-[#0f2544] bg-slate-50 hover:bg-slate-100 cursor-pointer transition flex items-center justify-between gap-2">
             <div>
               <div class="flex items-center gap-2">
                 <span class="w-2.5 h-2.5 rounded-full ${dotColor}"></span>
