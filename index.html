@@ -11,16 +11,27 @@
     .asa-red { background-color: #c8102e; }
     .text-asa-red { color: #c8102e; }
     
-    /* Autentico Parquet in legno chiaro stile palazzetto in puro CSS */
+    /* Stile "Modern Arena" NBA Style in puro CSS */
     .arena-court-bg {
-      background-color: #d6b27d;
+      background-color: #050b14;
       background-image: 
-        linear-gradient(90deg, rgba(0, 0, 0, 0.07) 50%, transparent 50%),
-        linear-gradient(0deg, rgba(255, 255, 255, 0.18) 50%, transparent 50%),
-        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.35) 0%, rgba(0, 0, 0, 0.2) 100%);
-      background-size: 70px 100%, 100% 35px, 100% 100%;
-      box-shadow: inset 0 0 45px rgba(0, 0, 0, 0.3);
-      border: 3px solid #0f2544;
+        radial-gradient(circle at 50% 50%, rgba(200, 16, 46, 0.22) 0%, rgba(15, 37, 68, 0.5) 45%, rgba(5, 11, 20, 0.95) 85%);
+      box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.95), 0 15px 35px rgba(0, 0, 0, 0.5);
+      border: 2px solid rgba(200, 16, 46, 0.5);
+    }
+
+    /* Cerchio di centrocampo stilizzato dell'arena */
+    .arena-court-bg::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 380px;
+      height: 380px;
+      border: 3px solid rgba(255, 255, 255, 0.08);
+      border-radius: 50%;
+      pointer-events: none;
     }
 
     /* Tipografia sportiva per il numero (Rosso con bordo Blu Navy) */
@@ -252,7 +263,7 @@
         </div>
       </div>
 
-      <!-- EFFETTO WOW: PARQUET IN LEGNO CHIARO CON MAGLIE SCHIERATE -->
+      <!-- EFFETTO WOW: MODERN ARENA STYLE CON MAGLIE SCHIERATE -->
       <div class="space-y-3 pt-2">
         <div class="flex items-center justify-between">
           <h4 class="text-xs font-extrabold text-[#0f2544] uppercase tracking-wider flex items-center gap-2">
@@ -262,9 +273,9 @@
           <span id="modal-convocati-count" class="text-xs font-black text-white bg-[#0f2544] px-3 py-1 rounded-full shadow-sm">0 convocati</span>
         </div>
 
-        <!-- CONTENITORE PARQUET CSS -->
+        <!-- CONTENITORE MODERN ARENA CSS -->
         <div id="arena-court-container" class="arena-court-bg rounded-3xl p-6 relative overflow-hidden min-h-[360px] flex flex-col justify-center">
-          <!-- Contenitore Griglia delle Mini-Maglie sul Parquet -->
+          <!-- Contenitore Griglia delle Mini-Maglie sul campo -->
           <div id="parquet-jerseys-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 relative z-10">
             <!-- Popolato via JS con ordinamento per numero di maglia -->
           </div>
@@ -659,7 +670,7 @@
       alert(`Convocazioni salvate e pubblicate con successo per la ${matchId}! (${selected.length} atleti convocati)`);
     }
 
-    // APERTURA MODALE CON PARQUET E ORDINAMENTO PER NUMERO DI MAGLIA
+    // APERTURA MODALE CON MODERNA ARENA E ORDINAMENTO PER NUMERO DI MAGLIA
     function openMatchModal(giornataId, opponent, score, info) {
       document.getElementById('modal-title').innerHTML = `ASA Cinisello <span class="text-[#c8102e] font-bold text-lg">vs</span> ${opponent}`;
       document.getElementById('modal-score').innerText = score !== 'Da disputare' ? 'Risultato: ' + score : 'In attesa di svolgimento';
