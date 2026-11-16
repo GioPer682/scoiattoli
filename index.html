@@ -310,7 +310,7 @@
                 </div>
                 <div id="regia-box-risultato">
                   <label class="text-[11px] font-bold text-slate-600 uppercase block mb-1">Risultato Finale</label>
-                  <input type="text" id="regia-f-risultato" placeholder="es. 14 - 10 (Punti)" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-black text-emerald-800" />
+                  <input type="text" id="regia-f-risultato" placeholder="es. 14 - 10" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-black text-emerald-800" />
                 </div>
               </div>
 
@@ -407,7 +407,7 @@
 
       <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex items-center justify-between flex-wrap gap-4 text-center">
         <div>
-          <div class="text-[10px] font-bold text-slate-400 uppercase">Esito / Risultato</div>
+          <div class="text-[10px] font-bold text-slate-400 uppercase">Risultato</div>
           <div class="text-base font-black text-[#0f2544]" id="modal-score">Da disputare</div>
         </div>
         <div class="text-right">
@@ -463,7 +463,7 @@
           avversario: "Pallacanestro Cinisello", 
           tipo: "In Casa",
           stato: "conclusa", 
-          risultato: "14 - 10 (Punti)", 
+          risultato: "14 - 10", 
           sede: "Palestra BUCUM - Via Monte Ortigara 2",
           nota: "",
           tempini: [
@@ -483,7 +483,7 @@
           avversario: "Sesto Basket", 
           tipo: "Trasferta",
           stato: "conclusa", 
-          risultato: "10 - 14 (Punti)", 
+          risultato: "10 - 14", 
           sede: "Palestra Comunale - Via Marx, Sesto S.G.",
           nota: "",
           tempini: [
@@ -676,8 +676,8 @@
 
         let cardWrapperClass = "bg-white border-2 border-slate-200 hover:border-[#0f2544]";
         let badgeHTML = "";
-        let centralBoxClass = "bg-slate-50 border border-slate-200 group-hover:bg-[#0f2544] group-hover:text-white";
-        let centralLabel = isConclusa ? "Risultato Finale (Punti Tempini)" : "Gara Ufficiale";
+        let centralBoxClass = "bg-slate-50 border border-slate-200 transition-colors";
+        let centralLabel = isConclusa ? "Full Time" : "Gara Ufficiale";
         let centralMainText = isConclusa 
           ? (item.risultato || "Conclusa") 
           : (item.tipo === 'In Casa' ? `ASA Cinisello vs ${item.avversario}` : `${item.avversario} vs ASA Cinisello`);
@@ -715,7 +715,7 @@
 
         let buttonHTML = "";
         if (isConclusa) {
-          buttonHTML = `<button onclick="openMatchModal('${item.id}')" class="w-full py-3 bg-[#0f2544] hover:bg-slate-800 text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">📊 DETTAGLI & STATISTICHE</button>`;
+          buttonHTML = `<button onclick="openMatchModal('${item.id}')" class="w-full py-3 bg-[#0f2544] hover:bg-slate-800 text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">DETTAGLI & STATISTICHE</button>`;
         } else {
           const convocatiList = dbState.convocazioni[item.id] || [];
           buttonHTML = convocatiList.length > 0 
@@ -735,8 +735,8 @@
                 <h3 class="text-xl font-black text-[#0f2544] tracking-tight mt-0.5">${item.id}</h3>
                 <p class="text-xs text-slate-600 mt-1">${item.sede}</p>
               </div>
-              <div class="${centralBoxClass} rounded-2xl p-5 text-center space-y-2 transition-colors duration-300">
-                <div class="text-[10px] font-black uppercase tracking-widest text-slate-600">${centralLabel}</div>
+              <div class="${centralBoxClass} rounded-2xl p-5 text-center space-y-2">
+                <div class="text-[10px] font-black uppercase tracking-widest text-slate-500">${centralLabel}</div>
                 <div class="${isConclusa ? 'text-3xl font-black tracking-tighter' : 'text-xl font-black tracking-tight'} text-[#0f2544]">${centralMainText}</div>
                 <div class="text-xs font-bold text-slate-700">${centralSubText}</div>
               </div>
@@ -892,7 +892,7 @@
             <div class="flex items-center justify-between flex-wrap gap-2">
               <h4 class="text-xs font-extrabold text-[#0f2544] uppercase tracking-wider flex items-center gap-2">
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                Andamento dei 6 Tempini (Regolamento Minibasket)
+                Andamento dei 6 Tempini
               </h4>
               <span class="text-[11px] font-bold text-slate-500">Vittoria = 3pt • Pareggio = 2pt • Sconfitta = 1pt</span>
             </div>
@@ -922,7 +922,7 @@
 
             <div class="bg-blue-50/80 p-4 rounded-2xl border border-blue-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
               <div>
-                <div class="text-[10px] font-black text-blue-900 uppercase">Riepilogo Punti Classifica Tempini</div>
+                <div class="text-[10px] font-black text-blue-900 uppercase">PERSO - VINTO - PAREGGIATO</div>
                 <div class="text-sm font-black text-[#0f2544]">ASA Cinisello <span class="text-[#c8102e]">${match.risultato}</span> vs ${match.avversario}</div>
               </div>
               <div class="text-right">
@@ -1080,7 +1080,6 @@
     function dirigenteLogout() {
       document.getElementById('dirigente-pass').value = "";
       document.getElementById('dirigente-dashboard-container').classList.add('hidden');
-      document.getElementById('dirigente-login-container').classList.add('hidden');
       document.getElementById('dirigente-login-container').classList.remove('hidden');
     }
 
