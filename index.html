@@ -527,19 +527,10 @@
           ora: "15:30",
           avversario: "Pallacanestro Cinisello", 
           tipo: "In Casa",
-          stato: "conclusa", 
-          risultato: "14 - 10", 
+          stato: "programmata", 
+          risultato: "", 
           sede: "Palestra BUCUM - Via Monte Ortigara 2",
-          nota: "",
-          tempini: [
-            { t: 1, casa: 6, ospite: 4, esito: "VINTO" },
-            { t: 2, casa: 4, ospite: 4, esito: "PAREGGIATO" },
-            { t: 3, casa: 8, ospite: 2, esito: "VINTO" },
-            { t: 4, casa: 3, ospite: 5, esito: "PERSO" },
-            { t: 5, casa: 6, ospite: 6, esito: "PAREGGIATO" },
-            { t: 6, casa: 5, ospite: 3, esito: "VINTO" }
-          ],
-          totaleCanestri: "32 - 24"
+          nota: ""
         },
         { 
           id: "Giornata 2", 
@@ -547,19 +538,10 @@
           ora: "16:00",
           avversario: "Sesto Basket", 
           tipo: "Trasferta",
-          stato: "conclusa", 
-          risultato: "11 - 13", 
+          stato: "programmata", 
+          risultato: "", 
           sede: "Palestra Comunale - Via Marx, Sesto S.G.",
-          nota: "",
-          tempini: [
-            { t: 1, casa: 4, ospite: 6, esito: "PERSO" },
-            { t: 2, casa: 2, ospite: 6, esito: "PERSO" },
-            { t: 3, casa: 6, ospite: 4, esito: "VINTO" },
-            { t: 4, casa: 4, ospite: 4, esito: "PAREGGIATO" },
-            { t: 5, casa: 3, ospite: 7, esito: "PERSO" },
-            { t: 6, casa: 8, ospite: 2, esito: "VINTO" }
-          ],
-          totaleCanestri: "27 - 29"
+          nota: ""
         },
         { 
           id: "Giornata 3", 
@@ -595,14 +577,8 @@
           nota: ""
         }
       ],
-      convocazioni: {
-        "Giornata 1": ["Filippo Bertinazzi", "Mattia Caruso", "Mirko d'Elia", "Riccardo Grasso", "Andrea Insisa", "Jacopo Morselli", "Francesco Nicotra", "Lorenzo Perrone", "Daniel Prudenzano", "Gabriele Riccobene"],
-        "Giornata 2": ["Filippo Bertinazzi", "Mattia Caruso", "Riccardo Grasso", "Andrea Insisa", "Lorenzo Perrone", "Daniel Prudenzano", "Gabriele Riccobene", "Youness Rizki", "Nathan Sala", "Gabriele Stavola"]
-      },
-      disponibilita: {
-        "Giornata 3": { "Lorenzo Perrone": true, "Mattia Caruso": true, "Filippo Bertinazzi": false },
-        "Giornata 4": { "Lorenzo Perrone": true }
-      }
+      convocazioni: {},
+      disponibilita: {}
     };
 
     let dbState = JSON.parse(JSON.stringify(defaultDbState));
@@ -771,34 +747,30 @@
       const container = document.getElementById('news-cards-container');
       if (!container || !dbState.partite) return;
 
-      const today = new Date(2026, 10, 16); // 16 Nov 2026
-      today.setHours(0, 0, 0, 0);
-
-      function parseDateObj(dateStr) {
-        if (!dateStr || !dateStr.includes('/')) return new Date(0);
-        const [d, m, y] = dateStr.split('/').map(Number);
-        return new Date(y, m - 1, d);
-      }
-
       const concluse = dbState.partite.filter(p => p.stato === 'conclusa');
-      const nonConcluse = dbState.partite.filter(p => p.stato !== 'conclusa');
-      nonConcluse.sort((a, b) => parseDateObj(a.data) - parseDateObj(b.data));
-
-      // Seleziona in automatico il prossimo incontro effettivo (data >= oggi, oppure il primo in agenda)
-      let prossimoMatch = nonConcluse.find(p => parseDateObj(p.data) >= today) || nonConcluse[0];
+      const attive = dbState.partite.filter(p => p.stato !== 'conclusa');
+      
+      attive.sort((a, b) => {
+        const parseDate = (d) => {
+          if (!d || !d.includes('/')) return 0;
+          const p = d.split('/');
+          return parseInt(p[2] + p[1] + p[0], 10);
+        };
+        return parseDate(a.data) - parseDate(b.data);
+      });
 
       let htmlContent = "";
 
-      // 1. CARDS RECENTI (per tab Recenti)
+      // 1. RECENTI TAB CARDS
       if (concluse.length > 0) {
         const ultimeConcluse = [...concluse].reverse().slice(0, 3);
         ultimeConcluse.forEach((item, idx) => {
           let etichettaTop = idx === 0 ? "Ultima Partita Giocata" : "Partita Recente";
-          let extraClasses = "card-recenti";
-          if (idx === 0) extraClasses += " card-panoramica";
+          let classes = "card-recenti";
+          if (idx === 0) classes += " card-panoramica"; // La primissima conclusa appare anche in panoramica
 
           htmlContent += `
-            <div class="news-card ${extraClasses} bg-white border-2 border-slate-200 hover:border-[#0f2544] rounded-3xl p-6 sm:p-7 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group relative overflow-hidden">
+            <div class="news-card ${classes} bg-white border-2 border-slate-200 hover:border-[#0f2544] rounded-3xl p-6 sm:p-7 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group relative overflow-hidden">
               <div class="space-y-4">
                 <div class="flex items-center justify-between border-b border-slate-200/60 pb-3">
                   <span class="text-xs font-extrabold text-slate-700 uppercase tracking-wider">${etichettaTop}</span>
@@ -833,67 +805,8 @@
         `;
       }
 
-      // 2. PROSSIMO INCONTRO (In evidenza)
-      if (prossimoMatch) {
-        const isRimandata = prossimoMatch.stato === 'rimandata';
-        let cardWrapperClass = "bg-emerald-50/70 border-2 border-emerald-400 shadow-emerald-100";
-        let badgeHTML = `
-          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black bg-emerald-600 text-white uppercase tracking-widest shadow-xs">
-            <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> Confermata (${prossimoMatch.tipo})
-          </span>`;
-        let centralBoxClass = "bg-emerald-100/70 border border-emerald-300 text-emerald-950";
-        let centralLabel = "Prossima Gara • " + prossimoMatch.tipo.toUpperCase();
-        let centralMainText = prossimoMatch.tipo === 'In Casa' ? `ASA Cinisello vs ${prossimoMatch.avversario}` : `${prossimoMatch.avversario} vs ASA Cinisello`;
-        let centralSubText = "Partita di campionato";
-
-        if (isRimandata) {
-          cardWrapperClass = "bg-sky-50/80 border-2 border-sky-400 shadow-sky-100";
-          badgeHTML = `
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black bg-sky-600 text-white uppercase tracking-widest shadow-xs">
-              <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> Rimandata
-            </span>`;
-          centralBoxClass = "bg-sky-100/80 border border-sky-300 text-sky-950";
-          centralLabel = "Avviso Gara Rimandata";
-          centralSubText = prossimoMatch.nota ? prossimoMatch.nota : "Nuova data in fase di definizione";
-        }
-
-        const convocatiList = dbState.convocazioni[prossimoMatch.id] || [];
-        let buttonHTML = "";
-        if (convocatiList.length > 0 && !isRimandata) {
-          buttonHTML = `<button onclick="openMatchModal('${prossimoMatch.id}')" class="w-full py-3 bg-slate-900 hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">CONVOCAZIONI UFFICIALI</button>`;
-        } else {
-          const dispCount = dbState.disponibilita && dbState.disponibilita[prossimoMatch.id] ? Object.values(dbState.disponibilita[prossimoMatch.id]).filter(Boolean).length : 0;
-          buttonHTML = `<button onclick="openAvailabilityModal('${prossimoMatch.id}')" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow flex items-center justify-between px-5"><span>CONFERMA DISPONIBILITÀ</span> <span class="bg-slate-950 text-amber-300 px-2.5 py-0.5 rounded-full text-[10px] font-bold">${dispCount} disponibili</span></button>`;
-        }
-
-        htmlContent += `
-          <div class="news-card card-prossimi card-panoramica ${cardWrapperClass} rounded-3xl p-6 sm:p-7 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group relative overflow-hidden">
-            <div class="space-y-4">
-              <div class="flex items-center justify-between border-b border-slate-200/60 pb-3">
-                <span class="text-xs font-extrabold text-slate-700 uppercase tracking-wider">Prossimo Incontro</span>
-                ${badgeHTML}
-              </div>
-              <div>
-                <span class="text-xs font-bold text-slate-500">${prossimoMatch.data}${prossimoMatch.ora ? ' • Ore ' + prossimoMatch.ora : ''}</span>
-                <h3 class="text-xl font-black text-[#0f2544] tracking-tight mt-0.5">${prossimoMatch.id}</h3>
-                <p class="text-xs text-slate-600 mt-1">${prossimoMatch.sede}</p>
-              </div>
-              <div class="${centralBoxClass} rounded-2xl p-5 text-center space-y-2">
-                <div class="text-[10px] font-black uppercase tracking-widest text-slate-500">${centralLabel}</div>
-                <div class="text-xl font-black tracking-tight text-[#0f2544]">${centralMainText}</div>
-                <div class="text-xs font-bold text-slate-700">${centralSubText}</div>
-              </div>
-            </div>
-            <div class="pt-6">
-              ${buttonHTML}
-            </div>
-          </div>
-        `;
-      }
-
-      // 3. ALTRE PARTITE IN AGENDA (Prossimi successivi)
-      const altreProssime = nonConcluse.filter(p => p.id !== (prossimoMatch ? prossimoMatch.id : null));
-      altreProssime.forEach((item, idx) => {
+      // Helper per generare l'HTML di una card attiva (programmata/rimandata)
+      function renderActiveCardHtml(item, isProssimoIncontro, isPanoramica, isProssimi) {
         const isRimandata = item.stato === 'rimandata';
         let cardWrapperClass = "bg-white border-2 border-slate-200 hover:border-[#0f2544]";
         let badgeHTML = `<span class="px-3 py-1 rounded-full text-[10px] font-black bg-amber-500 text-white uppercase tracking-widest shadow-xs">Programmata (${item.tipo})</span>`;
@@ -901,6 +814,20 @@
         let centralLabel = "In Agenda • " + item.tipo.toUpperCase();
         let centralMainText = item.tipo === 'In Casa' ? `ASA Cinisello vs ${item.avversario}` : `${item.avversario} vs ASA Cinisello`;
         let centralSubText = "Partita di campionato";
+        let etichettaTop = "In Agenda";
+
+        if (isProssimoIncontro) {
+          etichettaTop = "Prossimo Incontro";
+          if (!isRimandata) {
+            cardWrapperClass = "bg-emerald-50/70 border-2 border-emerald-400 shadow-emerald-100";
+            badgeHTML = `
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black bg-emerald-600 text-white uppercase tracking-widest shadow-xs">
+                <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> Confermata (${item.tipo})
+              </span>`;
+            centralBoxClass = "bg-emerald-100/70 border border-emerald-300 text-emerald-950";
+            centralLabel = "Prossima Gara • " + item.tipo.toUpperCase();
+          }
+        }
 
         if (isRimandata) {
           cardWrapperClass = "bg-sky-50/80 border-2 border-sky-400 shadow-sky-100";
@@ -922,14 +849,15 @@
           buttonHTML = `<button onclick="openAvailabilityModal('${item.id}')" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow flex items-center justify-between px-5"><span>CONFERMA DISPONIBILITÀ</span> <span class="bg-slate-950 text-amber-300 px-2.5 py-0.5 rounded-full text-[10px] font-bold">${dispCount} disponibili</span></button>`;
         }
 
-        let extraClasses = "card-prossimi";
-        if (idx === 0) extraClasses += " card-panoramica";
+        let classes = "news-card";
+        if (isPanoramica) classes += " card-panoramica";
+        if (isProssimi) classes += " card-prossimi";
 
-        htmlContent += `
-          <div class="news-card ${extraClasses} ${cardWrapperClass} rounded-3xl p-6 sm:p-7 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group relative overflow-hidden">
+        return `
+          <div class="${classes} ${cardWrapperClass} rounded-3xl p-6 sm:p-7 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group relative overflow-hidden">
             <div class="space-y-4">
               <div class="flex items-center justify-between border-b border-slate-200/60 pb-3">
-                <span class="text-xs font-extrabold text-slate-700 uppercase tracking-wider">In Agenda</span>
+                <span class="text-xs font-extrabold text-slate-700 uppercase tracking-wider">${etichettaTop}</span>
                 ${badgeHTML}
               </div>
               <div>
@@ -948,7 +876,36 @@
             </div>
           </div>
         `;
+      }
+
+      // Prendi le prime 3 partite attive/programmate in ordine cronologico
+      const topActive = attive.slice(0, 3);
+
+      topActive.forEach((item, i) => {
+        const isProssimoIncontro = (i === 0);
+        
+        // Regola Panoramica:
+        // - Se ci sono partite concluse: Panoramica mostra [Ultima Conclusa, attive[0], attive[1]] -> quindi attive[0] e attive[1] sono in panoramica.
+        // - Se non ci sono partite concluse (tutte programmate): Panoramica mostra [attive[0], attive[1], attive[2]] -> tutte e tre sono in panoramica!
+        let isPanoramica = false;
+        if (concluse.length > 0) {
+          if (i === 0 || i === 1) isPanoramica = true;
+        } else {
+          isPanoramica = true; // Tutte e tre le prime partite programmate appaiono in Panoramica
+        }
+
+        // Regola Prossimi: Tutte le prime 3 partite attive appaiono nella sezione Prossimi
+        const isProssimi = true;
+
+        htmlContent += renderActiveCardHtml(item, isProssimoIncontro, isPanoramica, isProssimi);
       });
+
+      // Se ci sono più di 3 partite attive, rendiamo la terza/quarta anche per il tab Prossimi se necessario
+      if (attive.length > 3) {
+        for (let i = 3; i < attive.length; i++) {
+          htmlContent += renderActiveCardHtml(attive[i], false, false, true);
+        }
+      }
 
       container.innerHTML = htmlContent;
       filterNews(currentNewsFilter);
