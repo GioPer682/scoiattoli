@@ -11,14 +11,12 @@
     .asa-red { background-color: #c8102e; }
     .text-asa-red { color: #c8102e; }
     
-    /* Sfondo arena con sfumatura verticale dolce dal basso verso l'alto */
     .arena-court-bg {
       background: linear-gradient(to top, #0f2544 0%, #1e3a6f 100%);
       box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.4);
       border: 1px solid rgba(255, 255, 255, 0.15);
     }
 
-    /* Tipografia sportiva per il numero (Rosso con bordo Blu Navy) */
     .jersey-text {
       font-family: 'Impact', 'Arial Narrow', 'Inter', sans-serif;
       fill: #c8102e;
@@ -45,7 +43,6 @@
 
   <!-- TOP WRAPPER (TESTATA + TICKER) -->
   <div>
-    <!-- TOP HEADER RESPONSIVE -->
     <header class="asa-navy text-white shadow-2xl sticky top-0 z-50 border-b border-white/10">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 sm:gap-6">
         <div class="flex items-center gap-3 sm:gap-5">
@@ -313,7 +310,7 @@
                 </div>
                 <div id="regia-box-risultato">
                   <label class="text-[11px] font-bold text-slate-600 uppercase block mb-1">Risultato Finale</label>
-                  <input type="text" id="regia-f-risultato" placeholder="es. 14 - 10 (Punti Tempini)" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-black text-emerald-800" />
+                  <input type="text" id="regia-f-risultato" placeholder="es. 14 - 10 (Punti)" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-black text-emerald-800" />
                 </div>
               </div>
 
@@ -398,7 +395,7 @@
     </div>
   </footer>
 
-  <!-- MODAL FOR MATCH DETAILS & STATS -->
+  <!-- MODAL -->
   <div id="match-modal" class="fixed inset-0 bg-slate-950/70 z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-4xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-200 relative max-h-[92vh] overflow-y-auto">
       <button onclick="closeMatchModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-700 font-extrabold text-lg cursor-pointer">✕</button>
@@ -419,10 +416,7 @@
         </div>
       </div>
 
-      <!-- SEZIONE DINAMICA MODALE: DETTAGLI TEMPINI (SE CONCLUSA) O CONVOCATI (SE PROGRAMMATA) -->
-      <div id="modal-dynamic-content" class="space-y-6">
-        <!-- Popolato via JS -->
-      </div>
+      <div id="modal-dynamic-content" class="space-y-6"></div>
 
       <button onclick="closeMatchModal()" class="w-full py-3.5 bg-[#0f2544] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider hover:bg-slate-800 transition cursor-pointer shadow">
         Chiudi Dettagli
@@ -647,15 +641,12 @@
       document.getElementById('sq-tab-' + tab).className = "px-4 py-2 rounded-xl text-xs font-bold bg-[#0f2544] text-white shadow transition cursor-pointer";
     }
 
-    // =========================================================================
-    // RENDERING NEWS CARDS CON PULSANTE "DETTAGLI PARTITA" PER LE CONCLUSE
-    // =========================================================================
     function renderNewsCards() {
       const container = document.getElementById('news-cards-container');
       if (!container) return;
 
       const concluse = dbState.partite.filter(p => p.stato === 'conclusa');
-      const ultimaConclusa = concluse.length > 0 ? concluse[conclusa.length - 1] : null;
+      const ultimaConclusa = concluse.length > 0 ? concluse[concluse.length - 1] : null;
       const prossime = dbState.partite.filter(p => p.stato !== 'conclusa');
 
       const cardsToDisplay = [];
@@ -722,7 +713,6 @@
           badgeHTML = `<span class="px-3 py-1 rounded-full text-[10px] font-black bg-slate-100 text-slate-700 uppercase tracking-widest">Conclusa</span>`;
         }
 
-        // Tasto dinamico: "Dettagli Partita" per le concluse, "Convocazioni Ufficiali" o "In Attesa" per le altre
         let buttonHTML = "";
         if (isConclusa) {
           buttonHTML = `<button onclick="openMatchModal('${item.id}')" class="w-full py-3 bg-[#0f2544] hover:bg-slate-800 text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">📊 DETTAGLI & STATISTICHE</button>`;
@@ -759,9 +749,6 @@
       }).join('');
     }
 
-    // =========================================================================
-    // RENDERING ROSTER & CALENDARIO STAGIONE
-    // =========================================================================
     function renderRosterMain() {
       const grid = document.getElementById('roster-grid-main');
       const countBadge = document.getElementById('roster-count-badge');
@@ -887,9 +874,6 @@
       }).join('');
     }
 
-    // =========================================================================
-    // MODALE DINAMICA: DETTAGLI & STATISTICHE (CONCLUSA) VS CONVOCAZIONI
-    // =========================================================================
     function openMatchModal(giornataId) {
       const match = dbState.partite.find(p => p.id === giornataId);
       if (!match) return;
@@ -903,15 +887,14 @@
       if (match.stato === 'conclusa') {
         document.getElementById('modal-score').innerText = `Esito Finale: ${match.risultato}`;
 
-        // Renderizza la tabella dei 6 tempini e il riepilogo
         let tempiniHtml = `
           <div class="space-y-3">
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-between flex-wrap gap-2">
               <h4 class="text-xs font-extrabold text-[#0f2544] uppercase tracking-wider flex items-center gap-2">
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
                 Andamento dei 6 Tempini (Regolamento Minibasket)
               </h4>
-              <span class="text-[11px] font-bold text-slate-500">Vittoria tempino = 3 pt • Pareggio = 2 pt • Sconfitta = 1 pt</span>
+              <span class="text-[11px] font-bold text-slate-500">Vittoria = 3pt • Pareggio = 2pt • Sconfitta = 1pt</span>
             </div>
 
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
@@ -950,7 +933,6 @@
           </div>
         `;
 
-        // Aggiunge la sezione con i giocatori che hanno disputato la partita
         const convocatiNomi = dbState.convocazioni[giornataId] || [];
         const convocatiObj = dbState.roster.filter(a => convocatiNomi.includes(a.nome));
         convocatiObj.sort((a, b) => (parseInt(a.numero) || 999) - (parseInt(b.numero) || 999));
@@ -976,7 +958,6 @@
         dynamicContainer.innerHTML = tempiniHtml + rosterHtml;
 
       } else {
-        // Vista classica per le gare programmate o rimandate (Convocazioni Ufficiali)
         let scoreText = match.stato === 'rimandata' ? `RIMANDATA ${match.nota ? '(' + match.nota + ')' : ''}` : "In attesa di svolgimento";
         document.getElementById('modal-score').innerText = scoreText;
 
@@ -1014,9 +995,6 @@
       document.getElementById('match-modal').classList.add('hidden');
     }
 
-    // =========================================================================
-    // AREA COACH & AREA DIRIGENTE
-    // =========================================================================
     function verifyCoachLogin() {
       const pass = document.getElementById('coach-pass').value;
       if (pass === "asa2026" || pass.trim() !== "") {
@@ -1102,6 +1080,7 @@
     function dirigenteLogout() {
       document.getElementById('dirigente-pass').value = "";
       document.getElementById('dirigente-dashboard-container').classList.add('hidden');
+      document.getElementById('dirigente-login-container').classList.add('hidden');
       document.getElementById('dirigente-login-container').classList.remove('hidden');
     }
 
