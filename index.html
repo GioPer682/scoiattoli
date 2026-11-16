@@ -11,12 +11,14 @@
     .asa-red { background-color: #c8102e; }
     .text-asa-red { color: #c8102e; }
     
-    /* Sfondo stadio arena illuminato (più luminoso e scenografico) */
+    /* Sfondo stadio arena in puro CSS con faretti ed effetto evento speciale */
     .arena-court-bg {
       background: 
-        linear-gradient(180deg, rgba(15, 37, 68, 0.25) 0%, rgba(15, 37, 68, 0.45) 100%),
-        url('arena-bg.jpg') center center / cover no-repeat;
-      box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.4);
+        radial-gradient(circle at 50% 15%, rgba(200, 16, 46, 0.28) 0%, transparent 45%),
+        radial-gradient(circle at 15% 85%, rgba(59, 130, 246, 0.22) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(200, 16, 46, 0.22) 0%, transparent 40%),
+        linear-gradient(135deg, #070e1a 0%, #0f2544 50%, #050b14 100%);
+      box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.85);
       border: 1px solid rgba(255, 255, 255, 0.25);
     }
 
@@ -249,7 +251,7 @@
         </div>
       </div>
 
-      <!-- EFFETTO WOW: STADIO ARENA ILLUMINATO CON MAGLIE SCHIERATE -->
+      <!-- EFFETTO WOW: STADIO ARENA IN CSS CON MAGLIE SCHIERATE -->
       <div class="space-y-3 pt-2">
         <div class="flex items-center justify-between">
           <h4 class="text-xs font-extrabold text-[#0f2544] uppercase tracking-wider flex items-center gap-2">
@@ -259,8 +261,8 @@
           <span id="modal-convocati-count" class="text-xs font-black text-white bg-[#0f2544] px-3 py-1 rounded-full shadow-sm">0 convocati</span>
         </div>
 
-        <!-- CONTENITORE SFONDO STADIO ARENA -->
-        <div id="arena-court-container" class="arena-court-bg rounded-3xl border-4 border-[#0f2544]/20 p-6 relative overflow-hidden min-h-[360px] flex flex-col justify-center">
+        <!-- CONTENITORE SFONDO STADIO ARENA CSS -->
+        <div id="arena-court-container" class="arena-court-bg rounded-3xl p-6 relative overflow-hidden min-h-[360px] flex flex-col justify-center">
           <!-- Contenitore Griglia delle Mini-Maglie sullo Stadio -->
           <div id="parquet-jerseys-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 relative z-10">
             <!-- Popolato via JS con ordinamento per numero di maglia -->
@@ -388,7 +390,7 @@
       grid.innerHTML = rosterAtleti.map((a, idx) => generateJerseySvgHtml(a, idx, false)).join('');
     }
 
-    // Helper riutilizzabile per generare la canotta SVG (Card bianche opache nel modale per massima leggibilità)
+    // Helper riutilizzabile per generare la canotta SVG
     function generateJerseySvgHtml(a, idx, isModal = false) {
       const parts = a.nome.split(' ');
       const cognome = parts.slice(1).join(' ').toUpperCase();
@@ -656,7 +658,7 @@
       alert(`Convocazioni salvate e pubblicate con successo per la ${matchId}! (${selected.length} atleti convocati)`);
     }
 
-    // APERTURA MODALE CON SFONDO ARENA E ORDINAMENTO PER NUMERO DI MAGLIA
+    // APERTURA MODALE CON SFONDO ARENA CSS E ORDINAMENTO PER NUMERO DI MAGLIA
     function openMatchModal(giornataId, opponent, score, info) {
       document.getElementById('modal-title').innerHTML = `ASA Cinisello <span class="text-[#c8102e] font-bold text-lg">vs</span> ${opponent}`;
       document.getElementById('modal-score').innerText = score !== 'Da disputare' ? 'Risultato: ' + score : 'In attesa di svolgimento';
