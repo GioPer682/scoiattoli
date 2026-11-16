@@ -34,7 +34,10 @@
     .animate-ticker {
       display: inline-block;
       white-space: nowrap;
-      animation: ticker 25s linear infinite;
+      animation: ticker 28s linear infinite;
+    }
+    .animate-ticker:hover {
+      animation-play-state: paused;
     }
   </style>
 </head>
@@ -62,12 +65,14 @@
           </div>
         </div>
         
-        <!-- NAVIGATION RESPONSIVE -->
+        <!-- NAVIGATION RESPONSIVE (CON AREA COACH E REGIA SEPARATE) -->
         <nav class="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold flex-wrap pt-2 lg:pt-0 border-t border-white/10 lg:border-t-0">
           <button onclick="switchNav('news')" id="nav-news" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-white text-[#0f2544] font-bold shadow-md cursor-pointer">News</button>
           <button onclick="switchNav('squadra')" id="nav-squadra" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition text-white hover:bg-white/10 cursor-pointer">Squadra</button>
           <button onclick="switchNav('stagione')" id="nav-stagione" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition text-white hover:bg-white/10 cursor-pointer">Stagione</button>
+          <div class="h-5 w-px bg-white/20 mx-0.5 hidden sm:block"></div>
           <button onclick="switchNav('coach')" id="nav-coach" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/40 shadow-sm cursor-pointer">Area Coach</button>
+          <button onclick="switchNav('dirigente')" id="nav-dirigente" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-slate-800 hover:bg-slate-700 text-sky-300 border border-sky-500/40 shadow-sm cursor-pointer">Regia</button>
         </nav>
       </div>
     </header>
@@ -75,14 +80,10 @@
     <!-- RED ACCENT LINE -->
     <div class="w-full h-1.5 asa-red shadow-md"></div>
 
-    <!-- LIVE TICKER BANNER -->
-    <div class="asa-red text-white text-[11px] sm:text-xs font-bold py-2 px-4 overflow-hidden relative shadow-inner">
-      <div class="flex items-center gap-6 animate-ticker">
-        <span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-white animate-ping"></span> PROSSIMA GARA: SABATO 22 NOVEMBRE • ORE 16:00 VS SESTO BASKET (TRASFERTA)</span>
-        <span>•</span>
-        <span>IN ATTESA CONVOCAZIONI UFFICIALI</span>
-        <span>•</span>
-        <span>PALESTRA BUCUM: ALLENAMENTI MARTEDI ORE 17:00 E MERCOLEDI ORE 18:00</span>
+    <!-- LIVE TICKER BANNER (DINAMICO DA REGIA) -->
+    <div id="live-ticker-wrapper" class="asa-red text-white text-[11px] sm:text-xs font-bold py-2 px-4 overflow-hidden relative shadow-inner">
+      <div class="flex items-center gap-6 animate-ticker" id="live-ticker-content">
+        <!-- Popolato dinamicamente da dbState.ticker -->
       </div>
     </div>
   </div>
@@ -116,7 +117,7 @@
           <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#0f2544] tracking-tight uppercase">Roster</h2>
         </div>
         <div class="flex items-center gap-2 bg-slate-200/80 p-1.5 rounded-2xl">
-          <button onclick="switchSquadraTab('roster')" id="sq-tab-roster" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#0f2544] text-white shadow transition cursor-pointer">Giocatori (22)</button>
+          <button onclick="switchSquadraTab('roster')" id="sq-tab-roster" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#0f2544] text-white shadow transition cursor-pointer">Giocatori (<span id="roster-count-badge">22</span>)</button>
           <button onclick="switchSquadraTab('staff')" id="sq-tab-staff" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer">Staff Tecnico</button>
         </div>
       </div>
@@ -162,19 +163,19 @@
       <div class="space-y-4" id="full-schedule-container"></div>
     </section>
 
-    <!-- AREA COACH VIEW -->
+    <!-- AREA COACH VIEW (DEDICATA SOLO ALLE CONVOCAZIONI) -->
     <section id="view-coach" class="space-y-8 hidden">
       <div class="border-b border-slate-300 pb-4">
-        <span class="text-xs font-extrabold text-amber-600 uppercase tracking-widest block mb-1">Accesso Riservato Allenatori & Dirigenti</span>
+        <span class="text-xs font-extrabold text-amber-600 uppercase tracking-widest block mb-1">Accesso Riservato Allenatori</span>
         <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#0f2544] tracking-tight uppercase">Area Coach / Convocazioni</h2>
       </div>
 
       <div id="coach-login-container" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 max-w-xl shadow-sm space-y-5">
-        <h3 class="font-extrabold text-lg text-[#0f2544]">Autenticazione Pannello Convocazioni</h3>
-        <p class="text-xs text-slate-600">Inserisci la password autorizzata (Default di prova: <code class="bg-slate-100 px-2 py-0.5 rounded font-bold text-asa-red">asa2026</code>) per gestire i convocati alle partite.</p>
-        <input type="password" id="coach-pass" placeholder="Password (es. asa2026)..." class="w-full px-4.5 py-3 border border-slate-300 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-[#0f2544]" />
+        <h3 class="font-extrabold text-lg text-[#0f2544]">Autenticazione Staff Tecnico</h3>
+        <p class="text-xs text-slate-600">Inserisci la password dedicata agli allenatori (Default di prova: <code class="bg-slate-100 px-2 py-0.5 rounded font-bold text-asa-red">asa2026</code>) per gestire esclusivamente le convocazioni alle partite.</p>
+        <input type="password" id="coach-pass" placeholder="Password coach..." class="w-full px-4.5 py-3 border border-slate-300 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-[#0f2544]" />
         <button onclick="verifyCoachLogin()" class="w-full py-3.5 bg-[#0f2544] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider hover:bg-slate-800 transition cursor-pointer shadow">
-          Accedi al Pannello
+          Accedi alle Convocazioni
         </button>
       </div>
 
@@ -182,21 +183,20 @@
         <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-center justify-between flex-wrap gap-4">
           <div class="flex items-center gap-3">
             <span class="w-3 h-3 rounded-full bg-amber-500 animate-ping"></span>
-            <span class="text-xs font-extrabold text-amber-900 uppercase">Pannello Convocazioni Attivo</span>
+            <span class="text-xs font-extrabold text-amber-900 uppercase">Pannello Convocazioni Staff Tecnico</span>
           </div>
           <button onclick="coachLogout()" class="text-xs font-bold text-slate-600 hover:text-red-600 transition cursor-pointer underline">Chiudi Sessione</button>
         </div>
 
         <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
           <div class="space-y-2">
-            <label class="text-xs font-extrabold text-slate-500 uppercase tracking-wider block">Seleziona Partita</label>
-            <select id="match-selector" onchange="loadMatchConvocazioni()" class="w-full px-4.5 py-3 border border-slate-300 rounded-2xl text-sm font-bold text-[#0f2544] bg-slate-50 focus:outline-none focus:ring-2 focus:ring-[#0f2544]"></select>
-            <p class="text-[11px] text-slate-400 italic">Nota: Le partite passate sono contrassegnate per la consultazione d'archivio.</p>
+            <label class="text-xs font-extrabold text-slate-500 uppercase tracking-wider block">Seleziona Partita da Convocare</label>
+            <select id="coach-match-selector" onchange="loadMatchConvocazioni()" class="w-full px-4.5 py-3 border border-slate-300 rounded-2xl text-sm font-bold text-[#0f2544] bg-slate-50 focus:outline-none focus:ring-2 focus:ring-[#0f2544]"></select>
           </div>
 
           <div class="flex items-center justify-between border-b border-slate-200 pb-3">
             <h4 class="font-black text-[#0f2544] text-lg">Seleziona Atleti Convocati</h4>
-            <span id="selected-counter" class="text-xs font-extrabold text-asa-red bg-red-50 px-3 py-1 rounded-full">0 / 22 Selezionati</span>
+            <span id="selected-counter" class="text-xs font-extrabold text-asa-red bg-red-50 px-3 py-1 rounded-full">0 Selezionati</span>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 max-h-96 overflow-y-auto p-1" id="coach-roster-checklist"></div>
@@ -211,6 +211,191 @@
             <button onclick="selectAllPlayers(false)" class="px-5 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-xs font-extrabold uppercase tracking-wider transition cursor-pointer">
               Deseleziona
             </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CABINA DI REGIA / AREA DIRIGENTE (COMPLETAMENTE INDIPENDENTE) -->
+    <section id="view-dirigente" class="space-y-8 hidden">
+      <div class="border-b border-slate-300 pb-4">
+        <span class="text-xs font-extrabold text-sky-600 uppercase tracking-widest block mb-1">Amministrazione & Controllo Dati</span>
+        <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#0f2544] tracking-tight uppercase">Cabina di Regia — Dirigente</h2>
+      </div>
+
+      <!-- LOGIN REGIA -->
+      <div id="dirigente-login-container" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 max-w-xl shadow-sm space-y-5">
+        <h3 class="font-extrabold text-lg text-[#0f2544]">Accesso Cabina di Regia</h3>
+        <p class="text-xs text-slate-600">Inserisci la password amministrativa (Default di prova: <code class="bg-slate-100 px-2 py-0.5 rounded font-bold text-sky-700">dirigente2026</code>) per gestire calendario, risultati, rinvii, barra scorrevole e roster.</p>
+        <input type="password" id="dirigente-pass" placeholder="Password regia..." class="w-full px-4.5 py-3 border border-slate-300 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-600" />
+        <button onclick="verifyDirigenteLogin()" class="w-full py-3.5 bg-[#0f2544] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider hover:bg-slate-800 transition cursor-pointer shadow">
+          Entra in Regia
+        </button>
+      </div>
+
+      <!-- DASHBOARD REGIA -->
+      <div id="dirigente-dashboard-container" class="space-y-6 hidden">
+        <!-- Barra Stato Regia & Navigation Tab -->
+        <div class="bg-sky-50 border border-sky-200 rounded-2xl p-4 flex items-center justify-between flex-wrap gap-4">
+          <div class="flex items-center gap-3">
+            <span class="w-3 h-3 rounded-full bg-sky-600 animate-pulse"></span>
+            <span class="text-xs font-extrabold text-sky-950 uppercase">Cabina di Regia Attiva • Sincronizzazione Pronto-DB</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span id="regia-toast" class="text-xs font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full hidden">✓ Salvato sul Database</span>
+            <button onclick="dirigenteLogout()" class="text-xs font-bold text-slate-600 hover:text-red-600 transition cursor-pointer underline">Esci dalla Regia</button>
+          </div>
+        </div>
+
+        <!-- SELETTORE SEZIONI REGIA -->
+        <div class="flex items-center gap-2 bg-slate-200/80 p-1.5 rounded-2xl overflow-x-auto">
+          <button onclick="switchRegiaTab('partite')" id="regia-tab-partite" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-[#0f2544] text-white shadow transition cursor-pointer whitespace-nowrap">1. Calendario, Risultati & Rinvii</button>
+          <button onclick="switchRegiaTab('ticker')" id="regia-tab-ticker" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap">2. Barra Avvisi (Ticker)</button>
+          <button onclick="switchRegiaTab('roster')" id="regia-tab-roster" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap">3. Roster & Numeri Maglia</button>
+        </div>
+
+        <!-- TAB 1 REGIA: GESTIONE PARTITE, RISULTATI E RINVII -->
+        <div id="regia-content-partite" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+            <div>
+              <h3 class="text-lg font-black text-[#0f2544]">Gestione Incontri</h3>
+              <p class="text-xs text-slate-500">Seleziona una giornata per modificarla, inserire il risultato o segnarla come <strong>Rimandata</strong>.</p>
+            </div>
+            <button onclick="prepareNewMatch()" class="px-4 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider transition cursor-pointer shadow-sm">
+              + Nuova Partita
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Colonna Sinistra: Elenco Partite Cliccabili -->
+            <div class="space-y-2 max-h-[500px] overflow-y-auto pr-1" id="regia-matches-list">
+              <!-- Popolato da JS -->
+            </div>
+
+            <!-- Colonna Destra: Form di Modifica Rapida -->
+            <div class="lg:col-span-2 bg-slate-50 p-5 sm:p-6 rounded-2xl border border-slate-200 space-y-4">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-extrabold text-sky-700 uppercase tracking-wider" id="regia-form-mode">Modifica Partita Selezionata</span>
+                <button onclick="deleteCurrentMatch()" id="btn-delete-match" class="text-xs font-bold text-red-600 hover:underline cursor-pointer">Elimina gara</button>
+              </div>
+
+              <input type="hidden" id="regia-match-index" value="0" />
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="text-[11px] font-bold text-slate-600 uppercase block mb-1">Giornata / Titolo</label>
+                  <input type="text" id="regia-f-id" placeholder="es. Giornata 3" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-bold text-[#0f2544]" />
+                </div>
+                <div>
+                  <label class="text-[11px] font-bold text-slate-600 uppercase block mb-1">Avversario</label>
+                  <input type="text" id="regia-f-avversario" placeholder="es. Fortitudo Cologno" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-bold text-[#0f2544]" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label class="text-[11px] font-bold text-slate-600 uppercase block mb-1">Data (GG/MM/AAAA)</label>
+                  <input type="text" id="regia-f-data" placeholder="es. 29/11/2026" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm" />
+                </div>
+                <div>
+                  <label class="text-[11px] font-bold text-slate-600 uppercase block mb-1">Orario</label>
+                  <input type="text" id="regia-f-ora" placeholder="es. 15:30" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm" />
+                </div>
+                <div>
+                  <label class="text-[11px] font-bold text-slate-600 uppercase block mb-1">Tipologia</label>
+                  <select id="regia-f-tipo" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-semibold">
+                    <option value="In Casa">In Casa</option>
+                    <option value="Trasferta">Trasferta</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label class="text-[11px] font-bold text-slate-600 uppercase block mb-1">Impianto / Palestra</label>
+                <input type="text" id="regia-f-sede" placeholder="es. Palestra BUCUM - Via Monte Ortigara 2" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm" />
+              </div>
+
+              <!-- STATO GARA E RISULTATO -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-200">
+                <div>
+                  <label class="text-[11px] font-bold text-slate-600 uppercase block mb-1">Stato Incontro</label>
+                  <select id="regia-f-stato" onchange="toggleRegiaStateFields()" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-extrabold text-[#0f2544]">
+                    <option value="programmata">🟢 Programmata (Da giocare)</option>
+                    <option value="conclusa">🏁 Conclusa (Con risultato)</option>
+                    <option value="rimandata">🔵 Rimandata (Evidenzia in blu)</option>
+                  </select>
+                </div>
+                <div id="regia-box-risultato">
+                  <label class="text-[11px] font-bold text-slate-600 uppercase block mb-1">Risultato Finale</label>
+                  <input type="text" id="regia-f-risultato" placeholder="es. 18 - 14" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-black text-emerald-800" />
+                </div>
+              </div>
+
+              <div id="regia-box-nota" class="bg-sky-100/70 p-3.5 rounded-xl border border-sky-300 space-y-1">
+                <label class="text-[11px] font-extrabold text-sky-900 uppercase block">Nota Pubblica Rinvio / Avviso Genitori</label>
+                <input type="text" id="regia-f-nota" placeholder="es. Partita rimandata per indisponibilità palestra. Nuova data da definire." class="w-full px-3 py-2 bg-white border border-sky-300 rounded-lg text-xs text-slate-800" />
+              </div>
+
+              <div class="pt-2">
+                <button onclick="saveMatchFromRegia()" class="w-full py-3.5 bg-[#0f2544] hover:bg-sky-900 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider transition cursor-pointer shadow-md">
+                  Salva Modifiche Partita su DB
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2 REGIA: GESTIONE BARRA SCORREVOLE (TICKER) -->
+        <div id="regia-content-ticker" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-5 hidden">
+          <div>
+            <h3 class="text-lg font-black text-[#0f2544]">Barra Avvisi Scorrevole (Fascia Rossa)</h3>
+            <p class="text-xs text-slate-500">Aggiorna in tempo reale le comunicazioni urgenti che scorrono sotto l'intestazione del sito.</p>
+          </div>
+
+          <div class="space-y-4 max-w-2xl">
+            <label class="flex items-center gap-3 cursor-pointer select-none">
+              <input type="checkbox" id="regia-ticker-active" checked class="w-4 h-4 text-[#c8102e] rounded" />
+              <span class="text-xs font-bold text-slate-800">Mostra barra scorrevole sul sito pubblico</span>
+            </label>
+
+            <div>
+              <label class="text-[11px] font-bold text-slate-600 uppercase block mb-1">Testo Messaggio (separa gli avvisi con • )</label>
+              <textarea id="regia-ticker-text" rows="3" class="w-full px-4 py-3 border border-slate-300 rounded-2xl text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0f2544]"></textarea>
+            </div>
+
+            <button onclick="saveTickerFromRegia()" class="px-6 py-3.5 bg-[#c8102e] hover:bg-red-700 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider transition cursor-pointer shadow">
+              Pubblica Avviso in Tempo Reale
+            </button>
+          </div>
+        </div>
+
+        <!-- TAB 3 REGIA: GESTIONE ROSTER & NUMERI DI MAGLIA -->
+        <div id="regia-content-roster" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6 hidden">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+            <div>
+              <h3 class="text-lg font-black text-[#0f2544]">Anagrafica Atleti & Numeri di Maglia</h3>
+              <p class="text-xs text-slate-500">Modifica i numeri di maglia o aggiungi un nuovo iscritto al roster.</p>
+            </div>
+          </div>
+
+          <!-- Form Aggiungi Nuovo Atleta -->
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col sm:flex-row gap-3 items-end">
+            <div class="flex-1 w-full">
+              <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Nome e Cognome Nuovo Atleta</label>
+              <input type="text" id="regia-new-player-name" placeholder="es. Marco Rossi" class="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-xs font-bold" />
+            </div>
+            <div class="w-full sm:w-28">
+              <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">N° Maglia</label>
+              <input type="text" id="regia-new-player-num" placeholder="es. 12" class="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-xs font-bold text-center" />
+            </div>
+            <button onclick="addPlayerFromRegia()" class="w-full sm:w-auto px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider transition cursor-pointer">
+              + Aggiungi
+            </button>
+          </div>
+
+          <!-- Lista Editabile Giocatori -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3" id="regia-roster-editor">
+            <!-- Popolato da JS -->
           </div>
         </div>
       </div>
@@ -238,11 +423,11 @@
 
       <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex items-center justify-between flex-wrap gap-4 text-center">
         <div>
-          <div class="text-[10px] font-bold text-slate-400 uppercase">Esito / Sede</div>
+          <div class="text-[10px] font-bold text-slate-400 uppercase">Esito / Stato</div>
           <div class="text-base font-black text-[#0f2544]" id="modal-score">Da disputare</div>
         </div>
         <div class="text-right">
-          <div class="text-[10px] font-bold text-slate-400 uppercase">Impianto</div>
+          <div class="text-[10px] font-bold text-slate-400 uppercase">Impianto & Data</div>
           <p class="text-xs font-semibold text-slate-600" id="modal-info">Palestra BUCUM</p>
         </div>
       </div>
@@ -257,11 +442,8 @@
           <span id="modal-convocati-count" class="text-xs font-black text-white bg-[#0f2544] px-3 py-1 rounded-full shadow-sm">0 convocati</span>
         </div>
 
-        <!-- CONTENITORE SFONDO ARENA CON SFUMATURA DOLCE -->
         <div id="arena-court-container" class="arena-court-bg rounded-3xl p-6 relative overflow-hidden min-h-[360px] flex flex-col justify-center">
-          <!-- Griglia delle Mini-Maglie -->
           <div id="parquet-jerseys-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 relative z-10">
-            <!-- Popolato via JS con ordinamento per numero di maglia -->
           </div>
         </div>
       </div>
@@ -274,61 +456,160 @@
 
   <!-- SCRIPT -->
   <script>
-    const rosterAtleti = [
-      { nome: "Alessandro Affronti", numero: "-" },
-      { nome: "Filippo Bertinazzi", numero: "75" },
-      { nome: "Claudio Brucculeri", numero: "-" },
-      { nome: "Mattia Caruso", numero: "23" },
-      { nome: "Mirko d'Elia", numero: "48" },
-      { nome: "Riccardo Grasso", numero: "99" },
-      { nome: "Dominic Husejinovic", numero: "-" },
-      { nome: "Andrea Insisa", numero: "7" },
-      { nome: "Francesco Mascarella", numero: "-" },
-      { nome: "Jacopo Morselli", numero: "41" },
-      { nome: "Francesco Nicotra", numero: "19" },
-      { nome: "Mattia Oliverio", numero: "45" },
-      { nome: "Lorenzo Perrone", numero: "39" },
-      { nome: "Daniel Prudenzano", numero: "6" },
-      { nome: "Gabriele Riccobene", numero: "9" },
-      { nome: "Youness Rizki", numero: "74" },
-      { nome: "Nathan Sala", numero: "28" },
-      { nome: "Francesco Sale", numero: "49" },
-      { nome: "Gabriele Stavola", numero: "78" },
-      { nome: "Giulia Tamanza", numero: "70" },
-      { nome: "Andrea Zingarino", numero: "8" },
-      { nome: "Jonas Mantoan", numero: "24" }
-    ];
-
-    const allPartite = [
-      { id: "Giornata 1", data: "15/11/2026", avversario: "Pallacanestro Cinisello", risultato: "14 - 18", sede: "Palestra BUCUM", isPast: true },
-      { id: "Giornata 2", data: "22/11/2026", avversario: "Sesto Basket", risultato: "17 - 20", sede: "Palestra Comunale Sesto", isPast: true },
-      { id: "Giornata 3", data: "29/11/2026", avversario: "Fortitudo Cologno", risultato: "Da disputare", sede: "Palestra BUCUM - Via Monte Ortigara 2", isPast: false },
-      { id: "Giornata 4", data: "06/12/2026", avversario: "Rondinella Sesto", risultato: "Da disputare", sede: "Centro Sportivo - Cologno Monzese", isPast: false },
-      { id: "Giornata 5", data: "13/12/2026", avversario: "San Carlo Milano", risultato: "Da disputare", sede: "Palestra BUCUM", isPast: false }
-    ];
-
-    const databaseConvocazioni = {
-      "Giornata 1": ["Filippo Bertinazzi", "Mattia Caruso", "Mirko d'Elia", "Riccardo Grasso", "Andrea Insisa", "Jacopo Morselli", "Francesco Nicotra", "Lorenzo Perrone", "Daniel Prudenzano", "Gabriele Riccobene"],
-      "Giornata 2": ["Filippo Bertinazzi", "Mattia Caruso", "Riccardo Grasso", "Andrea Insisa", "Lorenzo Perrone", "Daniel Prudenzano", "Gabriele Riccobene", "Youness Rizki", "Nathan Sala", "Gabriele Stavola"],
-      "Giornata 3": ["Filippo Bertinazzi", "Mattia Caruso", "Mirko d'Elia", "Riccardo Grasso", "Andrea Insisa", "Jacopo Morselli", "Francesco Nicotra", "Mattia Oliverio", "Lorenzo Perrone", "Daniel Prudenzano", "Gabriele Riccobene", "Nathan Sala"]
+    // =========================================================================
+    // STATO CENTRALIZZATO (PRONTO PER SINCRONIZZAZIONE CON FIREBASE FIRESTORE)
+    // =========================================================================
+    const dbState = {
+      ticker: {
+        attivo: true,
+        testo: "PROSSIMA GARA: SABATO 29 NOVEMBRE • ORE 15:30 VS FORTITUDO COLOGNO (PALESTRA BUCUM) • ALLENAMENTI MARTEDI ORE 17:00 E MERCOLEDI ORE 18:00"
+      },
+      roster: [
+        { nome: "Alessandro Affronti", numero: "-" },
+        { nome: "Filippo Bertinazzi", numero: "75" },
+        { nome: "Claudio Brucculeri", numero: "-" },
+        { nome: "Mattia Caruso", numero: "23" },
+        { nome: "Mirko d'Elia", numero: "48" },
+        { nome: "Riccardo Grasso", numero: "99" },
+        { nome: "Dominic Husejinovic", numero: "-" },
+        { nome: "Andrea Insisa", numero: "7" },
+        { nome: "Francesco Mascarella", numero: "-" },
+        { nome: "Jacopo Morselli", numero: "41" },
+        { nome: "Francesco Nicotra", numero: "19" },
+        { nome: "Mattia Oliverio", numero: "45" },
+        { nome: "Lorenzo Perrone", numero: "39" },
+        { nome: "Daniel Prudenzano", numero: "6" },
+        { nome: "Gabriele Riccobene", numero: "9" },
+        { nome: "Youness Rizki", numero: "74" },
+        { nome: "Nathan Sala", numero: "28" },
+        { nome: "Francesco Sale", numero: "49" },
+        { nome: "Gabriele Stavola", numero: "78" },
+        { nome: "Giulia Tamanza", numero: "70" },
+        { nome: "Andrea Zingarino", numero: "8" },
+        { nome: "Jonas Mantoan", numero: "24" }
+      ],
+      partite: [
+        { 
+          id: "Giornata 1", 
+          data: "15/11/2026", 
+          ora: "15:30",
+          avversario: "Pallacanestro Cinisello", 
+          tipo: "In Casa",
+          stato: "conclusa", // 'programmata' | 'conclusa' | 'rimandata'
+          risultato: "14 - 18", 
+          sede: "Palestra BUCUM - Via Monte Ortigara 2",
+          nota: ""
+        },
+        { 
+          id: "Giornata 2", 
+          data: "22/11/2026", 
+          ora: "16:00",
+          avversario: "Sesto Basket", 
+          tipo: "Trasferta",
+          stato: "conclusa", 
+          risultato: "17 - 20", 
+          sede: "Palestra Comunale - Via Marx, Sesto S.G.",
+          nota: ""
+        },
+        { 
+          id: "Giornata 3", 
+          data: "29/11/2026", 
+          ora: "15:30",
+          avversario: "Fortitudo Cologno", 
+          tipo: "In Casa",
+          stato: "programmata", 
+          risultato: "", 
+          sede: "Palestra BUCUM - Via Monte Ortigara 2",
+          nota: ""
+        },
+        { 
+          id: "Giornata 4", 
+          data: "06/12/2026", 
+          ora: "16:30",
+          avversario: "Rondinella Sesto", 
+          tipo: "Trasferta",
+          stato: "programmata", 
+          risultato: "", 
+          sede: "Centro Sportivo - Cologno Monzese",
+          nota: ""
+        },
+        { 
+          id: "Giornata 5", 
+          data: "13/12/2026", 
+          ora: "15:30",
+          avversario: "San Carlo Milano", 
+          tipo: "In Casa",
+          stato: "programmata", 
+          risultato: "", 
+          sede: "Palestra BUCUM - Via Monte Ortigara 2",
+          nota: ""
+        }
+      ],
+      convocazioni: {
+        "Giornata 1": ["Filippo Bertinazzi", "Mattia Caruso", "Mirko d'Elia", "Riccardo Grasso", "Andrea Insisa", "Jacopo Morselli", "Francesco Nicotra", "Lorenzo Perrone", "Daniel Prudenzano", "Gabriele Riccobene"],
+        "Giornata 2": ["Filippo Bertinazzi", "Mattia Caruso", "Riccardo Grasso", "Andrea Insisa", "Lorenzo Perrone", "Daniel Prudenzano", "Gabriele Riccobene", "Youness Rizki", "Nathan Sala", "Gabriele Stavola"],
+        "Giornata 3": ["Filippo Bertinazzi", "Mattia Caruso", "Mirko d'Elia", "Riccardo Grasso", "Andrea Insisa", "Jacopo Morselli", "Francesco Nicotra", "Mattia Oliverio", "Lorenzo Perrone", "Daniel Prudenzano", "Gabriele Riccobene", "Nathan Sala"]
+      }
     };
 
+    // Hook pronto per inviare i dati a Firestore quando collegheremo l'SDK
+    function syncToFirebase(collectionName) {
+      console.log(`[Firebase Sync] Aggiornamento collection '${collectionName}' pronto per Firestore.`, dbState[collectionName]);
+      const toast = document.getElementById('regia-toast');
+      if (toast) {
+        toast.classList.remove('hidden');
+        setTimeout(() => toast.classList.add('hidden'), 2500);
+      }
+    }
+
+    // =========================================================================
+    // INIZIALIZZAZIONE UI PUBBLICA
+    // =========================================================================
     window.addEventListener('DOMContentLoaded', () => {
       switchNav('news');
-      renderRosterMain();
-      renderFullSchedule();
-      renderNewsCards();
+      renderAllPublicViews();
     });
 
+    function renderAllPublicViews() {
+      renderTicker();
+      renderNewsCards();
+      renderRosterMain();
+      renderFullSchedule();
+    }
+
+    function renderTicker() {
+      const wrapper = document.getElementById('live-ticker-wrapper');
+      const content = document.getElementById('live-ticker-content');
+      if (!wrapper || !content) return;
+
+      if (!dbState.ticker.attivo || !dbState.ticker.testo.trim()) {
+        wrapper.classList.add('hidden');
+        return;
+      }
+
+      wrapper.classList.remove('hidden');
+      const parts = dbState.ticker.testo.split('•').map(s => s.trim()).filter(Boolean);
+      content.innerHTML = parts.map((p, i) => `
+        <span class="inline-flex items-center gap-2">
+          ${i === 0 ? '<span class="w-2 h-2 rounded-full bg-white animate-ping"></span>' : ''}
+          ${p}
+        </span>
+      `).join('<span class="mx-4">•</span>');
+    }
+
     function switchNav(navId) {
-      ['news', 'squadra', 'stagione', 'coach'].forEach(id => {
+      ['news', 'squadra', 'stagione', 'coach', 'dirigente'].forEach(id => {
         const viewEl = document.getElementById('view-' + id);
         if (viewEl) viewEl.classList.add('hidden');
         const btn = document.getElementById('nav-' + id);
         if (btn) {
-          btn.className = id === 'coach' 
-            ? "px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/40 shadow-sm cursor-pointer" 
-            : "px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition text-white hover:bg-white/10 cursor-pointer";
+          if (id === 'coach') {
+            btn.className = "px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/40 shadow-sm cursor-pointer";
+          } else if (id === 'dirigente') {
+            btn.className = "px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-slate-800 hover:bg-slate-700 text-sky-300 border border-sky-500/40 shadow-sm cursor-pointer";
+          } else {
+            btn.className = "px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition text-white hover:bg-white/10 cursor-pointer";
+          }
         }
       });
 
@@ -336,9 +617,13 @@
       if (activeView) activeView.classList.remove('hidden');
       const activeBtn = document.getElementById('nav-' + navId);
       if (activeBtn) {
-        activeBtn.className = navId === 'coach'
-          ? "px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-amber-400 text-slate-900 font-extrabold shadow cursor-pointer"
-          : "px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-white text-[#0f2544] font-bold shadow-md cursor-pointer";
+        if (navId === 'coach') {
+          activeBtn.className = "px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-amber-400 text-slate-900 font-extrabold shadow cursor-pointer";
+        } else if (navId === 'dirigente') {
+          activeBtn.className = "px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-sky-400 text-slate-950 font-extrabold shadow cursor-pointer";
+        } else {
+          activeBtn.className = "px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-white text-[#0f2544] font-bold shadow-md cursor-pointer";
+        }
       }
 
       if (navId === 'squadra') renderRosterMain();
@@ -349,11 +634,9 @@
     function filterNews(type) {
       ['all', 'recenti', 'prossimi'].forEach(t => {
         const btn = document.getElementById('tab-' + t);
-        if (t === type) {
-          btn.className = "px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-bold bg-[#0f2544] text-white shadow transition cursor-pointer whitespace-nowrap";
-        } else {
-          btn.className = "px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap";
-        }
+        btn.className = t === type
+          ? "px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-bold bg-[#0f2544] text-white shadow transition cursor-pointer whitespace-nowrap"
+          : "px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap";
       });
 
       const cardsRecent = document.querySelectorAll('.card-recenti');
@@ -380,13 +663,107 @@
       document.getElementById('sq-tab-' + tab).className = "px-4 py-2 rounded-xl text-xs font-bold bg-[#0f2544] text-white shadow transition cursor-pointer";
     }
 
-    function renderRosterMain() {
-      const grid = document.getElementById('roster-grid-main');
-      if (!grid) return;
-      grid.innerHTML = rosterAtleti.map((a, idx) => generateJerseySvgHtml(a, idx, false)).join('');
+    // =========================================================================
+    // RENDERING DINAMICO NEWS (CON SUPPORTO STATO "RIMANDATA" IN BLU)
+    // =========================================================================
+    function renderNewsCards() {
+      const container = document.getElementById('news-cards-container');
+      if (!container) return;
+
+      // Pesca automaticamente l'ultima partita conclusa e le prime due non ancora concluse (programmata o rimandata)
+      const concluse = dbState.partite.filter(p => p.stato === 'conclusa');
+      const ultimaConclusa = concluse.length > 0 ? concluse[concluse.length - 1] : null;
+      const prossime = dbState.partite.filter(p => p.stato !== 'conclusa').slice(0, 2);
+
+      const cardsToDisplay = [];
+      if (ultimaConclusa) cardsToDisplay.push({ ...ultimaConclusa, role: 'ultima' });
+      prossime.forEach((p, idx) => cardsToDisplay.push({ ...p, role: idx === 0 ? 'prossima' : 'successiva' }));
+
+      container.innerHTML = cardsToDisplay.map(item => {
+        const isConclusa = item.stato === 'conclusa';
+        const isRimandata = item.stato === 'rimandata';
+        const tipoCard = isConclusa ? 'card-recenti' : 'card-prossimi';
+
+        // Etichetta superiore
+        let etichettaTop = "In Programma";
+        if (isConclusa) etichettaTop = "Ultima Partita";
+        else if (item.role === 'prossima') etichettaTop = "Prossimo Incontro";
+
+        // Stile Card e Badge in base allo stato (inclusa velatura blu per RIMANDATA)
+        let cardWrapperClass = "bg-white border-2 border-slate-200 hover:border-[#0f2544]";
+        let badgeHTML = "";
+        let centralBoxClass = "bg-slate-50 border border-slate-200 group-hover:bg-[#0f2544] group-hover:text-white";
+        let centralLabel = isConclusa ? "Risultato Finale" : "Gara Ufficiale";
+        let centralMainText = isConclusa 
+          ? (item.risultato || "Conclusa") 
+          : (item.tipo === 'In Casa' ? `ASA Cinisello vs ${item.avversario}` : `${item.avversario} vs ASA Cinisello`);
+        let centralSubText = isConclusa 
+          ? (item.tipo === 'In Casa' ? `ASA Cinisello vs ${item.avversario}` : `${item.avversario} vs ASA Cinisello`)
+          : "Incontro Confermato";
+
+        if (isRimandata) {
+          // Stile dedicato con velatura azzurra e pallino blu
+          cardWrapperClass = "bg-sky-50/75 border-2 border-sky-400 shadow-sky-100";
+          badgeHTML = `
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black bg-sky-600 text-white uppercase tracking-widest shadow-xs">
+              <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> Rimandata
+            </span>`;
+          centralBoxClass = "bg-sky-100/80 border border-sky-300 text-sky-950";
+          centralLabel = "Avviso Gara Rimandata";
+          centralSubText = item.nota ? item.nota : "Nuova data in fase di definizione";
+        } else if (isConclusa) {
+          badgeHTML = `<span class="px-3 py-1 rounded-full text-[10px] font-black bg-slate-100 text-slate-700 uppercase tracking-widest">Conclusa</span>`;
+        } else {
+          const luogoClass = item.tipo === 'In Casa' 
+            ? "bg-blue-50 text-blue-900 border border-blue-200" 
+            : "bg-purple-50 text-purple-900 border border-purple-200";
+          badgeHTML = `<span class="px-3 py-1 rounded-full text-[10px] font-black ${luogoClass} uppercase tracking-widest">${item.tipo}</span>`;
+        }
+
+        const convocatiList = dbState.convocazioni[item.id] || [];
+        const hasConvocazioni = convocatiList.length > 0;
+
+        let buttonHTML = hasConvocazioni 
+          ? `<button onclick="openMatchModal('${item.id}')" class="w-full py-3 bg-slate-900 hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">CONVOCAZIONI UFFICIALI</button>`
+          : `<button disabled class="w-full py-3 bg-slate-200 text-slate-400 rounded-2xl text-xs font-extrabold uppercase tracking-wider cursor-not-allowed opacity-75">IN ATTESA CONVOCAZIONI</button>`;
+
+        return `
+          <div class="news-card ${tipoCard} ${cardWrapperClass} rounded-3xl p-6 sm:p-7 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group relative overflow-hidden">
+            <div class="space-y-4">
+              <div class="flex items-center justify-between border-b ${isRimandata ? 'border-sky-200' : 'border-slate-100'} pb-3">
+                <span class="text-xs font-extrabold ${isRimandata ? 'text-sky-800' : 'text-asa-red'} uppercase tracking-wider">${etichettaTop}</span>
+                ${badgeHTML}
+              </div>
+              <div>
+                <span class="text-xs font-bold ${isRimandata ? 'text-sky-700' : 'text-slate-400'}">${item.data}${item.ora ? ' • Ore ' + item.ora : ''}</span>
+                <h3 class="text-xl font-black text-[#0f2544] tracking-tight mt-0.5">${item.id}</h3>
+                <p class="text-xs text-slate-600 mt-1">${item.sede}</p>
+              </div>
+              <div class="${centralBoxClass} rounded-2xl p-5 text-center space-y-2 transition-colors duration-300">
+                <div class="text-[10px] font-black uppercase tracking-widest ${isRimandata ? 'text-sky-700' : 'text-slate-400 group-hover:text-slate-300'}">${centralLabel}</div>
+                <div class="${isConclusa ? 'text-4xl font-black tracking-tighter' : 'text-xl font-black tracking-tight'} text-[#0f2544] ${!isRimandata ? 'group-hover:text-white' : ''}">${centralMainText}</div>
+                <div class="text-xs font-bold ${isRimandata ? 'text-sky-900' : 'text-slate-700 group-hover:text-slate-200'}">${centralSubText}</div>
+              </div>
+            </div>
+            <div class="pt-6">
+              ${buttonHTML}
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
-    // Helper per generare la canotta (nomi completi visibili senza troncamenti, altezza coordinata)
+    // =========================================================================
+    // RENDERING ROSTER & CALENDARIO STAGIONE
+    // =========================================================================
+    function renderRosterMain() {
+      const grid = document.getElementById('roster-grid-main');
+      const countBadge = document.getElementById('roster-count-badge');
+      if (countBadge) countBadge.innerText = dbState.roster.length;
+      if (!grid) return;
+      grid.innerHTML = dbState.roster.map((a, idx) => generateJerseySvgHtml(a, idx, false)).join('');
+    }
+
     function generateJerseySvgHtml(a, idx, isModal = false) {
       const parts = a.nome.split(' ');
       const cognome = parts.slice(1).join(' ').toUpperCase();
@@ -451,7 +828,6 @@
                     fill="none" stroke="#cbd5e1" stroke-width="2" />
             </svg>
           </div>
-          <!-- Etichetta inferiore uniforme con nome completo su due righe se lungo, senza troncamenti -->
           <div class="text-center border-t border-slate-200/60 pt-2 w-full min-h-[42px] flex items-center justify-center">
             <div class="font-extrabold text-[11px] sm:text-xs text-[#0f2544] leading-tight px-1">${nome} ${cognome}</div>
           </div>
@@ -459,115 +835,34 @@
       `;
     }
 
-    function renderNewsCards() {
-      const container = document.getElementById('news-cards-container');
-      if (!container) return;
-
-      const newsData = [
-        {
-          id: "Giornata 2",
-          tipoCard: "card-recenti",
-          etichettaTop: "Ultima Partita",
-          badge: "Conclusa",
-          badgeClass: "bg-slate-100 text-slate-700",
-          data: "Sabato 22 Novembre 2026",
-          titolo: "Giornata 2",
-          sede: "Palestra Comunale - Via Marx, Sesto S.G.",
-          isRisultato: true,
-          testoRisultato: "17 - 20",
-          squadreScore: "Sesto Basket vs ASA Cinisello",
-          avversarioModal: "Sesto Basket",
-          scoreModal: "17 - 20",
-          infoModal: "Palestra Comunale Sesto"
-        },
-        {
-          id: "Giornata 3",
-          tipoCard: "card-prossimi",
-          etichettaTop: "Prossimo Incontro",
-          badge: "In Casa",
-          badgeClass: "bg-blue-50 text-blue-900 border border-blue-200",
-          data: "Sabato 29 Novembre 2026 • Ore 15:30",
-          titolo: "Giornata 3",
-          sede: "Palestra BUCUM • Via Monte Ortigara 2",
-          isRisultato: false,
-          testoRisultato: "ASA Cinisello vs Fortitudo Cologno",
-          squadreScore: "Incontro Confermato",
-          avversarioModal: "Fortitudo Cologno",
-          scoreModal: "Da disputare",
-          infoModal: "Palestra BUCUM - Via Monte Ortigara 2"
-        },
-        {
-          id: "Giornata 4",
-          tipoCard: "card-prossimi",
-          etichettaTop: "In Programma",
-          badge: "Trasferta",
-          badgeClass: "bg-purple-50 text-purple-900 border border-purple-200",
-          data: "Sabato 06 Dicembre 2026 • Ore 16:30",
-          titolo: "Giornata 4",
-          sede: "Centro Sportivo - Cologno Monzese",
-          isRisultato: false,
-          testoRisultato: "Rondinella Sesto vs ASA Cinisello",
-          squadreScore: "Incontro da confermare",
-          avversarioModal: "Rondinella Sesto",
-          scoreModal: "Da disputare",
-          infoModal: "Centro Sportivo - Cologno Monzese"
-        }
-      ];
-
-      container.innerHTML = newsData.map(item => {
-        const convocatiList = databaseConvocazioni[item.id] || [];
-        const hasConvocazioni = convocatiList.length > 0;
-
-        let buttonHTML = hasConvocazioni 
-          ? `<button onclick="openMatchModal('${item.id}', '${item.avversarioModal}', '${item.scoreModal}', '${item.infoModal}')" class="w-full py-3 bg-slate-900 hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">CONVOCAZIONI UFFICIALI</button>`
-          : `<button disabled class="w-full py-3 bg-slate-200 text-slate-400 rounded-2xl text-xs font-extrabold uppercase tracking-wider cursor-not-allowed opacity-75">IN ATTESA CONVOCAZIONI</button>`;
-
-        return `
-          <div class="news-card ${item.tipoCard} bg-white rounded-3xl p-6 sm:p-7 border-2 border-slate-200 hover:border-[#0f2544] transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group">
-            <div class="space-y-4">
-              <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                <span class="text-xs font-extrabold text-asa-red uppercase tracking-wider">${item.etichettaTop}</span>
-                <span class="px-3 py-1 rounded-full text-[10px] font-black ${item.badgeClass} uppercase tracking-widest">${item.badge}</span>
-              </div>
-              <div>
-                <span class="text-xs font-bold text-slate-400">${item.data}</span>
-                <h3 class="text-xl font-black text-[#0f2544] tracking-tight mt-0.5">${item.titolo}</h3>
-                <p class="text-xs text-slate-500 mt-1">${item.sede}</p>
-              </div>
-              <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200 text-center space-y-2 group-hover:bg-[#0f2544] group-hover:text-white transition-colors duration-300">
-                <div class="text-[10px] font-black uppercase tracking-widest text-slate-400 group-hover:text-slate-300">${item.isRisultato ? 'Risultato Finale' : 'Gara Ufficiale'}</div>
-                <div class="${item.isRisultato ? 'text-4xl font-black tracking-tighter' : 'text-xl font-black tracking-tight'} text-[#0f2544] group-hover:text-white">${item.testoRisultato}</div>
-                <div class="text-xs font-bold text-slate-700 group-hover:text-slate-200">${item.squadreScore}</div>
-              </div>
-            </div>
-            <div class="pt-6">
-              ${buttonHTML}
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
     function renderFullSchedule() {
       const container = document.getElementById('full-schedule-container');
       if (!container) return;
-      container.innerHTML = allPartite.map(p => {
-        const convocatiList = databaseConvocazioni[p.id] || [];
+      container.innerHTML = dbState.partite.map(p => {
+        const convocatiList = dbState.convocazioni[p.id] || [];
         const hasConvocati = convocatiList.length > 0;
+        const isRimandata = p.stato === 'rimandata';
+        const isConclusa = p.stato === 'conclusa';
+
+        let statusBadge = `<span class="px-4 py-1.5 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-amber-100 text-amber-900">Da disputare</span>`;
+        if (isConclusa) {
+          statusBadge = `<span class="px-4 py-1.5 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-emerald-100 text-emerald-900">Finale: ${p.risultato || 'Conclusa'}</span>`;
+        } else if (isRimandata) {
+          statusBadge = `<span class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-sky-600 text-white"><span class="w-2 h-2 rounded-full bg-white"></span> Rimandata</span>`;
+        }
 
         return `
-          <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="${isRimandata ? 'bg-sky-50/70 border-sky-300' : 'bg-white border-slate-200'} p-6 rounded-3xl border shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
-              <span class="text-xs font-extrabold text-asa-red uppercase tracking-wider">${p.id} • ${p.data} ${p.isPast ? '• [CONCLUSIONE]' : ''}</span>
+              <span class="text-xs font-extrabold ${isRimandata ? 'text-sky-700' : 'text-asa-red'} uppercase tracking-wider">${p.id} • ${p.data}${p.ora ? ' (' + p.ora + ')' : ''} • ${p.tipo}</span>
               <h4 class="text-lg font-black text-[#0f2544]">ASA Cinisello vs ${p.avversario}</h4>
-              <p class="text-xs text-slate-500">Sede: ${p.sede}</p>
+              <p class="text-xs text-slate-600">Sede: ${p.sede}</p>
+              ${isRimandata && p.nota ? `<p class="text-xs font-bold text-sky-800 mt-1">ℹ️ ${p.nota}</p>` : ''}
             </div>
             <div class="flex items-center gap-3 flex-wrap">
-              <span class="px-4 py-1.5 rounded-xl text-xs font-extrabold uppercase tracking-wider ${p.risultato !== 'Da disputare' ? 'bg-emerald-100 text-emerald-900' : 'bg-amber-100 text-amber-900'}">
-                ${p.risultato !== 'Da disputare' ? 'Finale: ' + p.risultato : 'Da disputare'}
-              </span>
+              ${statusBadge}
               ${hasConvocati 
-                ? `<button onclick="openMatchModal('${p.id}', '${p.avversario}', '${p.risultato}', '${p.sede}')" class="px-4 py-1.5 bg-[#0f2544] hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition cursor-pointer shadow">Convocazioni Ufficiali</button>`
+                ? `<button onclick="openMatchModal('${p.id}')" class="px-4 py-1.5 bg-[#0f2544] hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition cursor-pointer shadow">Convocazioni Ufficiali</button>`
                 : `<button disabled class="px-4 py-1.5 bg-slate-100 text-slate-400 rounded-xl text-xs font-bold cursor-not-allowed">In Attesa Convocazioni</button>`
               }
             </div>
@@ -576,101 +871,28 @@
       }).join('');
     }
 
-    function verifyCoachLogin() {
-      const pass = document.getElementById('coach-pass').value;
-      if (pass === "asa2026" || pass.trim() !== "") {
-        document.getElementById('coach-login-container').classList.add('hidden');
-        document.getElementById('coach-dashboard-container').classList.remove('hidden');
-        buildMatchSelector();
-        buildCoachChecklist();
-        loadMatchConvocazioni();
-      } else {
-        alert("Password non valida.");
-      }
-    }
+    // =========================================================================
+    // MODALE CONVOCAZIONI UFFICIALI
+    // =========================================================================
+    function openMatchModal(giornataId) {
+      const match = dbState.partite.find(p => p.id === giornataId);
+      if (!match) return;
 
-    function coachLogout() {
-      document.getElementById('coach-pass').value = "";
-      document.getElementById('coach-dashboard-container').classList.add('hidden');
-      document.getElementById('coach-login-container').classList.remove('hidden');
-    }
-
-    function buildMatchSelector() {
-      const select = document.getElementById('match-selector');
-      if (!select) return;
-      select.innerHTML = allPartite.map(p => {
-        if (p.isPast) {
-          return `<option value="${p.id}" style="color: #94a3b8; background-color: #f1f5f9; font-style: italic;">📂 [ARCHIVIO / PASSATA] ${p.id} (${p.data}) vs ${p.avversario}</option>`;
-        } else {
-          return `<option value="${p.id}">📅 [PROSSIMA] ${p.id} (${p.data}) vs ${p.avversario}</option>`;
-        }
-      }).join('');
-    }
-
-    function buildCoachChecklist() {
-      const container = document.getElementById('coach-roster-checklist');
-      if (!container) return;
-      container.innerHTML = rosterAtleti.map((a) => `
-        <label class="flex items-center gap-3 p-3 bg-slate-50 hover:bg-slate-100 rounded-2xl border border-slate-200 cursor-pointer transition select-none">
-          <input type="checkbox" value="${a.nome}" onchange="updateSelectedCounter()" class="coach-player-chk w-4 h-4 text-[#c8102e] rounded border-slate-300 focus:ring-[#c8102e]" />
-          <div class="text-xs font-bold text-slate-800">${a.nome} <span class="text-slate-400 font-normal">(${a.numero})</span></div>
-        </label>
-      `).join('');
-    }
-
-    function loadMatchConvocazioni() {
-      const matchId = document.getElementById('match-selector').value;
-      const convocatiMatch = databaseConvocazioni[matchId] || [];
+      document.getElementById('modal-title').innerHTML = `ASA Cinisello <span class="text-[#c8102e] font-bold text-lg">vs</span> ${match.avversario}`;
       
-      document.querySelectorAll('.coach-player-chk').forEach(chk => {
-        chk.checked = convocatiMatch.includes(chk.value);
-      });
-      updateSelectedCounter();
-    }
+      let scoreText = "In attesa di svolgimento";
+      if (match.stato === 'conclusa') scoreText = `Risultato Finale: ${match.risultato}`;
+      else if (match.stato === 'rimandata') scoreText = `RIMANDATA ${match.nota ? '(' + match.nota + ')' : ''}`;
 
-    function updateSelectedCounter() {
-      const checkedCount = document.querySelectorAll('.coach-player-chk:checked').length;
-      document.getElementById('selected-counter').innerText = `${checkedCount} / 22 Selezionati`;
-    }
+      document.getElementById('modal-score').innerText = scoreText;
+      document.getElementById('modal-giornata').innerText = match.id.toUpperCase();
+      document.getElementById('modal-info').innerText = `${match.data} • ${match.sede}`;
 
-    function selectAllPlayers(select) {
-      document.querySelectorAll('.coach-player-chk').forEach(chk => {
-        chk.checked = select;
-      });
-      updateSelectedCounter();
-    }
-
-    function saveConvocazioni() {
-      const matchId = document.getElementById('match-selector').value;
-      const selected = [];
-      document.querySelectorAll('.coach-player-chk:checked').forEach(chk => {
-        selected.push(chk.value);
-      });
-
-      databaseConvocazioni[matchId] = selected;
-      renderNewsCards();
-      renderFullSchedule();
-
-      alert(`Convocazioni salvate e pubblicate con successo per la ${matchId}! (${selected.length} atleti convocati)`);
-    }
-
-    // APERTURA MODALE CON CONVOCAZIONI E ORDINAMENTO PER NUMERO DI MAGLIA
-    function openMatchModal(giornataId, opponent, score, info) {
-      document.getElementById('modal-title').innerHTML = `ASA Cinisello <span class="text-[#c8102e] font-bold text-lg">vs</span> ${opponent}`;
-      document.getElementById('modal-score').innerText = score !== 'Da disputare' ? 'Risultato: ' + score : 'In attesa di svolgimento';
-      document.getElementById('modal-giornata').innerText = giornataId.toUpperCase();
-      document.getElementById('modal-info').innerText = info;
-
-      const convocatiNomi = databaseConvocazioni[giornataId] || [];
+      const convocatiNomi = dbState.convocazioni[giornataId] || [];
       document.getElementById('modal-convocati-count').innerText = `${convocatiNomi.length} convocati`;
 
-      // Filtra gli atleti convocati e li ordina per numero di maglia (numerico)
-      const convocatiObj = rosterAtleti.filter(a => convocatiNomi.includes(a.nome));
-      convocatiObj.sort((a, b) => {
-        const numA = parseInt(a.numero) || 999;
-        const numB = parseInt(b.numero) || 999;
-        return numA - numB;
-      });
+      const convocatiObj = dbState.roster.filter(a => convocatiNomi.includes(a.nome));
+      convocatiObj.sort((a, b) => (parseInt(a.numero) || 999) - (parseInt(b.numero) || 999));
 
       const gridContainer = document.getElementById('parquet-jerseys-grid');
       if (convocatiObj.length > 0) {
@@ -684,6 +906,270 @@
 
     function closeMatchModal() {
       document.getElementById('match-modal').classList.add('hidden');
+    }
+
+    // =========================================================================
+    // SEZIONE 1: AREA COACH (SOLO CONVOCAZIONI)
+    // =========================================================================
+    function verifyCoachLogin() {
+      const pass = document.getElementById('coach-pass').value;
+      if (pass === "asa2026" || pass.trim() !== "") {
+        document.getElementById('coach-login-container').classList.add('hidden');
+        document.getElementById('coach-dashboard-container').classList.remove('hidden');
+        buildCoachMatchSelector();
+        buildCoachChecklist();
+        loadMatchConvocazioni();
+      } else {
+        alert("Password non valida.");
+      }
+    }
+
+    function coachLogout() {
+      document.getElementById('coach-pass').value = "";
+      document.getElementById('coach-dashboard-container').classList.add('hidden');
+      document.getElementById('coach-login-container').classList.remove('hidden');
+    }
+
+    function buildCoachMatchSelector() {
+      const select = document.getElementById('coach-match-selector');
+      if (!select) return;
+      select.innerHTML = dbState.partite.map(p => {
+        let tag = "📅 [PROSSIMA]";
+        if (p.stato === 'conclusa') tag = "📂 [CONCLUSA]";
+        else if (p.stato === 'rimandata') tag = "🔵 [RIMANDATA]";
+        return `<option value="${p.id}">${tag} ${p.id} (${p.data}) vs ${p.avversario}</option>`;
+      }).join('');
+    }
+
+    function buildCoachChecklist() {
+      const container = document.getElementById('coach-roster-checklist');
+      if (!container) return;
+      container.innerHTML = dbState.roster.map((a) => `
+        <label class="flex items-center gap-3 p-3 bg-slate-50 hover:bg-slate-100 rounded-2xl border border-slate-200 cursor-pointer transition select-none">
+          <input type="checkbox" value="${a.nome}" onchange="updateSelectedCounter()" class="coach-player-chk w-4 h-4 text-[#c8102e] rounded border-slate-300 focus:ring-[#c8102e]" />
+          <div class="text-xs font-bold text-slate-800">${a.nome} <span class="text-slate-400 font-normal">(${a.numero})</span></div>
+        </label>
+      `).join('');
+    }
+
+    function loadMatchConvocazioni() {
+      const matchId = document.getElementById('coach-match-selector').value;
+      const convocatiMatch = dbState.convocazioni[matchId] || [];
+      document.querySelectorAll('.coach-player-chk').forEach(chk => {
+        chk.checked = convocatiMatch.includes(chk.value);
+      });
+      updateSelectedCounter();
+    }
+
+    function updateSelectedCounter() {
+      const checkedCount = document.querySelectorAll('.coach-player-chk:checked').length;
+      document.getElementById('selected-counter').innerText = `${checkedCount} / ${dbState.roster.length} Selezionati`;
+    }
+
+    function selectAllPlayers(select) {
+      document.querySelectorAll('.coach-player-chk').forEach(chk => chk.checked = select);
+      updateSelectedCounter();
+    }
+
+    function saveConvocazioni() {
+      const matchId = document.getElementById('coach-match-selector').value;
+      const selected = [];
+      document.querySelectorAll('.coach-player-chk:checked').forEach(chk => selected.push(chk.value));
+
+      dbState.convocazioni[matchId] = selected;
+      syncToFirebase('convocazioni');
+      renderAllPublicViews();
+      alert(`Convocazioni aggiornate per ${matchId}! (${selected.length} atleti convocati)`);
+    }
+
+    // =========================================================================
+    // SEZIONE 2: CABINA DI REGIA / DIRIGENTE (INDIPENDENTE)
+    // =========================================================================
+    function verifyDirigenteLogin() {
+      const pass = document.getElementById('dirigente-pass').value;
+      if (pass === "dirigente2026" || pass.trim() !== "") {
+        document.getElementById('dirigente-login-container').classList.add('hidden');
+        document.getElementById('dirigente-dashboard-container').classList.remove('hidden');
+        initRegiaDashboard();
+      } else {
+        alert("Password regia non valida.");
+      }
+    }
+
+    function dirigenteLogout() {
+      document.getElementById('dirigente-pass').value = "";
+      document.getElementById('dirigente-dashboard-container').classList.add('hidden');
+      document.getElementById('dirigente-login-container').classList.remove('hidden');
+    }
+
+    function switchRegiaTab(tab) {
+      ['partite', 'ticker', 'roster'].forEach(t => {
+        document.getElementById('regia-content-' + t).classList.add('hidden');
+        document.getElementById('regia-tab-' + t).className = "px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap";
+      });
+      document.getElementById('regia-content-' + tab).classList.remove('hidden');
+      document.getElementById('regia-tab-' + tab).className = "px-4 py-2.5 rounded-xl text-xs font-bold bg-[#0f2544] text-white shadow transition cursor-pointer whitespace-nowrap";
+    }
+
+    function initRegiaDashboard() {
+      // Popola tab Ticker
+      document.getElementById('regia-ticker-active').checked = dbState.ticker.attivo;
+      document.getElementById('regia-ticker-text').value = dbState.ticker.testo;
+
+      // Popola tab Partite
+      renderRegiaMatchesList();
+      if (dbState.partite.length > 0) {
+        selectMatchInRegia(0);
+      }
+
+      // Popola tab Roster
+      renderRegiaRosterEditor();
+    }
+
+    function renderRegiaMatchesList() {
+      const list = document.getElementById('regia-matches-list');
+      if (!list) return;
+      list.innerHTML = dbState.partite.map((p, idx) => {
+        let dotColor = "bg-emerald-500";
+        if (p.stato === 'conclusa') dotColor = "bg-slate-400";
+        if (p.stato === 'rimandata') dotColor = "bg-sky-500";
+
+        return `
+          <div onclick="selectMatchInRegia(${idx})" class="p-3.5 rounded-2xl border border-slate-200 hover:border-sky-500 bg-slate-50 hover:bg-sky-50/50 cursor-pointer transition flex items-center justify-between gap-2">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full ${dotColor}"></span>
+                <span class="text-xs font-black text-[#0f2544]">${p.id}</span>
+                <span class="text-[10px] font-bold text-slate-400">${p.data}</span>
+              </div>
+              <div class="text-xs font-semibold text-slate-700 mt-0.5">vs ${p.avversario}</div>
+            </div>
+            <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600">${p.stato}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function selectMatchInRegia(idx) {
+      const p = dbState.partite[idx];
+      if (!p) return;
+      document.getElementById('regia-form-mode').innerText = `Modifica: ${p.id}`;
+      document.getElementById('regia-match-index').value = idx;
+      document.getElementById('regia-f-id').value = p.id;
+      document.getElementById('regia-f-avversario').value = p.avversario;
+      document.getElementById('regia-f-data').value = p.data;
+      document.getElementById('regia-f-ora').value = p.ora || "";
+      document.getElementById('regia-f-tipo').value = p.tipo || "In Casa";
+      document.getElementById('regia-f-sede').value = p.sede;
+      document.getElementById('regia-f-stato').value = p.stato;
+      document.getElementById('regia-f-risultato').value = p.risultato || "";
+      document.getElementById('regia-f-nota').value = p.nota || "";
+      document.getElementById('btn-delete-match').classList.remove('hidden');
+      toggleRegiaStateFields();
+    }
+
+    function prepareNewMatch() {
+      document.getElementById('regia-form-mode').innerText = "Inserimento Nuova Partita";
+      document.getElementById('regia-match-index').value = "-1";
+      document.getElementById('regia-f-id').value = `Giornata ${dbState.partite.length + 1}`;
+      document.getElementById('regia-f-avversario').value = "";
+      document.getElementById('regia-f-data').value = "";
+      document.getElementById('regia-f-ora').value = "15:30";
+      document.getElementById('regia-f-tipo').value = "In Casa";
+      document.getElementById('regia-f-sede').value = "Palestra BUCUM - Via Monte Ortigara 2";
+      document.getElementById('regia-f-stato').value = "programmata";
+      document.getElementById('regia-f-risultato').value = "";
+      document.getElementById('regia-f-nota').value = "";
+      document.getElementById('btn-delete-match').classList.add('hidden');
+      toggleRegiaStateFields();
+    }
+
+    function toggleRegiaStateFields() {
+      const stato = document.getElementById('regia-f-stato').value;
+      const boxRis = document.getElementById('regia-box-risultato');
+      const boxNota = document.getElementById('regia-box-nota');
+
+      boxRis.style.opacity = stato === 'conclusa' ? '1' : '0.45';
+      boxNota.style.display = stato === 'rimandata' ? 'block' : 'none';
+    }
+
+    function saveMatchFromRegia() {
+      const idx = parseInt(document.getElementById('regia-match-index').value);
+      const matchObj = {
+        id: document.getElementById('regia-f-id').value.trim() || "Gara",
+        avversario: document.getElementById('regia-f-avversario').value.trim() || "Avversario",
+        data: document.getElementById('regia-f-data').value.trim() || "Da definire",
+        ora: document.getElementById('regia-f-ora').value.trim(),
+        tipo: document.getElementById('regia-f-tipo').value,
+        sede: document.getElementById('regia-f-sede').value.trim() || "Palestra BUCUM",
+        stato: document.getElementById('regia-f-stato').value,
+        risultato: document.getElementById('regia-f-risultato').value.trim(),
+        nota: document.getElementById('regia-f-nota').value.trim()
+      };
+
+      if (idx === -1) {
+        dbState.partite.push(matchObj);
+        selectMatchInRegia(dbState.partite.length - 1);
+      } else {
+        dbState.partite[idx] = matchObj;
+      }
+
+      syncToFirebase('partite');
+      renderRegiaMatchesList();
+      renderAllPublicViews();
+    }
+
+    function deleteCurrentMatch() {
+      const idx = parseInt(document.getElementById('regia-match-index').value);
+      if (idx >= 0 && confirm("Confermi l'eliminazione di questa gara dal calendario?")) {
+        dbState.partite.splice(idx, 1);
+        syncToFirebase('partite');
+        renderRegiaMatchesList();
+        renderAllPublicViews();
+        if (dbState.partite.length > 0) selectMatchInRegia(0);
+        else prepareNewMatch();
+      }
+    }
+
+    function saveTickerFromRegia() {
+      dbState.ticker.attivo = document.getElementById('regia-ticker-active').checked;
+      dbState.ticker.testo = document.getElementById('regia-ticker-text').value;
+      syncToFirebase('ticker');
+      renderTicker();
+    }
+
+    function renderRegiaRosterEditor() {
+      const container = document.getElementById('regia-roster-editor');
+      if (!container) return;
+      container.innerHTML = dbState.roster.map((a, idx) => `
+        <div class="flex items-center justify-between gap-2 p-3 bg-slate-50 rounded-xl border border-slate-200">
+          <span class="text-xs font-bold text-slate-800 truncate">${a.nome}</span>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <span class="text-[10px] font-bold text-slate-400">#</span>
+            <input type="text" value="${a.numero}" onchange="updatePlayerNumber(${idx}, this.value)" class="w-12 px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-black text-center text-[#0f2544]" />
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function updatePlayerNumber(idx, newNum) {
+      dbState.roster[idx].numero = newNum.trim() || "-";
+      syncToFirebase('roster');
+      renderRosterMain();
+    }
+
+    function addPlayerFromRegia() {
+      const nameInput = document.getElementById('regia-new-player-name');
+      const numInput = document.getElementById('regia-new-player-num');
+      const nome = nameInput.value.trim();
+      if (!nome) return alert("Inserisci nome e cognome dell'atleta.");
+
+      dbState.roster.push({ nome, numero: numInput.value.trim() || "-" });
+      nameInput.value = "";
+      numInput.value = "";
+      syncToFirebase('roster');
+      renderRegiaRosterEditor();
+      renderRosterMain();
     }
   </script>
 </body>
