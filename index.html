@@ -848,7 +848,9 @@
         let centralBoxClass = "bg-amber-100/70 border border-amber-200 text-amber-950";
         let centralLabel = "In Agenda • " + item.tipo.toUpperCase();
         let centralSubText = "Partita di campionato";
-        let buttonHTML = `<button onclick="openAvailabilityModal('${item.id}')" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow flex items-center justify-between px-5"><span>CONFERMA DISPONIBILITÀ</span> <span class="bg-slate-950 text-amber-300 px-2.5 py-0.5 rounded-full text-[10px] font-bold">${dispCount} disponibili</span></button>`;
+        let buttonHTML = hasConvocati
+          ? `<button onclick="openMatchModal('${item.id}')" class="w-full py-3 bg-[#0f2544] hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">LISTA CONVOCATI (${convocatiList.length})</button>`
+          : `<button onclick="openAvailabilityModal('${item.id}')" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow flex items-center justify-between px-5"><span>CONFERMA DISPONIBILITÀ</span> <span class="bg-slate-950 text-amber-300 px-2.5 py-0.5 rounded-full text-[10px] font-bold">${dispCount} disponibili</span></button>`;
 
         if (isProssimoIncontro) {
           etichettaTop = "Prossimo Incontro";
