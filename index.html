@@ -13,7 +13,7 @@
     .asa-navy { background-color: #0f2544; }
     .asa-red { background-color: #c8102e; }
     .text-asa-red { color: #c8102e; }
-    
+
     .arena-court-bg {
       background: linear-gradient(to top, #0f2544 0%, #1e3a6f 100%);
       box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.4);
@@ -44,7 +44,7 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-[#c8102e] selection:text-white">
 
-  <!-- TOP WRAPPER (TESTATA + TICKER)    -->
+  <!-- TOP WRAPPER (TESTATA + TICKER) -->
   <div>
     <header class="asa-navy text-white shadow-2xl sticky top-0 z-50 border-b border-white/10">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 sm:gap-6">
@@ -63,7 +63,7 @@
             <p class="text-xs sm:text-sm text-slate-300 font-medium mt-1 tracking-wide">Palestra BUCUM • Via Monte Ortigara 2, Cinisello Balsamo</p>
           </div>
         </div>
-        
+
         <nav class="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold flex-wrap pt-2 lg:pt-0 border-t border-white/10 lg:border-t-0">
           <button onclick="switchNav('news')" id="nav-news" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition bg-white text-[#0f2544] font-bold shadow-md cursor-pointer">News</button>
           <button onclick="switchNav('squadra')" id="nav-squadra" class="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl transition text-white hover:bg-white/10 cursor-pointer">Squadra</button>
@@ -90,7 +90,7 @@
           <span class="text-xs font-extrabold text-asa-red uppercase tracking-widest block mb-1">Stagione Ufficiale 2026/2027</span>
           <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#0f2544] tracking-tight uppercase">News & Incontri Ufficiali</h1>
         </div>
-        
+
         <div class="flex items-center gap-1 bg-slate-200/80 p-1.5 rounded-2xl overflow-x-auto">
           <button onclick="filterNews('all')" id="tab-all" class="px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-bold bg-[#0f2544] text-white shadow transition cursor-pointer whitespace-nowrap">Panoramica</button>
           <button onclick="filterNews('recenti')" id="tab-recenti" class="px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap">Recenti</button>
@@ -101,7 +101,7 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8" id="news-cards-container"></div>
     </section>
 
-    <!-- SQUADRA VIEW    -->
+    <!-- SQUADRA VIEW -->
     <section id="view-squadra" class="space-y-8 hidden">
       <div class="border-b border-slate-300 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -192,7 +192,7 @@
               <div class="text-xs font-bold text-[#0f2544]" id="coach-disponibili-counter">0 Atleti disponibili segnalati</div>
             </div>
             <button onclick="selectAvailablePlayers()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider transition cursor-pointer shadow-sm">
-              ✨ Seleziona Disponibili
+              Seleziona Disponibili
             </button>
           </div>
 
@@ -315,10 +315,10 @@
                 <div>
                   <label class="text-[11px] font-bold text-slate-600 uppercase block mb-1">Stato Incontro</label>
                   <select id="regia-f-stato" onchange="toggleRegiaStateFields()" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-extrabold text-[#0f2544]">
-                    <option value="programmata">🟡 Programmata (In calendario)</option>
-                    <option value="prossimo_incontro">🟢 Prossimo Incontro (Evidenzia in verde + Convocazioni)</option>
-                    <option value="rinviata">🔵 Rinviata (Evidenzia in azzurro + Blocca disponibilità)</option>
-                    <option value="conclusa">🏁 Conclusa (Con risultato e statistiche)</option>
+                    <option value="programmata">Programmata (In calendario)</option>
+                    <option value="prossimo_incontro">Prossimo Incontro (Evidenzia in verde + Convocazioni)</option>
+                    <option value="rinviata">Rinviata (Evidenzia in azzurro + Blocca disponibilità)</option>
+                    <option value="conclusa">Conclusa (Con risultato e statistiche)</option>
                   </select>
                 </div>
               </div>
@@ -416,7 +416,7 @@
         <span>Portale Ufficiale Scoiattoli</span>
         <span>•</span>
         <button onclick="switchNav('dirigente')" class="hover:text-slate-300 transition cursor-pointer flex items-center gap-1 font-semibold">
-          ⚙️ Area Dirigente
+          Area Dirigente
         </button>
       </div>
     </div>
@@ -426,7 +426,7 @@
   <div id="match-modal" class="fixed inset-0 bg-slate-950/70 z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-4xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-200 relative max-h-[92vh] overflow-y-auto">
       <button onclick="closeMatchModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-700 font-extrabold text-lg cursor-pointer">✕</button>
-      
+
       <div class="space-y-1 text-center">
         <span class="text-xs font-extrabold text-asa-red uppercase tracking-widest" id="modal-giornata">Giornata</span>
         <h3 class="text-2xl font-black text-[#0f2544]" id="modal-title">ASA Cinisello vs Squadra avversaria</h3>
@@ -455,7 +455,7 @@
   <div id="availability-modal" class="fixed inset-0 bg-slate-950/70 z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-200 relative max-h-[92vh] overflow-y-auto">
       <button onclick="closeAvailabilityModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-700 font-extrabold text-lg cursor-pointer">✕</button>
-      
+
       <div class="space-y-1 text-center border-b border-slate-200 pb-4">
         <span class="text-xs font-extrabold text-amber-600 uppercase tracking-widest">CONFERMA LA TUA PRESENZA</span>
         <h3 class="text-xl font-black text-[#0f2544]" id="avail-modal-title">Disponibilità Atleti</h3>
@@ -525,58 +525,63 @@
         { nome: "Jonas Mantoan", numero: "24" }
       ],
       partite: [
-        { 
-          id: "Giornata 1", 
-          data: "15/11/2026", 
+        {
+          id: "Giornata 1",
+          data: "15/11/2026",
           ora: "15:30",
-          avversario: "Pallacanestro Cinisello", 
+          avversario: "Pallacanestro Cinisello",
           tipo: "In Casa",
-          stato: "programmata", 
-          risultato: "", 
+          fase: "Andata",
+          stato: "programmata",
+          risultato: "",
           sede: "Palestra BUCUM - Via Monte Ortigara 2",
           nota: ""
         },
-        { 
-          id: "Giornata 2", 
-          data: "22/11/2026", 
+        {
+          id: "Giornata 2",
+          data: "22/11/2026",
           ora: "16:00",
-          avversario: "Sesto Basket", 
+          avversario: "Sesto Basket",
           tipo: "Trasferta",
-          stato: "programmata", 
-          risultato: "", 
+          fase: "Andata",
+          stato: "programmata",
+          risultato: "",
           sede: "Palestra Comunale - Via Marx, Sesto S.G.",
           nota: ""
         },
-        { 
-          id: "Giornata 3", 
-          data: "29/11/2026", 
+        {
+          id: "Giornata 3",
+          data: "29/11/2026",
           ora: "15:30",
-          avversario: "Fortitudo Cologno", 
+          avversario: "Fortitudo Cologno",
           tipo: "In Casa",
-          stato: "programmata", 
-          risultato: "", 
+          fase: "Andata",
+          stato: "programmata",
+          risultato: "",
           sede: "Palestra BUCUM - Via Monte Ortigara 2",
           nota: ""
         },
-        { 
-          id: "Giornata 4", 
-          data: "06/12/2026", 
+        {
+          id: "Giornata 4",
+          data: "06/12/2026",
           ora: "16:30",
-          avversario: "Rondinella Sesto", 
+          avversario: "Rondinella Sesto",
           tipo: "Trasferta",
-          stato: "programmata", 
-          risultato: "", 
+          fase: "Andata",
+          stato: "programmata",
+          risultato: "",
           sede: "Centro Sportivo - Cologno Monzese",
           nota: ""
         },
-        { 
-          id: "Giornata 5", 
-          data: "13/12/2026", 
+        {
+          id: "Giornata 5",
+          data: "13/12/2026",
           ora: "15:30",
-          avversario: "San Carlo Milano", 
+          avversario: "San Carlo Milano",
           tipo: "In Casa",
-          stato: "programmata", 
-          risultato: "", 
+          fase: "Andata",
+          stato: "programmata",
+          risultato: "",
           sede: "Palestra BUCUM - Via Monte Ortigara 2",
           nota: ""
         }
@@ -619,7 +624,7 @@
     function loadLocalFallback() {
       const saved = localStorage.getItem('asa_scoiattoli_db_live');
       if (saved) {
-        try { 
+        try {
           dbState = JSON.parse(saved);
           if (dbState.partite) {
             dbState.partite.forEach(p => {
@@ -759,13 +764,26 @@
       document.getElementById('sq-tab-' + tab).className = "px-4 py-2 rounded-xl text-xs font-bold bg-[#0f2544] text-white shadow transition cursor-pointer";
     }
 
+    function formatSquadreVerticali(match) {
+      const squadraA = match.squadraCasa || (match.tipo === 'In Casa' ? 'ASA Cinisello' : match.avversario);
+      const squadraB = match.squadraTrasferta || (match.tipo === 'In Casa' ? match.avversario : 'ASA Cinisello');
+
+      return `
+        <div class="flex flex-col items-center justify-center gap-0.5 py-1">
+          <span class="text-sm sm:text-base font-black tracking-tight text-[#0f2544] leading-snug">${squadraA}</span>
+          <span class="text-[11px] font-black uppercase tracking-widest text-[#c8102e]">vs</span>
+          <span class="text-sm sm:text-base font-black tracking-tight text-[#0f2544] leading-snug">${squadraB}</span>
+        </div>
+      `;
+    }
+
     function renderNewsCards() {
       const container = document.getElementById('news-cards-container');
       if (!container || !dbState.partite) return;
 
       const concluse = dbState.partite.filter(p => p.stato === 'conclusa');
       const attive = dbState.partite.filter(p => p.stato !== 'conclusa');
-      
+
       attive.sort((a, b) => {
         const parseDate = (d) => {
           if (!d || !d.includes('/')) return 0;
@@ -796,7 +814,7 @@
                 <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 text-center space-y-2">
                   <div class="text-[10px] font-black uppercase tracking-widest text-slate-500">Full Time</div>
                   <div class="text-3xl font-black tracking-tighter text-[#0f2544]">${item.risultato || "Conclusa"}</div>
-                  <div class="text-xs font-bold text-slate-700">${item.tipo === 'In Casa' ? `ASA Cinisello vs ${item.avversario}` : `${item.avversario} vs ASA Cinisello`}</div>
+                  ${formatSquadreVerticali(item)}
                 </div>
               </div>
               <div class="pt-6">
@@ -829,7 +847,6 @@
         let badgeHTML = `<span class="px-3 py-1 rounded-full text-[10px] font-black bg-amber-500 text-white uppercase tracking-widest shadow-xs">Programmata (${item.tipo})</span>`;
         let centralBoxClass = "bg-amber-100/70 border border-amber-200 text-amber-950";
         let centralLabel = "In Agenda • " + item.tipo.toUpperCase();
-        let centralMainText = item.tipo === 'In Casa' ? `ASA Cinisello vs ${item.avversario}` : `${item.avversario} vs ASA Cinisello`;
         let centralSubText = "Partita di campionato";
         let buttonHTML = `<button onclick="openAvailabilityModal('${item.id}')" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow flex items-center justify-between px-5"><span>CONFERMA DISPONIBILITÀ</span> <span class="bg-slate-950 text-amber-300 px-2.5 py-0.5 rounded-full text-[10px] font-bold">${dispCount} disponibili</span></button>`;
 
@@ -875,10 +892,10 @@
                 <h3 class="text-xl font-black text-[#0f2544] tracking-tight mt-0.5">${item.id}</h3>
                 <p class="text-xs text-slate-600 mt-1">${item.sede}</p>
               </div>
-              <div class="${centralBoxClass} rounded-2xl p-5 text-center space-y-2">
+              <div class="${centralBoxClass} rounded-2xl p-4 sm:p-5 text-center space-y-2">
                 <div class="text-[10px] font-black uppercase tracking-widest text-slate-500">${centralLabel}</div>
-                <div class="text-xl font-black tracking-tight text-[#0f2544]">${centralMainText}</div>
-                <div class="text-xs font-bold text-slate-700">${centralSubText}</div>
+                ${formatSquadreVerticali(item)}
+                <div class="text-xs font-bold text-slate-700 pt-0.5">${centralSubText}</div>
               </div>
             </div>
             <div class="pt-6">
@@ -888,27 +905,18 @@
         `;
       }
 
-      for (let i = 0; i < attive.length; i++) {
-        const item = attive[i];
-        let inPanoramica = false;
-        let inProssimi = false;
+      const limitePanoramica = concluse.length > 0 ? 2 : 3;
+      const codaProssimi = attive.slice(0, 3);
+      const attiveVisibili = attive.slice(0, Math.max(limitePanoramica, codaProssimi.length));
 
-        if (concluse.length > 0) {
-          if (i === 0 || i === 1) { inPanoramica = true; inProssimi = true; }
-          else { inPanoramica = false; inProssimi = true; }
-        } else {
-          if (i === 0 || i === 1 || i === 2) { inPanoramica = true; inProssimi = true; }
-          else { inPanoramica = false; inProssimi = true; }
-        }
+      attiveVisibili.forEach((item, idx) => {
+        const classi = [
+          idx < limitePanoramica ? 'card-panoramica' : '',
+          idx < 3 ? 'card-prossimi' : ''
+        ].filter(Boolean).join(' ');
 
-        let cardClasses = "";
-        if (inPanoramica) cardClasses += " card-panoramica";
-        if (inProssimi) cardClasses += " card-prossimi";
-
-        if (inPanoramica || inProssimi) {
-          htmlContent += renderActiveCard(item, cardClasses);
-        }
-      }
+        htmlContent += renderActiveCard(item, classi);
+      });
 
       container.innerHTML = htmlContent;
       filterNews(currentNewsFilter);
@@ -929,13 +937,13 @@
 
       grid.innerHTML = dbState.roster.map(a => {
         const isDisponibile = dbState.disponibilita[matchId][a.nome] === true;
-        
-        const btnDispClass = isDisponibile 
-          ? "bg-emerald-600 text-white font-black shadow-sm" 
+
+        const btnDispClass = isDisponibile
+          ? "bg-emerald-600 text-white font-black shadow-sm"
           : "bg-slate-100 text-slate-600 hover:bg-slate-200 font-semibold";
-          
-        const btnNonDispClass = !isDisponibile 
-          ? "bg-red-600 text-white font-black shadow-sm" 
+
+        const btnNonDispClass = !isDisponibile
+          ? "bg-red-600 text-white font-black shadow-sm"
           : "bg-slate-100 text-slate-600 hover:bg-slate-200 font-semibold";
 
         return `
@@ -964,7 +972,7 @@
       if (!dbState.disponibilita[matchId]) dbState.disponibilita[matchId] = {};
 
       dbState.disponibilita[matchId][playerName] = status;
-      
+
       saveToDatabase('disponibilita');
       openAvailabilityModal(matchId);
       renderNewsCards();
@@ -990,7 +998,7 @@
       const clipId = `jersey-clip-${idx}`;
       const patternId = `wings-pattern-${idx}`;
 
-      const cardClass = isModal 
+      const cardClass = isModal
         ? "bg-white p-3 rounded-2xl border border-slate-200 shadow-2xl flex flex-col items-center justify-between group transform hover:-translate-y-1 transition-all duration-300"
         : "bg-white/90 backdrop-blur-xs p-3 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col items-center justify-between group";
 
@@ -1043,7 +1051,7 @@
                 </text>
               </g>
 
-              <path d="M52,16 L80,16 Q110,42 140,16 L168,16 L186,82 Q165,112 178,136 L184,254 L36,254 L42,136 Q55,112 34,82 Z" 
+              <path d="M52,16 L80,16 Q110,42 140,16 L168,16 L186,82 Q165,112 178,136 L184,254 L36,254 L42,136 Q55,112 34,82 Z"
                     fill="none" stroke="#cbd5e1" stroke-width="2" />
             </svg>
           </div>
@@ -1054,11 +1062,67 @@
       `;
     }
 
+    function getMonthLabelFromDate(dateStr) {
+      if (!dateStr || !dateStr.includes('/')) return "Data da definire";
+      const parts = dateStr.split('/');
+      const monthIdx = parseInt(parts[1], 10) - 1;
+      const year = parts[2];
+      const mesi = [
+        "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno",
+        "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"
+      ];
+      if (monthIdx < 0 || monthIdx > 11) return "Data da definire";
+      return `${mesi[monthIdx]} ${year}`;
+    }
+
+    function getFaseLabel(p) {
+      if (p.fase && String(p.fase).trim()) return String(p.fase).trim();
+      const idLower = (p.id || "").toLowerCase();
+      if (idLower.includes("ritorno")) return "Ritorno";
+      if (idLower.includes("andata")) return "Andata";
+      return "";
+    }
+
     function renderFullSchedule() {
       sortPartite();
       const container = document.getElementById('full-schedule-container');
       if (!container || !dbState.partite) return;
-      container.innerHTML = dbState.partite.map(p => {
+
+      let lastFase = null;
+      let lastMese = null;
+      let html = "";
+
+      dbState.partite.forEach(p => {
+        const faseCorrente = getFaseLabel(p);
+        const meseCorrente = getMonthLabelFromDate(p.data);
+
+        if (faseCorrente && faseCorrente !== lastFase) {
+          lastFase = faseCorrente;
+          lastMese = null;
+          const isRitorno = faseCorrente.toLowerCase().includes("ritorno");
+          html += `
+            <div class="pt-4 first:pt-0">
+              <div class="flex items-center gap-3 pb-2 border-b-2 ${isRitorno ? 'border-[#c8102e]' : 'border-[#0f2544]'}">
+                <span class="px-3.5 py-1 rounded-xl text-xs font-black uppercase tracking-widest ${isRitorno ? 'bg-[#c8102e] text-white' : 'bg-[#0f2544] text-white'}">
+                  Girone di ${faseCorrente}
+                </span>
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Stagione 2026/2027</span>
+              </div>
+            </div>
+          `;
+        }
+
+        if (meseCorrente !== lastMese) {
+          lastMese = meseCorrente;
+          html += `
+            <div class="flex items-center gap-2 pt-2">
+              <span class="text-xs font-black uppercase tracking-widest text-[#0f2544] bg-slate-200/90 px-3 py-1 rounded-lg">
+                ${meseCorrente}
+              </span>
+            </div>
+          `;
+        }
+
         const convocatiList = dbState.convocazioni && dbState.convocazioni[p.id] ? dbState.convocazioni[p.id] : [];
         const hasConvocati = convocatiList.length > 0;
         const isProssimoIncontro = p.stato === 'prossimo_incontro';
@@ -1087,13 +1151,18 @@
           actionBtn = `<button onclick="openMatchModal('${p.id}')" class="px-4 py-1.5 bg-[#0f2544] hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition cursor-pointer shadow">Dettagli & Statistiche</button>`;
         }
 
-        return `
+        const faseBadge = faseCorrente ? `<span class="px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-slate-100 text-slate-700 border border-slate-200">${faseCorrente}</span>` : '';
+
+        html += `
           <div class="${rowClass} p-6 rounded-3xl border shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
-              <span class="text-xs font-extrabold ${isRinviata ? 'text-sky-700' : (isProssimoIncontro ? 'text-emerald-700' : 'text-slate-600')} uppercase tracking-wider">${p.id} • ${p.data}${p.ora ? ' (' + p.ora + ')' : ''} • ${p.tipo}</span>
-              <h4 class="text-lg font-black text-[#0f2544]">ASA Cinisello vs ${p.avversario}</h4>
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-xs font-extrabold ${isRinviata ? 'text-sky-700' : (isProssimoIncontro ? 'text-emerald-700' : 'text-slate-600')} uppercase tracking-wider">${p.id} • ${p.data}${p.ora ? ' (' + p.ora + ')' : ''} • ${p.tipo}</span>
+                ${faseBadge}
+              </div>
+              <h4 class="text-lg font-black text-[#0f2544] mt-0.5">ASA Cinisello vs ${p.avversario}</h4>
               <p class="text-xs text-slate-600">Sede: ${p.sede}</p>
-              ${isRinviata && p.nota ? `<p class="text-xs font-bold text-sky-800 mt-1">ℹ️ ${p.nota}</p>` : ''}
+              ${isRinviata && p.nota ? `<p class="text-xs font-bold text-sky-800 mt-1">${p.nota}</p>` : ''}
             </div>
             <div class="flex items-center gap-3 flex-wrap">
               ${statusBadge}
@@ -1101,134 +1170,70 @@
             </div>
           </div>
         `;
-      }).join('');
+      });
+
+      container.innerHTML = html;
     }
 
     function openMatchModal(giornataId) {
       const match = dbState.partite.find(p => p.id === giornataId);
       if (!match) return;
 
-      document.getElementById('modal-title').innerHTML = `ASA Cinisello <span class="text-[#c8102e] font-bold text-lg">vs</span> ${match.avversario}`;
-      document.getElementById('modal-giornata').innerText = match.id.toUpperCase();
-      document.getElementById('modal-info').innerText = `${match.data} • ${match.sede}`;
+      document.getElementById('modal-giornata').innerText = `${match.id} • ${match.tipo}`;
+      document.getElementById('modal-title').innerText = `ASA Cinisello vs ${match.avversario}`;
+      document.getElementById('modal-score').innerText = match.stato === 'conclusa' ? (match.risultato || "Conclusa") : "Da disputare";
+      document.getElementById('modal-info').innerText = `${match.sede} • ${match.data}${match.ora ? ' (' + match.ora + ')' : ''}`;
 
-      const dynamicContainer = document.getElementById('modal-dynamic-content');
+      const dyn = document.getElementById('modal-dynamic-content');
+      dyn.innerHTML = "";
 
       if (match.stato === 'conclusa') {
-        document.getElementById('modal-score').innerText = match.risultato;
+        const tempiniList = match.tempini || [
+          { periodo: "1° Tempino", asa: 0, opp: 0 },
+          { periodo: "2° Tempino", asa: 0, opp: 0 },
+          { periodo: "3° Tempino", asa: 0, opp: 0 },
+          { periodo: "4° Tempino", asa: 0, opp: 0 },
+          { periodo: "5° Tempino", asa: 0, opp: 0 },
+          { periodo: "6° Tempino", asa: 0, opp: 0 }
+        ];
 
-        let totalCasa = 0;
-        let totalOspite = 0;
+        const tempiniHtml = tempiniList.map(t => `
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 text-center">
+            <div class="text-[10px] font-black uppercase tracking-wider text-slate-500">${t.periodo}</div>
+            <div class="text-lg font-black text-[#0f2544] mt-1">${t.asa} - ${t.opp}</div>
+          </div>
+        `).join('');
 
-        let tempiniHtml = `
+        dyn.innerHTML = `
           <div class="space-y-3">
-            <div class="flex items-center justify-between flex-wrap gap-2">
-              <h4 class="text-xs font-extrabold text-[#0f2544] uppercase tracking-wider flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                Andamento dei 6 Tempini
-              </h4>
-              <span class="text-[11px] font-bold text-slate-500">Vittoria = 3pt • Pareggio = 2pt • Sconfitta = 1pt</span>
-            </div>
-
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
-        `;
-
-        if (match.tempini && match.tempini.length > 0) {
-          match.tempini.forEach(tp => {
-            totalCasa += Number(tp.casa) || 0;
-            totalOspite += Number(tp.ospite) || 0;
-
-            let badgeBg = "bg-slate-100 text-slate-700 border-slate-200";
-            let labelText = tp.esito;
-            if (tp.esito === "VINTO") {
-              badgeBg = "bg-emerald-50 text-emerald-900 border-emerald-300 font-extrabold";
-            } else if (tp.esito === "PAREGGIATO") {
-              badgeBg = "bg-amber-50 text-amber-900 border-amber-300";
-            } else {
-              badgeBg = "bg-red-50 text-red-900 border-red-300";
-            }
-
-            tempiniHtml += `
-              <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 text-center space-y-1">
-                <div class="text-[10px] font-black text-slate-400 uppercase">Tempino ${tp.t}</div>
-                <div class="text-lg font-black text-[#0f2544]">${tp.casa} - ${tp.ospite}</div>
-                <div class="text-[10px] py-0.5 px-2 rounded-lg border ${badgeBg}">${labelText}</div>
-              </div>
-            `;
-          });
-        }
-
-        const canestriDisplay = match.totaleCanestri || `${totalCasa} - ${totalOspite}`;
-
-        tempiniHtml += `
-            </div>
-
-            <div class="bg-blue-50/80 p-4 rounded-2xl border border-blue-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
-              <div>
-                <div class="text-[10px] font-black text-blue-900 uppercase">RIEPILOGO PUNTI CLASSIFICA TEMPINI</div>
-                <div class="text-sm font-black text-[#0f2544]">ASA Cinisello <span class="text-[#c8102e]">${match.risultato}</span> vs ${match.avversario}</div>
-              </div>
-              <div class="text-right">
-                <div class="text-[10px] font-black text-blue-900 uppercase">CANESTRI TOTALI REALIZZATI</div>
-                <div class="text-sm font-black text-[#0f2544]">${canestriDisplay}</div>
-              </div>
-            </div>
+            <h4 class="text-xs font-extrabold text-slate-500 uppercase tracking-wider">Andamento 6 Tempini</h4>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">${tempiniHtml}</div>
           </div>
         `;
-
-        const convocatiNomi = dbState.convocazioni[giornataId] || [];
-        const convocatiObj = dbState.roster.filter(a => convocatiNomi.includes(a.nome));
-        convocatiObj.sort((a, b) => (parseInt(a.numero) || 999) - (parseInt(b.numero) || 999));
-
-        let rosterHtml = `
-          <div class="space-y-3 pt-3 border-t border-slate-200">
-            <div class="flex items-center justify-between">
-              <h4 class="text-xs font-extrabold text-[#0f2544] uppercase tracking-wider flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-full bg-[#0f2544]"></span>
-                Atleti Scesi in Campo (${convocatiObj.length})
-              </h4>
-            </div>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 max-h-72 overflow-y-auto p-1">
-        `;
-
-        if (convocatiObj.length > 0) {
-          rosterHtml += convocatiObj.map((a, idx) => generateJerseySvgHtml(a, idx + 200, true)).join('');
-        } else {
-          rosterHtml += `<div class="col-span-full text-center py-6 text-slate-500 font-bold">Roster non registrato per questa gara.</div>`;
-        }
-        rosterHtml += `</div></div>`;
-
-        dynamicContainer.innerHTML = tempiniHtml + rosterHtml;
-
       } else {
-        let scoreText = match.stato === 'rinviata' ? `RINVIATA ${match.nota ? '(' + match.nota + ')' : ''}` : "In attesa di svolgimento";
-        document.getElementById('modal-score').innerText = scoreText;
+        const convocatiNames = (dbState.convocazioni && dbState.convocazioni[giornataId]) ? dbState.convocazioni[giornataId] : [];
+        if (convocatiNames.length > 0) {
+          const jerseyCards = convocatiNames.map((nome, idx) => {
+            const playerObj = (dbState.roster || []).find(r => r.nome === nome) || { nome: nome, numero: "-" };
+            return generateJerseySvgHtml(playerObj, idx, true);
+          }).join('');
 
-        const convocatiNomi = dbState.convocazioni[giornataId] || [];
-        const convocatiObj = dbState.roster.filter(a => convocatiNomi.includes(a.nome));
-        convocatiObj.sort((a, b) => (parseInt(a.numero) || 999) - (parseInt(b.numero) || 999));
-
-        let convocatiHtml = `
-          <div class="space-y-3 pt-2">
-            <div class="flex items-center justify-between">
-              <h4 class="text-xs font-extrabold text-[#0f2544] uppercase tracking-wider flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-full bg-[#c8102e] animate-pulse"></span>
-                Lista Convocati Ufficiale (${convocatiNomi.length} convocati)
-              </h4>
+          dyn.innerHTML = `
+            <div class="space-y-4">
+              <div class="flex items-center justify-between">
+                <h4 class="text-xs font-extrabold text-asa-red uppercase tracking-wider">Atleti Convocati (${convocatiNames.length})</h4>
+              </div>
+              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">${jerseyCards}</div>
             </div>
-
-            <div class="arena-court-bg rounded-3xl p-6 relative overflow-hidden min-h-[340px] flex flex-col justify-center">
-              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 relative z-10">
-        `;
-
-        if (convocatiObj.length > 0) {
-          convocatiHtml += convocatiObj.map((a, idx) => generateJerseySvgHtml(a, idx + 100, true)).join('');
+          `;
         } else {
-          convocatiHtml += `<div class="col-span-full text-center py-10 text-white font-bold bg-slate-900/50 rounded-2xl">Convocazioni non ancora pubblicate dallo staff tecnico.</div>`;
+          dyn.innerHTML = `
+            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 text-center space-y-2">
+              <div class="text-sm font-black text-[#0f2544]">Convocazioni non ancora pubblicate</div>
+              <p class="text-xs text-slate-500">Lo staff tecnico pubblicherà la lista convocati in prossimità dell'incontro.</p>
+            </div>
+          `;
         }
-
-        convocatiHtml += `</div></div></div>`;
-        dynamicContainer.innerHTML = convocatiHtml;
       }
 
       document.getElementById('match-modal').classList.remove('hidden');
@@ -1240,19 +1245,12 @@
 
     function verifyCoachLogin() {
       const pass = document.getElementById('coach-pass').value;
-      if (pass === "asa2026" || pass.trim() !== "") {
+      if (pass === 'asa2026') {
         document.getElementById('coach-login-container').classList.add('hidden');
         document.getElementById('coach-dashboard-container').classList.remove('hidden');
-        buildCoachMatchSelector();
-        
-        const select = document.getElementById('coach-match-selector');
-        const nextMatch = dbState.partite.find(p => p.stato === 'prossimo_incontro') || dbState.partite.find(p => p.stato !== 'conclusa');
-        if (nextMatch) select.value = nextMatch.id;
-
-        buildCoachChecklist();
-        loadMatchConvocazioni();
+        populateCoachMatchSelector();
       } else {
-        alert("Password non valida.");
+        alert("Password coach non valida.");
       }
     }
 
@@ -1262,110 +1260,89 @@
       document.getElementById('coach-login-container').classList.remove('hidden');
     }
 
-    function buildCoachMatchSelector() {
-      sortPartite();
-      const select = document.getElementById('coach-match-selector');
-      if (!select || !dbState.partite) return;
-      select.innerHTML = dbState.partite.map(p => {
-        let tag = "🟡 [PROGRAMMATA]";
-        if (p.stato === 'prossimo_incontro') tag = "🟢 [PROSSIMO INCONTRO]";
-        else if (p.stato === 'conclusa') tag = "📂 [CONCLUSA]";
-        else if (p.stato === 'rinviata') tag = "🔵 [RINVIATA]";
-        return `<option value="${p.id}">${tag} ${p.id} (${p.data}) vs ${p.avversario}</option>`;
-      }).join('');
-    }
-
-    function buildCoachChecklist() {
-      const container = document.getElementById('coach-roster-checklist');
-      if (!container || !dbState.roster) return;
-      container.innerHTML = dbState.roster.map((a) => `
-        <label class="flex items-center justify-between p-3 bg-slate-50 hover:bg-slate-100 rounded-2xl border border-slate-200 cursor-pointer transition select-none">
-          <div class="flex items-center gap-3">
-            <input type="checkbox" value="${a.nome}" onchange="updateSelectedCounter()" class="coach-player-chk w-4 h-4 text-[#c8102e] rounded border-slate-300 focus:ring-[#c8102e]" />
-            <div class="text-xs font-bold text-slate-800">${a.nome} <span class="text-slate-400 font-normal">(${a.numero})</span></div>
-          </div>
-          <span class="coach-avail-badge text-[10px] font-extrabold px-2 py-0.5 rounded-full" data-player="${a.nome}">-</span>
-        </label>
-      `).join('');
+    function populateCoachMatchSelector() {
+      const sel = document.getElementById('coach-match-selector');
+      if (!sel || !dbState.partite) return;
+      const candidateMatches = dbState.partite.filter(p => p.stato !== 'conclusa');
+      sel.innerHTML = candidateMatches.map(p => `<option value="${p.id}">${p.id} • ${p.data} • vs ${p.avversario} (${p.stato})</option>`).join('');
+      loadMatchConvocazioni();
     }
 
     function loadMatchConvocazioni() {
       const matchId = document.getElementById('coach-match-selector').value;
-      const convocatiMatch = dbState.convocazioni[matchId];
-      const dispMap = dbState.disponibilita && dbState.disponibilita[matchId] ? dbState.disponibilita[matchId] : {};
+      const checklist = document.getElementById('coach-roster-checklist');
+      if (!matchId || !checklist || !dbState.roster) return;
 
-      let dispCount = 0;
-      
-      const hasExistingConvocazioni = convocatiMatch !== undefined && convocatiMatch.length > 0;
+      const currentConv = (dbState.convocazioni && dbState.convocazioni[matchId]) ? dbState.convocazioni[matchId] : [];
+      const dispMap = (dbState.disponibilita && dbState.disponibilita[matchId]) ? dbState.disponibilita[matchId] : {};
+      const dispCount = Object.values(dispMap).filter(Boolean).length;
 
-      document.querySelectorAll('.coach-player-chk').forEach(chk => {
-        if (hasExistingConvocazioni) {
-          chk.checked = convocatiMatch.includes(chk.value);
-        } else {
-          chk.checked = dispMap[chk.value] === true;
-        }
-      });
+      document.getElementById('coach-disponibili-counter').innerText = `${dispCount} Atleti disponibili segnalati`;
 
-      document.querySelectorAll('.coach-avail-badge').forEach(badge => {
-        const playerName = badge.getAttribute('data-player');
-        const isDisp = dispMap[playerName] === true;
-        if (isDisp) {
-          dispCount++;
-          badge.className = "coach-avail-badge text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900";
-          badge.innerText = "✓ Disponibile";
-        } else {
-          badge.className = "coach-avail-badge text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-slate-200 text-slate-600";
-          badge.innerText = "Non disponibile";
-        }
-      });
+      checklist.innerHTML = dbState.roster.map(a => {
+        const checked = currentConv.includes(a.nome) ? 'checked' : '';
+        const isDisp = dispMap[a.nome] === true;
+        return `
+          <label class="flex items-center justify-between p-3 rounded-2xl border ${isDisp ? 'border-emerald-300 bg-emerald-50/50' : 'border-slate-200 bg-white'} cursor-pointer hover:border-[#0f2544] transition">
+            <div class="flex items-center gap-3">
+              <input type="checkbox" value="${a.nome}" onchange="updateSelectedCoachCounter()" ${checked} class="w-4 h-4 rounded text-[#c8102e]" />
+              <div>
+                <div class="text-xs font-extrabold text-[#0f2544]">${a.nome}</div>
+                <div class="text-[10px] font-bold text-slate-400">Maglia #${a.numero}</div>
+              </div>
+            </div>
+            <span class="text-[10px] font-black px-2 py-0.5 rounded-full ${isDisp ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-500'}">
+              ${isDisp ? 'Disp.' : 'N/D'}
+            </span>
+          </label>
+        `;
+      }).join('');
 
-      document.getElementById('coach-disponibili-counter').innerText = `${dispCount} Atleti disponibili segnalati dalle famiglie`;
-      updateSelectedCounter();
+      updateSelectedCoachCounter();
+    }
+
+    function updateSelectedCoachCounter() {
+      const checkedCount = document.querySelectorAll('#coach-roster-checklist input[type="checkbox"]:checked').length;
+      const counter = document.getElementById('selected-counter');
+      if (counter) counter.innerText = `${checkedCount} Selezionati`;
     }
 
     function selectAvailablePlayers() {
       const matchId = document.getElementById('coach-match-selector').value;
-      const dispMap = dbState.disponibilita && dbState.disponibilita[matchId] ? dbState.disponibilita[matchId] : {};
-
-      document.querySelectorAll('.coach-player-chk').forEach(chk => {
-        if (dispMap[chk.value] === true) {
-          chk.checked = true;
-        }
+      const dispMap = (dbState.disponibilita && dbState.disponibilita[matchId]) ? dbState.disponibilita[matchId] : {};
+      document.querySelectorAll('#coach-roster-checklist input[type="checkbox"]').forEach(cb => {
+        cb.checked = dispMap[cb.value] === true;
       });
-      updateSelectedCounter();
+      updateSelectedCoachCounter();
     }
 
-    function updateSelectedCounter() {
-      const checkedCount = document.querySelectorAll('.coach-player-chk:checked').length;
-      const totalRoster = dbState.roster ? dbState.roster.length : 0;
-      document.getElementById('selected-counter').innerText = `${checkedCount} / ${totalRoster} Selezionati`;
-    }
-
-    function selectAllPlayers(select) {
-      document.querySelectorAll('.coach-player-chk').forEach(chk => chk.checked = select);
-      updateSelectedCounter();
+    function selectAllPlayers(state) {
+      document.querySelectorAll('#coach-roster-checklist input[type="checkbox"]').forEach(cb => {
+        cb.checked = state;
+      });
+      updateSelectedCoachCounter();
     }
 
     function saveConvocazioni() {
       const matchId = document.getElementById('coach-match-selector').value;
-      const selected = [];
-      document.querySelectorAll('.coach-player-chk:checked').forEach(chk => selected.push(chk.value));
-
+      if (!matchId) return;
+      const selected = Array.from(document.querySelectorAll('#coach-roster-checklist input[type="checkbox"]:checked')).map(cb => cb.value);
       if (!dbState.convocazioni) dbState.convocazioni = {};
       dbState.convocazioni[matchId] = selected;
       saveToDatabase('convocazioni');
-      renderAllPublicViews();
-      alert(`Lista convocati pubblicata sul DB per ${matchId}! (${selected.length} atleti)`);
+      renderNewsCards();
+      renderFullSchedule();
+      alert(`Convocazioni salvate per ${matchId} (${selected.length} atleti).`);
     }
 
     function verifyDirigenteLogin() {
       const pass = document.getElementById('dirigente-pass').value;
-      if (pass === "dirigente2026" || pass.trim() !== "") {
+      if (pass === 'dirigente2026') {
         document.getElementById('dirigente-login-container').classList.add('hidden');
         document.getElementById('dirigente-dashboard-container').classList.remove('hidden');
-        initRegiaDashboard();
+        initRegiaPanels();
       } else {
-        alert("Password area dirigente non valida.");
+        alert("Password dirigente non valida.");
       }
     }
 
@@ -1382,282 +1359,285 @@
       });
       document.getElementById('regia-content-' + tab).classList.remove('hidden');
       document.getElementById('regia-tab-' + tab).className = "px-4 py-2.5 rounded-xl text-xs font-bold bg-[#0f2544] text-white shadow transition cursor-pointer whitespace-nowrap";
+
+      if (tab === 'partite') renderRegiaMatchesList();
+      if (tab === 'ticker') populateTickerForm();
+      if (tab === 'roster') renderRegiaRosterEditor();
     }
 
-    function initRegiaDashboard() {
-      if (dbState.ticker) {
-        document.getElementById('regia-ticker-active').checked = dbState.ticker.attivo;
-        document.getElementById('regia-ticker-text').value = dbState.ticker.testo;
-      }
-
+    function initRegiaPanels() {
       renderRegiaMatchesList();
-      if (dbState.partite && dbState.partite.length > 0) {
-        const target = dbState.partite.find(p => p.stato === 'prossimo_incontro') || dbState.partite.find(p => p.stato !== 'conclusa') || dbState.partite[dbState.partite.length - 1];
-        selectMatchInRegia(target.id);
-      }
+      populateTickerForm();
       renderRegiaRosterEditor();
+      if (dbState.partite && dbState.partite.length > 0) {
+        loadMatchIntoRegiaForm(dbState.partite[0].id);
+      }
     }
 
     function renderRegiaMatchesList() {
-      sortPartite();
       const list = document.getElementById('regia-matches-list');
       if (!list || !dbState.partite) return;
-      list.innerHTML = dbState.partite.map((p) => {
-        let dotColor = "bg-amber-500";
-        let stateLabel = "Programmata";
-        if (p.stato === 'prossimo_incontro') { dotColor = "bg-emerald-500"; stateLabel = "Prossimo Incontro"; }
-        if (p.stato === 'conclusa') { dotColor = "bg-slate-600"; stateLabel = "Conclusa"; }
-        if (p.stato === 'rinviata') { dotColor = "bg-sky-500"; stateLabel = "Rinviata"; }
+      const activeId = document.getElementById('regia-match-id').value;
 
+      list.innerHTML = dbState.partite.map(p => {
+        const isSelected = p.id === activeId;
+        const badgeColor = p.stato === 'prossimo_incontro'
+          ? 'bg-emerald-100 text-emerald-800'
+          : (p.stato === 'rinviata' ? 'bg-sky-100 text-sky-800' : (p.stato === 'conclusa' ? 'bg-slate-200 text-slate-800' : 'bg-amber-100 text-amber-900'));
         return `
-          <div onclick="selectMatchInRegia('${p.id}')" class="p-3.5 rounded-2xl border border-slate-200 hover:border-[#0f2544] bg-slate-50 hover:bg-slate-100 cursor-pointer transition flex items-center justify-between gap-2">
-            <div>
-              <div class="flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-full ${dotColor}"></span>
-                <span class="text-xs font-black text-[#0f2544]">${p.id}</span>
-                <span class="text-[10px] font-bold text-slate-400">${p.data}</span>
-              </div>
-              <div class="text-xs font-semibold text-slate-700 mt-0.5">vs ${p.avversario}</div>
+          <button type="button" onclick="loadMatchIntoRegiaForm('${p.id}')" class="w-full text-left p-3.5 rounded-2xl border transition cursor-pointer ${isSelected ? 'bg-[#0f2544] text-white border-[#0f2544] shadow' : 'bg-slate-50 hover:bg-slate-100 text-[#0f2544] border-slate-200'}">
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-xs font-extrabold">${p.id}</span>
+              <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${isSelected ? 'bg-white/20 text-white' : badgeColor}">${p.stato}</span>
             </div>
-            <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600">${stateLabel}</span>
-          </div>
+            <div class="text-xs font-bold mt-1 ${isSelected ? 'text-slate-200' : 'text-slate-700'}">vs ${p.avversario}</div>
+            <div class="text-[11px] ${isSelected ? 'text-slate-300' : 'text-slate-500'}">${p.data}${p.ora ? ' • ' + p.ora : ''}</div>
+          </button>
         `;
       }).join('');
     }
 
-    function selectMatchInRegia(matchId) {
-      const p = dbState.partite.find(match => match.id === matchId);
-      if (!p) return;
-      document.getElementById('regia-form-mode').innerText = `Modifica: ${p.id}`;
-      document.getElementById('regia-match-id').value = p.id;
-      document.getElementById('regia-f-id').value = p.id;
-      document.getElementById('regia-f-avversario').value = p.avversario;
-      document.getElementById('regia-f-data').value = p.data;
-      document.getElementById('regia-f-ora').value = p.ora || "";
-      document.getElementById('regia-f-tipo').value = p.tipo || "In Casa";
-      document.getElementById('regia-f-sede').value = p.sede;
-      document.getElementById('regia-f-stato').value = p.stato;
-      document.getElementById('regia-f-nota').value = p.nota || "";
-      
-      buildRegiaTempiniInputs(p.tempini && p.tempini.length === 6 ? p.tempini : []);
-      document.getElementById('btn-delete-match').classList.remove('hidden');
-      toggleRegiaStateFields();
-    }
-
     function prepareNewMatch() {
-      const nextNum = dbState.partite ? dbState.partite.length + 1 : 1;
-      document.getElementById('regia-form-mode').innerText = "Inserimento Nuova Partita / Amichevole";
-      document.getElementById('regia-match-id').value = "";
-      document.getElementById('regia-f-id').value = `Amichevole ${nextNum}`;
+      document.getElementById('regia-form-mode').innerText = "Nuova Partita / Amichevole";
+      document.getElementById('regia-match-id').value = "__NEW__";
+      document.getElementById('regia-f-id').value = "";
       document.getElementById('regia-f-avversario').value = "";
       document.getElementById('regia-f-data').value = "";
       document.getElementById('regia-f-ora').value = "15:30";
       document.getElementById('regia-f-tipo').value = "In Casa";
-      document.getElementById('regia-f-sede').value = "Palestra BUCUM - Via Monte Ortigara 2, Cinisello Balsamo (MI)";
+      document.getElementById('regia-f-sede').value = "Palestra BUCUM - Via Monte Ortigara 2";
       document.getElementById('regia-f-stato').value = "programmata";
       document.getElementById('regia-f-nota').value = "";
-      
-      buildRegiaTempiniInputs([]);
-      document.getElementById('btn-delete-match').classList.add('hidden');
       toggleRegiaStateFields();
+      buildTempiniInputs([]);
     }
 
-    function buildRegiaTempiniInputs(tempiniArr) {
-      const grid = document.getElementById('regia-tempini-inputs-grid');
-      if (!grid) return;
-      grid.innerHTML = "";
-      for (let i = 1; i <= 6; i++) {
-        const existing = tempiniArr.find(tp => tp.t === i) || { casa: 0, ospite: 0 };
-        grid.innerHTML += `
-          <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-center space-y-1">
-            <div class="text-[10px] font-black text-slate-500 uppercase">Tempino ${i}</div>
-            <div class="flex items-center justify-center gap-1.5">
-              <input type="number" min="0" id="regia-tp-casa-${i}" value="${existing.casa}" oninput="updateRegiaLiveTotals()" class="w-12 px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-black text-center text-[#0f2544]" />
-              <span class="text-xs font-bold text-slate-400">-</span>
-              <input type="number" min="0" id="regia-tp-ospite-${i}" value="${existing.ospite}" oninput="updateRegiaLiveTotals()" class="w-12 px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-black text-center text-[#0f2544]" />
-            </div>
-          </div>
-        `;
-      }
-      updateRegiaLiveTotals();
-    }
+    function loadMatchIntoRegiaForm(matchId) {
+      const match = dbState.partite.find(p => p.id === matchId);
+      if (!match) return;
 
-    function resetTempiniToZero() {
-      for (let i = 1; i <= 6; i++) {
-        const cEl = document.getElementById(`regia-tp-casa-${i}`);
-        const oEl = document.getElementById(`regia-tp-ospite-${i}`);
-        if (cEl) cEl.value = 0;
-        if (oEl) oEl.value = 0;
-      }
-      updateRegiaLiveTotals();
-    }
+      document.getElementById('regia-form-mode').innerText = `Modifica: ${match.id}`;
+      document.getElementById('regia-match-id').value = match.id;
+      document.getElementById('regia-f-id').value = match.id || "";
+      document.getElementById('regia-f-avversario').value = match.avversario || "";
+      document.getElementById('regia-f-data').value = match.data || "";
+      document.getElementById('regia-f-ora').value = match.ora || "";
+      document.getElementById('regia-f-tipo').value = match.tipo || "In Casa";
+      document.getElementById('regia-f-sede').value = match.sede || "";
+      document.getElementById('regia-f-stato').value = match.stato || "programmata";
+      document.getElementById('regia-f-nota').value = match.nota || "";
 
-    function updateRegiaLiveTotals() {
-      let asaPts = 0;
-      let oppPts = 0;
-      let totalCanestriCasa = 0;
-      let totalCanestriOspite = 0;
-
-      for (let i = 1; i <= 6; i++) {
-        const cEl = document.getElementById(`regia-tp-casa-${i}`);
-        const oEl = document.getElementById(`regia-tp-ospite-${i}`);
-        if (!cEl || !oEl) continue;
-
-        const c = parseInt(cEl.value, 10) || 0;
-        const o = parseInt(oEl.value, 10) || 0;
-
-        totalCanestriCasa += c;
-        totalCanestriOspite += o;
-
-        if (c > o) { asaPts += 3; oppPts += 1; }
-        else if (c < o) { asaPts += 1; oppPts += 3; }
-        else { asaPts += 2; oppPts += 2; }
-      }
-
-      const scorePreview = document.getElementById('regia-live-score-preview');
-      const canestriPreview = document.getElementById('regia-live-canestri-preview');
-      if (scorePreview) scorePreview.innerText = `${asaPts} - ${oppPts}`;
-      if (canestriPreview) canestriPreview.innerText = `${totalCanestriCasa} - ${totalCanestriOspite}`;
+      toggleRegiaStateFields();
+      buildTempiniInputs(match.tempini || []);
+      renderRegiaMatchesList();
     }
 
     function toggleRegiaStateFields() {
       const stato = document.getElementById('regia-f-stato').value;
-      const boxTempini = document.getElementById('regia-box-tempini-section');
-      const boxNota = document.getElementById('regia-box-nota');
+      const tempiniSec = document.getElementById('regia-box-tempini-section');
+      const notaBox = document.getElementById('regia-box-nota');
 
-      boxTempini.style.display = stato === 'conclusa' ? 'block' : 'none';
-      boxNota.style.display = stato === 'rinviata' ? 'block' : 'none';
-      if (stato === 'conclusa') updateRegiaLiveTotals();
+      if (stato === 'conclusa') {
+        tempiniSec.classList.remove('hidden');
+      } else {
+        tempiniSec.classList.add('hidden');
+      }
+
+      if (stato === 'rinviata') {
+        notaBox.classList.remove('hidden');
+      } else {
+        notaBox.classList.add('hidden');
+      }
+    }
+
+    function buildTempiniInputs(tempiniData) {
+      const grid = document.getElementById('regia-tempini-inputs-grid');
+      if (!grid) return;
+
+      const defaultPeriods = [1, 2, 3, 4, 5, 6].map(n => {
+        const found = (tempiniData || []).find(t => t.periodo === `${n}° Tempino`);
+        return {
+          periodo: `${n}° Tempino`,
+          asa: found ? found.asa : 0,
+          opp: found ? found.opp : 0
+        };
+      });
+
+      grid.innerHTML = defaultPeriods.map((t, idx) => `
+        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+          <div class="text-[11px] font-black text-[#0f2544] uppercase">${t.periodo}</div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-[9px] font-bold text-slate-500 uppercase block">ASA</label>
+              <input type="number" min="0" id="temp-asa-${idx}" value="${t.asa}" oninput="recalculateTempiniPreview()" class="w-full px-2 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-extrabold text-center" />
+            </div>
+            <div>
+              <label class="text-[9px] font-bold text-slate-500 uppercase block">Opp.</label>
+              <input type="number" min="0" id="temp-opp-${idx}" value="${t.opp}" oninput="recalculateTempiniPreview()" class="w-full px-2 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-extrabold text-center" />
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      recalculateTempiniPreview();
+    }
+
+    function resetTempiniToZero() {
+      for (let i = 0; i < 6; i++) {
+        const a = document.getElementById(`temp-asa-${i}`);
+        const o = document.getElementById(`temp-opp-${i}`);
+        if (a) a.value = 0;
+        if (o) o.value = 0;
+      }
+      recalculateTempiniPreview();
+    }
+
+    function recalculateTempiniPreview() {
+      let ptAsa = 0, ptOpp = 0;
+      let canAsa = 0, canOpp = 0;
+
+      for (let i = 0; i < 6; i++) {
+        const a = parseInt(document.getElementById(`temp-asa-${i}`)?.value || "0", 10) || 0;
+        const o = parseInt(document.getElementById(`temp-opp-${i}`)?.value || "0", 10) || 0;
+        canAsa += a;
+        canOpp += o;
+        if (a > o) ptAsa += 2;
+        else if (o > a) ptOpp += 2;
+        else { ptAsa += 1; ptOpp += 1; }
+      }
+
+      const scoreEl = document.getElementById('regia-live-score-preview');
+      const canEl = document.getElementById('regia-live-canestri-preview');
+      if (scoreEl) scoreEl.innerText = `${ptAsa} - ${ptOpp}`;
+      if (canEl) canEl.innerText = `${canAsa} - ${canOpp}`;
     }
 
     function saveMatchFromRegia() {
-      const matchId = document.getElementById('regia-match-id').value;
+      const originalId = document.getElementById('regia-match-id').value;
+      const newId = document.getElementById('regia-f-id').value.trim();
+      const avversario = document.getElementById('regia-f-avversario').value.trim();
+      const data = document.getElementById('regia-f-data').value.trim();
+      const ora = document.getElementById('regia-f-ora').value.trim();
+      const tipo = document.getElementById('regia-f-tipo').value;
+      const sede = document.getElementById('regia-f-sede').value.trim();
       const stato = document.getElementById('regia-f-stato').value;
-      const newId = document.getElementById('regia-f-id').value.trim() || "Gara";
+      const nota = document.getElementById('regia-f-nota').value.trim();
 
-      let tempiniList = [];
-      let calculatedScore = "";
-      let calculatedCanestri = "";
-
-      if (stato === 'conclusa') {
-        let asaPts = 0;
-        let oppPts = 0;
-        let totalCanestriCasa = 0;
-        let totalCanestriOspite = 0;
-
-        for (let i = 1; i <= 6; i++) {
-          const c = parseInt(document.getElementById(`regia-tp-casa-${i}`).value, 10) || 0;
-          const o = parseInt(document.getElementById(`regia-tp-ospite-${i}`).value, 10) || 0;
-          
-          totalCanestriCasa += c;
-          totalCanestriOspite += o;
-
-          let esito = "PAREGGIATO";
-          if (c > o) { esito = "VINTO"; asaPts += 3; oppPts += 1; }
-          else if (c < o) { esito = "PERSO"; asaPts += 1; oppPts += 3; }
-          else { asaPts += 2; oppPts += 2; }
-
-          tempiniList.push({ t: i, casa: c, ospite: o, esito: esito });
-        }
-        calculatedScore = `${asaPts} - ${oppPts}`;
-        calculatedCanestri = `${totalCanestriCasa} - ${totalCanestriOspite}`;
+      if (!newId || !avversario || !data) {
+        alert("Compila almeno Giornata/Titolo, Avversario e Data.");
+        return;
       }
 
-      if (!dbState.partite) dbState.partite = [];
-
-      if (stato === 'prossimo_incontro') {
-        dbState.partite.forEach(p => {
-          if (p.stato === 'prossimo_incontro' && p.id !== matchId && p.id !== newId) {
-            p.stato = 'programmata';
-          }
-        });
+      let ptAsa = 0, ptOpp = 0;
+      const tempini = [];
+      for (let i = 0; i < 6; i++) {
+        const a = parseInt(document.getElementById(`temp-asa-${i}`)?.value || "0", 10) || 0;
+        const o = parseInt(document.getElementById(`temp-opp-${i}`)?.value || "0", 10) || 0;
+        tempini.push({ periodo: `${i + 1}° Tempino`, asa: a, opp: o });
+        if (a > o) ptAsa += 2;
+        else if (o > a) ptOpp += 2;
+        else { ptAsa += 1; ptOpp += 1; }
       }
 
-      const matchObj = {
+      const existingIdx = originalId === "__NEW__" ? -1 : dbState.partite.findIndex(p => p.id === originalId);
+      const existingMatch = existingIdx >= 0 ? dbState.partite[existingIdx] : {};
+
+      const updatedMatch = {
+        ...existingMatch,
         id: newId,
-        avversario: document.getElementById('regia-f-avversario').value.trim() || "Avversario",
-        data: document.getElementById('regia-f-data').value.trim() || "Da definire",
-        ora: document.getElementById('regia-f-ora').value.trim(),
-        tipo: document.getElementById('regia-f-tipo').value,
-        sede: document.getElementById('regia-f-sede').value.trim() || "Palestra BUCUM",
-        stato: stato,
-        risultato: calculatedScore,
-        nota: document.getElementById('regia-f-nota').value.trim(),
-        tempini: tempiniList,
-        totaleCanestri: calculatedCanestri
+        avversario,
+        data,
+        ora,
+        tipo,
+        sede,
+        stato,
+        nota,
+        tempini,
+        risultato: stato === 'conclusa' ? `${ptAsa} - ${ptOpp}` : (existingMatch.risultato || "")
       };
 
-      const existingIndex = dbState.partite.findIndex(p => p.id === matchId);
-      
-      if (matchId && existingIndex !== -1) {
-        dbState.partite[existingIndex] = matchObj;
+      if (existingIdx >= 0) {
+        dbState.partite[existingIdx] = updatedMatch;
       } else {
-        dbState.partite.push(matchObj);
+        dbState.partite.push(updatedMatch);
       }
 
-      sortPartite();
+      document.getElementById('regia-match-id').value = newId;
       saveToDatabase('partite');
       renderRegiaMatchesList();
       renderAllPublicViews();
-      selectMatchInRegia(newId);
     }
 
     function deleteCurrentMatch() {
       const matchId = document.getElementById('regia-match-id').value;
-      if (!dbState.partite) return;
-      const idx = dbState.partite.findIndex(p => p.id === matchId);
-      if (idx >= 0 && confirm("Confermi l'eliminazione di questa gara dal DB?")) {
-        dbState.partite.splice(idx, 1);
-        sortPartite();
-        saveToDatabase('partite');
-        renderRegiaMatchesList();
-        renderAllPublicViews();
-        if (dbState.partite.length > 0) {
-          selectMatchInRegia(dbState.partite[0].id);
-        } else {
-          prepareNewMatch();
-        }
-      }
+      if (!matchId || matchId === "__NEW__") return;
+      if (!confirm(`Eliminare definitivamente "${matchId}"?`)) return;
+
+      dbState.partite = dbState.partite.filter(p => p.id !== matchId);
+      document.getElementById('regia-match-id').value = "";
+      saveToDatabase('partite');
+      renderRegiaMatchesList();
+      renderAllPublicViews();
+    }
+
+    function populateTickerForm() {
+      if (!dbState.ticker) return;
+      document.getElementById('regia-ticker-active').checked = dbState.ticker.attivo !== false;
+      document.getElementById('regia-ticker-text').value = dbState.ticker.testo || "";
     }
 
     function saveTickerFromRegia() {
-      if (!dbState.ticker) dbState.ticker = {};
-      dbState.ticker.attivo = document.getElementById('regia-ticker-active').checked;
-      dbState.ticker.testo = document.getElementById('regia-ticker-text').value;
+      dbState.ticker = {
+        attivo: document.getElementById('regia-ticker-active').checked,
+        testo: document.getElementById('regia-ticker-text').value
+      };
       saveToDatabase('ticker');
+      renderTicker();
     }
 
     function renderRegiaRosterEditor() {
       const container = document.getElementById('regia-roster-editor');
       if (!container || !dbState.roster) return;
+
       container.innerHTML = dbState.roster.map((a, idx) => `
-        <div class="flex items-center justify-between gap-2 p-3 bg-slate-50 rounded-xl border border-slate-200">
-          <span class="text-xs font-bold text-slate-800 truncate">${a.nome}</span>
-          <div class="flex items-center gap-1.5 shrink-0">
-            <span class="text-[10px] font-bold text-slate-400">#</span>
-            <input type="text" value="${a.numero}" onchange="updatePlayerNumber(${idx}, this.value)" class="w-12 px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-black text-center text-[#0f2544]" />
+        <div class="p-3.5 rounded-2xl border border-slate-200 bg-slate-50 flex items-center justify-between gap-2">
+          <div class="min-w-0 flex-1">
+            <div class="text-xs font-extrabold text-[#0f2544] truncate">${a.nome}</div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <input type="text" value="${a.numero}" onchange="updatePlayerNumber(${idx}, this.value)" class="w-12 px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-black text-center" />
+            <button type="button" onclick="removePlayer(${idx})" class="text-xs font-bold text-red-600 hover:underline px-1.5 cursor-pointer">✕</button>
           </div>
         </div>
       `).join('');
     }
 
-    function updatePlayerNumber(idx, newNum) {
-      if (!dbState.roster) return;
-      dbState.roster[idx].numero = newNum.trim() || "-";
+    function updatePlayerNumber(idx, val) {
+      if (!dbState.roster[idx]) return;
+      dbState.roster[idx].numero = val.trim() || "-";
       saveToDatabase('roster');
       renderRosterMain();
     }
 
     function addPlayerFromRegia() {
-      const nameInput = document.getElementById('regia-new-player-name');
-      const numInput = document.getElementById('regia-new-player-num');
-      const nome = nameInput.value.trim();
-      if (!nome) return alert("Inserisci nome e cognome dell'atleta.");
+      const nameEl = document.getElementById('regia-new-player-name');
+      const numEl = document.getElementById('regia-new-player-num');
+      const nome = nameEl.value.trim();
+      const numero = numEl.value.trim() || "-";
+      if (!nome) return;
 
-      if (!dbState.roster) dbState.roster = [];
-      dbState.roster.push({ nome, numero: numInput.value.trim() || "-" });
-      nameInput.value = "";
-      numInput.value = "";
+      dbState.roster.push({ nome, numero });
+      nameEl.value = "";
+      numEl.value = "";
+      saveToDatabase('roster');
+      renderRegiaRosterEditor();
+      renderRosterMain();
+    }
+
+    function removePlayer(idx) {
+      if (!dbState.roster[idx]) return;
+      if (!confirm(`Rimuovere ${dbState.roster[idx].nome} dal roster?`)) return;
+      dbState.roster.splice(idx, 1);
       saveToDatabase('roster');
       renderRegiaRosterEditor();
       renderRosterMain();
