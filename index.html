@@ -1550,9 +1550,16 @@
         const o = parseInt(document.getElementById(`temp-opp-${i}`)?.value || "0", 10) || 0;
         canAsa += a;
         canOpp += o;
-        if (a > o) ptAsa += 2;
-        else if (o > a) ptOpp += 2;
-        else { ptAsa += 2; ptOpp += 2; }
+        if (a > o) {
+          ptAsa += 3;
+          ptOpp += 1;
+        } else if (o > a) {
+          ptOpp += 3;
+          ptAsa += 1;
+        } else {
+          ptAsa += 2;
+          ptOpp += 2;
+        }
       }
 
       const scoreEl = document.getElementById('regia-live-score-preview');
@@ -1583,9 +1590,16 @@
         const a = parseInt(document.getElementById(`temp-asa-${i}`)?.value || "0", 10) || 0;
         const o = parseInt(document.getElementById(`temp-opp-${i}`)?.value || "0", 10) || 0;
         tempini.push({ periodo: `${i + 1}° Tempino`, asa: a, opp: o });
-        if (a > o) ptAsa += 2;
-        else if (o > a) ptOpp += 2;
-        else { ptAsa += 2; ptOpp += 2; }
+        if (a > o) {
+          ptAsa += 3;
+          ptOpp += 1;
+        } else if (o > a) {
+          ptOpp += 3;
+          ptAsa += 1;
+        } else {
+          ptAsa += 2;
+          ptOpp += 2;
+        }
       }
 
       const existingIdx = originalId === "__NEW__" ? -1 : dbState.partite.findIndex(p => p.id === originalId);
