@@ -1199,17 +1199,55 @@
           { periodo: "6° Tempino", asa: 0, opp: 0 }
         ];
 
-        const tempiniHtml = tempiniList.map(t => `
-          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 text-center">
-            <div class="text-[10px] font-black uppercase tracking-wider text-slate-500">${t.periodo}</div>
-            <div class="text-lg font-black text-[#0f2544] mt-1">${t.asa} - ${t.opp}</div>
-          </div>
-        `).join('');
+        const tempiniHtml = tempiniList.map(t => {
+          const asaVal = parseInt(t.asa, 10) || 0;
+          const oppVal = parseInt(t.opp, 10) || 0;
+          let esitoLabel = "PAREGGIO";
+          let cardStyle = "bg-amber-50/90 border-amber-300 text-amber-950";
+          let badgeStyle = "bg-amber-200/90 text-amber-900";
+          let scoreColor = "text-amber-900";
+
+          if (asaVal > oppVal) {
+            esitoLabel = "VINTO";
+            cardStyle = "bg-emerald-50/90 border-emerald-400 text-emerald-950";
+            badgeStyle = "bg-emerald-600 text-white";
+            scoreColor = "text-emerald-700";
+          } else if (oppVal > asaVal) {
+            esitoLabel = "PERSO";
+            cardStyle = "bg-red-50/90 border-red-300 text-red-950";
+            badgeStyle = "bg-red-600 text-white";
+            scoreColor = "text-red-700";
+          }
+
+          return `
+            <div class="${cardStyle} border-2 rounded-2xl p-3 text-center shadow-xs flex flex-col items-center justify-between gap-1.5">
+              <div class="text-[10px] font-black uppercase tracking-wider text-slate-600">${t.periodo}</div>
+              <div class="text-lg font-black ${scoreColor} leading-none">${asaVal} - ${oppVal}</div>
+              <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest ${badgeStyle}">${esitoLabel}</span>
+            </div>
+          `;
+        }).join('');
+
+        const convocatiNames = (dbState.convocazioni && dbState.convocazioni[giornataId]) ? dbState.convocazioni[giornataId] : [];
+        const giocatoriHtml = convocatiNames.length > 0
+          ? convocatiNames.map((nome, idx) => {
+              const playerObj = (dbState.roster || []).find(r => r.nome === nome) || { nome: nome, numero: "-" };
+              return generateJerseySvgHtml(playerObj, idx, true);
+            }).join('')
+          : `<div class="col-span-full bg-slate-50 border border-slate-200 rounded-2xl p-5 text-center text-xs text-slate-500 font-semibold">Nessun atleta registrato per questo incontro.</div>`;
 
         dyn.innerHTML = `
-          <div class="space-y-3">
-            <h4 class="text-xs font-extrabold text-slate-500 uppercase tracking-wider">Andamento 6 Tempini</h4>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">${tempiniHtml}</div>
+          <div class="space-y-6">
+            <div class="space-y-3">
+              <h4 class="text-xs font-extrabold text-slate-500 uppercase tracking-wider">Andamento 6 Tempini</h4>
+              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">${tempiniHtml}</div>
+            </div>
+            <div class="space-y-3 pt-4 border-t border-slate-200">
+              <div class="flex items-center justify-between">
+                <h4 class="text-xs font-extrabold text-asa-red uppercase tracking-wider">Atleti che hanno giocato (${convocatiNames.length})</h4>
+              </div>
+              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">${giocatoriHtml}</div>
+            </div>
           </div>
         `;
       } else {
@@ -1267,6 +1305,15 @@
       if (!sel || !dbState.partite) return;
       const candidateMatches = dbState.partite.filter(p => p.stato !== 'conclusa');
       sel.innerHTML = candidateMatches.map(p => `<option value="${p.id}">${p.id} • ${p.data} • vs ${p.avversario} (${p.stato})</option>`).join('');
+
+      if (candidateMatches.length > 0) {
+        const currentMatch =
+          candidateMatches.find(p => p.stato === 'prossimo_incontro') ||
+          candidateMatches.find(p => p.stato === 'programmata') ||
+          candidateMatches[0];
+        sel.value = currentMatch.id;
+      }
+
       loadMatchConvocazioni();
     }
 
