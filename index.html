@@ -1101,9 +1101,9 @@
           lastMese = null;
           const isRitorno = faseCorrente.toLowerCase().includes("ritorno");
           html += `
-            <div class="pt-4 first:pt-0">
-              <div class="flex items-center gap-3 pb-2 border-b-2 ${isRitorno ? 'border-[#c8102e]' : 'border-[#0f2544]'}">
-                <span class="px-3.5 py-1 rounded-xl text-xs font-black uppercase tracking-widest ${isRitorno ? 'bg-[#c8102e] text-white' : 'bg-[#0f2544] text-white'}">
+            <div class="pt-5 first:pt-0">
+              <div class="flex items-center gap-3 pb-2.5 border-b-2 ${isRitorno ? 'border-[#c8102e]' : 'border-[#0f2544]'}">
+                <span class="px-4 py-1.5 rounded-xl text-xs sm:text-sm font-black uppercase tracking-widest ${isRitorno ? 'bg-[#c8102e] text-white' : 'bg-[#0f2544] text-white'} shadow-xs">
                   Girone di ${faseCorrente}
                 </span>
                 <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Stagione 2026/2027</span>
@@ -1115,10 +1115,10 @@
         if (meseCorrente !== lastMese) {
           lastMese = meseCorrente;
           html += `
-            <div class="flex items-center gap-2 pt-2">
-              <span class="text-xs font-black uppercase tracking-widest text-[#0f2544] bg-slate-200/90 px-3 py-1 rounded-lg">
+            <div class="flex items-center gap-3 pt-4 pb-1">
+              <h3 class="text-lg sm:text-xl md:text-2xl font-black uppercase tracking-tight text-[#0f2544] bg-slate-200/90 border-l-4 border-[#c8102e] px-4 py-2 rounded-xl shadow-2xs">
                 ${meseCorrente}
-              </span>
+              </h3>
             </div>
           `;
         }
@@ -1503,7 +1503,7 @@
         canOpp += o;
         if (a > o) ptAsa += 2;
         else if (o > a) ptOpp += 2;
-        else { ptAsa += 1; ptOpp += 1; }
+        else { ptAsa += 2; ptOpp += 2; }
       }
 
       const scoreEl = document.getElementById('regia-live-score-preview');
@@ -1536,7 +1536,7 @@
         tempini.push({ periodo: `${i + 1}° Tempino`, asa: a, opp: o });
         if (a > o) ptAsa += 2;
         else if (o > a) ptOpp += 2;
-        else { ptAsa += 1; ptOpp += 1; }
+        else { ptAsa += 2; ptOpp += 2; }
       }
 
       const existingIdx = originalId === "__NEW__" ? -1 : dbState.partite.findIndex(p => p.id === originalId);
