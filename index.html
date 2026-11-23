@@ -301,14 +301,18 @@
 
               <input type="hidden" id="regia-match-id" value="" />
 
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <label class="text-[11px] font-bold text-slate-600 uppercase block mb-1">Giornata / Titolo</label>
-                  <input type="text" id="regia-f-id" placeholder="es. Giornata 3 o Amichevole" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-bold text-[#0f2544]" />
+                  <input type="text" id="regia-f-id" placeholder="es. 1ª Andata o Amichevole" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-bold text-[#0f2544]" />
+                </div>
+                <div>
+                  <label class="text-[11px] font-bold text-slate-600 uppercase block mb-1">N° Gara FIP (opz.)</label>
+                  <input type="text" id="regia-f-gara" placeholder="es. 22563" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-bold text-[#0f2544]" />
                 </div>
                 <div>
                   <label class="text-[11px] font-bold text-slate-600 uppercase block mb-1">Avversario</label>
-                  <input type="text" id="regia-f-avversario" placeholder="es. Fortitudo Cologno" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-bold text-[#0f2544]" />
+                  <input type="text" id="regia-f-avversario" placeholder="es. Malaspina Sport Team" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-bold text-[#0f2544]" />
                 </div>
               </div>
 
@@ -554,7 +558,8 @@
       ],
       partite: [
               {
-                      "id": "1ª Andata (Gara 22563)",
+                      "id": "1ª Andata",
+                      "garaNumero": "22563",
                       "data": "28/11/2026",
                       "ora": "12:30",
                       "avversario": "MALASPINA SPORT TEAM",
@@ -564,11 +569,12 @@
                       "fase": "Andata",
                       "stato": "prossimo_incontro",
                       "risultato": "",
-                      "sede": "Palestra - Via Monte Ortigara 2, Cinisello Balsamo",
+                      "sede": "Via Monte Ortigara 2, Cinisello Balsamo",
                       "nota": ""
               },
               {
-                      "id": "2ª Andata (Gara 22568)",
+                      "id": "2ª Andata",
+                      "garaNumero": "22568",
                       "data": "29/11/2026",
                       "ora": "09:30",
                       "avversario": "SAN GABRIELE BASKET Cesa-Trotter",
@@ -578,11 +584,12 @@
                       "fase": "Andata",
                       "stato": "programmata",
                       "risultato": "",
-                      "sede": "Palestra - Via Monte Ortigara 2, Cinisello Balsamo",
+                      "sede": "Via Monte Ortigara 2, Cinisello Balsamo",
                       "nota": ""
               },
               {
-                      "id": "3ª Andata (Gara 22573)",
+                      "id": "3ª Andata",
+                      "garaNumero": "22573",
                       "data": "12/12/2026",
                       "ora": "09:30",
                       "avversario": "POL. RONDINELLA A.S.D. 1955",
@@ -592,11 +599,12 @@
                       "fase": "Andata",
                       "stato": "programmata",
                       "risultato": "",
-                      "sede": "Palestra - V.le Matteotti 425, Sesto San Giovanni",
+                      "sede": "V.le Matteotti 425, Sesto San Giovanni",
                       "nota": ""
               },
               {
-                      "id": "4ª Andata (Gara 22577)",
+                      "id": "4ª Andata",
+                      "garaNumero": "22577",
                       "data": "07/02/2027",
                       "ora": "11:30",
                       "avversario": "A.S.DIL. CENTRO SCHUSTER",
@@ -606,11 +614,12 @@
                       "fase": "Andata",
                       "stato": "programmata",
                       "risultato": "",
-                      "sede": "Centro Schuster - Via Padre Lodovico Morell s.j. 2 (via Feltre 100), Milano",
+                      "sede": "Via Padre Lodovico Morell s.j. 2 (via Feltre 100), Milano",
                       "nota": ""
               },
               {
-                      "id": "5ª Andata (Gara 22582)",
+                      "id": "5ª Andata",
+                      "garaNumero": "22582",
                       "data": "09/01/2027",
                       "ora": "14:30",
                       "avversario": "A.S.D. CIESSE FREEBASKET",
@@ -620,11 +629,12 @@
                       "fase": "Andata",
                       "stato": "programmata",
                       "risultato": "",
-                      "sede": "Palestra - VIA GIACOSA 46, Milano",
+                      "sede": "Via Giacosa 46, Milano",
                       "nota": ""
               },
               {
-                      "id": "6ª Andata (Gara 22585)",
+                      "id": "6ª Andata",
+                      "garaNumero": "22585",
                       "data": "17/01/2027",
                       "ora": "09:00",
                       "avversario": "A.S.DIL. BASKET P.O.S.A.L.",
@@ -634,11 +644,12 @@
                       "fase": "Andata",
                       "stato": "programmata",
                       "risultato": "",
-                      "sede": "PALACARZANIGA - Via Giorgio Enrico Falck 110, Sesto San Giovanni",
+                      "sede": "Via Giorgio Enrico Falck 110, Sesto San Giovanni",
                       "nota": ""
               },
               {
-                      "id": "7ª Andata (Gara 22587)",
+                      "id": "7ª Andata",
+                      "garaNumero": "22587",
                       "data": "24/01/2027",
                       "ora": "09:30",
                       "avversario": "SAN GABRIELE BASKET Frigia",
@@ -648,11 +659,12 @@
                       "fase": "Andata",
                       "stato": "programmata",
                       "risultato": "",
-                      "sede": "Palestra - Via Monte Ortigara 2, Cinisello Balsamo",
+                      "sede": "Via Monte Ortigara 2, Cinisello Balsamo",
                       "nota": ""
               },
               {
-                      "id": "1ª Ritorno (Gara 22593)",
+                      "id": "1ª Ritorno",
+                      "garaNumero": "22593",
                       "data": "31/01/2027",
                       "ora": "09:30",
                       "avversario": "MALASPINA SPORT TEAM",
@@ -662,11 +674,12 @@
                       "fase": "Ritorno",
                       "stato": "programmata",
                       "risultato": "",
-                      "sede": "Centro Crespi Sport village - Via Valvassor Peroni 48, Milano",
+                      "sede": "Via Valvassor Peroni 48, Milano",
                       "nota": ""
               },
               {
-                      "id": "2ª Ritorno (Gara 22595)",
+                      "id": "2ª Ritorno",
+                      "garaNumero": "22595",
                       "data": "21/02/2027",
                       "ora": "09:15",
                       "avversario": "SAN GABRIELE BASKET Cesa-Trotter",
@@ -676,11 +689,12 @@
                       "fase": "Ritorno",
                       "stato": "programmata",
                       "risultato": "",
-                      "sede": "Palestra - VIA GIACOSA 46, Milano",
+                      "sede": "Via Giacosa 46, Milano",
                       "nota": ""
               },
               {
-                      "id": "3ª Ritorno (Gara 22600)",
+                      "id": "3ª Ritorno",
+                      "garaNumero": "22600",
                       "data": "27/02/2027",
                       "ora": "09:30",
                       "avversario": "POL. RONDINELLA A.S.D. 1955",
@@ -690,11 +704,12 @@
                       "fase": "Ritorno",
                       "stato": "programmata",
                       "risultato": "",
-                      "sede": "Palestra - V.le Matteotti 425, Sesto San Giovanni",
+                      "sede": "V.le Matteotti 425, Sesto San Giovanni",
                       "nota": ""
               },
               {
-                      "id": "4ª Ritorno (Gara 22603)",
+                      "id": "4ª Ritorno",
+                      "garaNumero": "22603",
                       "data": "06/03/2027",
                       "ora": "14:30",
                       "avversario": "A.S.DIL. CENTRO SCHUSTER",
@@ -704,11 +719,12 @@
                       "fase": "Ritorno",
                       "stato": "programmata",
                       "risultato": "",
-                      "sede": "Palestra - Via Monte Ortigara 2, Cinisello Balsamo",
+                      "sede": "Via Monte Ortigara 2, Cinisello Balsamo",
                       "nota": ""
               },
               {
-                      "id": "5ª Ritorno (Gara 22607)",
+                      "id": "5ª Ritorno",
+                      "garaNumero": "22607",
                       "data": "14/03/2027",
                       "ora": "09:30",
                       "avversario": "A.S.D. CIESSE FREEBASKET",
@@ -718,11 +734,12 @@
                       "fase": "Ritorno",
                       "stato": "programmata",
                       "risultato": "",
-                      "sede": "Palestra - Via Monte Ortigara 2, Cinisello Balsamo",
+                      "sede": "Via Monte Ortigara 2, Cinisello Balsamo",
                       "nota": ""
               },
               {
-                      "id": "6ª Ritorno (Gara 22611)",
+                      "id": "6ª Ritorno",
+                      "garaNumero": "22611",
                       "data": "21/03/2027",
                       "ora": "09:30",
                       "avversario": "A.S.DIL. BASKET P.O.S.A.L.",
@@ -732,11 +749,12 @@
                       "fase": "Ritorno",
                       "stato": "programmata",
                       "risultato": "",
-                      "sede": "Palestra - Via Monte Ortigara 2, Cinisello Balsamo",
+                      "sede": "Via Monte Ortigara 2, Cinisello Balsamo",
                       "nota": ""
               },
               {
-                      "id": "7ª Ritorno (Gara 22617)",
+                      "id": "7ª Ritorno",
+                      "garaNumero": "22617",
                       "data": "04/04/2027",
                       "ora": "09:15",
                       "avversario": "SAN GABRIELE BASKET Frigia",
@@ -746,7 +764,7 @@
                       "fase": "Ritorno",
                       "stato": "programmata",
                       "risultato": "",
-                      "sede": "Scuola Media - Via Frigia 4, Milano",
+                      "sede": "Via Frigia 4, Milano",
                       "nota": ""
               }
       ],
@@ -929,24 +947,25 @@
       document.getElementById('sq-tab-' + tab).className = "px-4 py-2 rounded-xl text-xs font-bold bg-[#0f2544] text-white shadow transition cursor-pointer";
     }
 
-        function formatSedeCliccabile(sede, lightOnDark = false) {
+    function stripVenuePrefix(sede) {
       if (!sede) return "";
-      const encoded = encodeURIComponent(sede);
+      let clean = String(sede).trim();
+      if (clean.includes(" - ")) {
+        const parts = clean.split(" - ");
+        const tail = parts.slice(1).join(" - ").trim();
+        if (/\b(via|v\.le|viale|piazza|p\.zza|corso|c\.so)\b/i.test(tail)) {
+          clean = tail;
+        }
+      }
+      return clean;
+    }
+
+    function formatSedeCliccabile(sede) {
+      const cleanSede = stripVenuePrefix(sede);
+      if (!cleanSede) return "";
+      const encoded = encodeURIComponent(cleanSede);
       const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${encoded}`;
-      const amapsUrl = `https://maps.apple.com/?q=${encoded}`;
-      return `
-        <span class="inline-flex flex-wrap items-center gap-1.5">
-          <a href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" title="Apri su Google Maps" class="underline decoration-slate-400 hover:text-[#c8102e] hover:decoration-[#c8102e] transition">
-            📍 ${sede}
-          </a>
-          <a href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-blue-50 text-blue-800 border border-blue-200 hover:bg-blue-100 transition">
-            Google Maps
-          </a>
-          <a href="${amapsUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 transition">
-            Mappe Apple
-          </a>
-        </span>
-      `;
+      return `<a href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" title="Apri indirizzo nel navigatore" class="inline-flex items-center gap-1 underline decoration-slate-400 hover:text-[#c8102e] hover:decoration-[#c8102e] transition">📍 ${cleanSede}</a>`;
     }
 
     function checkSiteGate() {
@@ -1437,6 +1456,7 @@
         }
 
         const faseBadge = faseCorrente ? `<span class="px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-slate-100 text-slate-700 border border-slate-200">${faseCorrente}</span>` : '';
+        const garaBadge = p.garaNumero ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-slate-50 text-slate-500 border border-slate-200">Gara #${p.garaNumero}</span>` : '';
 
         html += `
           <div class="${rowClass} p-6 rounded-3xl border shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -1444,6 +1464,7 @@
               <div class="flex items-center gap-2 flex-wrap">
                 <span class="text-xs font-extrabold ${isRinviata ? 'text-sky-700' : (isProssimoIncontro ? 'text-emerald-700' : 'text-slate-600')} uppercase tracking-wider">${p.id} • ${p.data}${p.ora ? ' (' + p.ora + ')' : ''} • ${p.tipo}</span>
                 ${faseBadge}
+                ${garaBadge}
               </div>
               <h4 class="text-lg font-black text-[#0f2544] mt-0.5">ASA Cinisello vs ${p.avversario}</h4>
               <div class="text-xs text-slate-600 mt-1">Sede: ${formatSedeCliccabile(p.sede)}</div>
@@ -1753,11 +1774,12 @@
       document.getElementById('regia-form-mode').innerText = "Nuova Partita / Amichevole";
       document.getElementById('regia-match-id').value = "__NEW__";
       document.getElementById('regia-f-id').value = "";
+      document.getElementById('regia-f-gara').value = "";
       document.getElementById('regia-f-avversario').value = "";
       document.getElementById('regia-f-data').value = "";
       document.getElementById('regia-f-ora').value = "15:30";
       document.getElementById('regia-f-tipo').value = "In Casa";
-      document.getElementById('regia-f-sede').value = "Palestra BUCUM - Via Monte Ortigara 2";
+      document.getElementById('regia-f-sede').value = "Via Monte Ortigara 2, Cinisello Balsamo";
       document.getElementById('regia-f-stato').value = "programmata";
       document.getElementById('regia-f-nota').value = "";
       toggleRegiaStateFields();
@@ -1771,6 +1793,7 @@
       document.getElementById('regia-form-mode').innerText = `Modifica: ${match.id}`;
       document.getElementById('regia-match-id').value = match.id;
       document.getElementById('regia-f-id').value = match.id || "";
+      document.getElementById('regia-f-gara').value = match.garaNumero || "";
       document.getElementById('regia-f-avversario').value = match.avversario || "";
       document.getElementById('regia-f-data').value = match.data || "";
       document.getElementById('regia-f-ora').value = match.ora || "";
@@ -1874,6 +1897,7 @@
     function saveMatchFromRegia() {
       const originalId = document.getElementById('regia-match-id').value;
       const newId = document.getElementById('regia-f-id').value.trim();
+      const garaNumero = document.getElementById('regia-f-gara').value.trim();
       const avversario = document.getElementById('regia-f-avversario').value.trim();
       const data = document.getElementById('regia-f-data').value.trim();
       const ora = document.getElementById('regia-f-ora').value.trim();
@@ -1911,6 +1935,7 @@
       const updatedMatch = {
         ...existingMatch,
         id: newId,
+        garaNumero,
         avversario,
         data,
         ora,
