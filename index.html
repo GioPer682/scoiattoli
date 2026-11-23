@@ -2474,7 +2474,7 @@
       clone.querySelectorAll('input').forEach(inp => {
         const span = document.createElement('span');
         span.textContent = inp.value || '';
-        span.className = 'inline-block w-full text-xs ' + (inp.classList.contains('text-center') ? 'text-center ' : '') + (inp.classList.contains('font-bold') ? 'font-bold' : 'font-semibold');
+        span.className = 'inline-block w-full text-[11px] leading-tight ' + (inp.classList.contains('text-center') ? 'text-center ' : '') + (inp.classList.contains('font-bold') ? 'font-bold' : 'font-semibold');
         inp.parentNode.replaceChild(span, inp);
       });
       const win = window.open("", "_blank", "width=900,height=700");
@@ -2490,15 +2490,99 @@
           <title>Lista R — FIP Lombardia</title>
           <script src="https://cdn.tailwindcss.com"><\/script>
           <style>
+            @page {
+              size: A4 portrait;
+              margin: 5mm 6mm;
+            }
+            html, body {
+              margin: 0;
+              padding: 0;
+              background: #ffffff;
+              -webkit-print-color-adjust: exact;
+              print-color-adjust: exact;
+            }
+            #lista-r-printable-sheet {
+              max-width: 100% !important;
+              width: 100% !important;
+              padding: 10px 14px !important;
+              gap: 6px !important;
+              break-inside: avoid !important;
+              page-break-inside: avoid !important;
+            }
+            #lista-r-printable-sheet > * + * {
+              margin-top: 6px !important;
+            }
+            #lista-r-printable-sheet h4 {
+              font-size: 14px !important;
+              line-height: 1.15 !important;
+              margin-top: 4px !important;
+              margin-bottom: 2px !important;
+            }
+            #lista-r-printable-sheet img {
+              max-height: 36px !important;
+              width: auto !important;
+              object-fit: contain !important;
+            }
+            #lista-r-printable-sheet table {
+              font-size: 10.5px !important;
+              line-height: 1.15 !important;
+              break-inside: avoid !important;
+              page-break-inside: avoid !important;
+            }
+            #lista-r-printable-sheet th,
+            #lista-r-printable-sheet td {
+              padding-top: 2px !important;
+              padding-bottom: 2px !important;
+              padding-left: 5px !important;
+              padding-right: 5px !important;
+            }
+            #lista-r-printable-sheet tr {
+              break-inside: avoid !important;
+              page-break-inside: avoid !important;
+            }
             @media print {
-              body { margin: 0; padding: 10px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+              html, body {
+                width: 198mm;
+                margin: 0 !important;
+                padding: 0 !important;
+              }
+              .print-fit-wrapper {
+                width: 100%;
+                overflow: hidden;
+              }
             }
           </style>
         </head>
-        <body class="p-4 bg-white">
-          ${clone.outerHTML}
+        <body class="p-2 bg-white">
+          <div id="print-fit-wrapper" class="print-fit-wrapper">
+            ${clone.outerHTML}
+          </div>
           <script>
-            setTimeout(() => { window.print(); }, 250);
+            function fitListaRToSinglePage() {
+              const sheetEl = document.getElementById('lista-r-printable-sheet');
+              if (!sheetEl) return;
+              sheetEl.style.transform = '';
+              sheetEl.style.transformOrigin = 'top center';
+              sheetEl.style.width = '';
+              // A4 content height at ~96dpi with 5mm top/bottom margin is ~1085px
+              const maxHeightPx = 1065;
+              const rect = sheetEl.getBoundingClientRect();
+              if (rect.height > maxHeightPx) {
+                const scale = Math.max(0.75, maxHeightPx / rect.height);
+                sheetEl.style.transform = 'scale(' + scale.toFixed(4) + ')';
+                sheetEl.style.transformOrigin = 'top center';
+                sheetEl.style.width = (100 / scale).toFixed(2) + '%';
+                sheetEl.style.marginLeft = 'auto';
+                sheetEl.style.marginRight = 'auto';
+              }
+            }
+            window.addEventListener('beforeprint', fitListaRToSinglePage);
+            window.onload = function() {
+              setTimeout(function() {
+                fitListaRToSinglePage();
+                window.print();
+              }, 300);
+            };
           <\/script>
         </body>
         </html>
