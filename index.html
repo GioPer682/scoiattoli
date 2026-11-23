@@ -272,6 +272,7 @@
           <button onclick="switchRegiaTab('partite')" id="regia-tab-partite" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-[#0f2544] text-white shadow transition cursor-pointer whitespace-nowrap">1. Calendario, Stati & Risultati</button>
           <button onclick="switchRegiaTab('ticker')" id="regia-tab-ticker" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap">2. Barra Avvisi (Ticker)</button>
           <button onclick="switchRegiaTab('roster')" id="regia-tab-roster" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap">3. Roster & Numeri Maglia</button>
+          <button onclick="switchRegiaTab('listar')" id="regia-tab-listar" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap">4. Lista R / Distinta Gara</button>
         </div>
 
         <div id="regia-content-partite" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
@@ -429,6 +430,68 @@
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3" id="regia-roster-editor"></div>
+        </div>
+
+        <div id="regia-content-listar" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6 hidden">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+            <div>
+              <h3 class="text-lg font-black text-[#0f2544]">Generatore Lista Nominativi Miniatleti e Istruttori (Lista R)</h3>
+              <p class="text-xs text-slate-500">Compila automaticamente la distinta della gara selezionata usando i convocati del coach, numeri maglia, date di nascita e istruttori.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <button type="button" onclick="downloadListaRCsv()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider transition cursor-pointer shadow-sm">
+                ⬇ Scarica CSV / Foglio (.csv)
+              </button>
+              <button type="button" onclick="printListaRPdf()" class="px-4 py-2.5 bg-[#0f2544] hover:bg-slate-800 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider transition cursor-pointer shadow-sm">
+                🖨 Stampa / Salva PDF Lista R
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+            <div>
+              <label class="text-[11px] font-bold text-slate-600 uppercase block mb-1">Partita di Riferimento</label>
+              <select id="listar-match-select" onchange="renderListaRPreview()" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-[#0f2544]"></select>
+            </div>
+            <div>
+              <label class="text-[11px] font-bold text-slate-600 uppercase block mb-1">Trofeo Minibasket</label>
+              <input type="text" id="listar-trofeo" value="SCOIATTOLI BIG" oninput="renderListaRPreview()" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-[#0f2544]" />
+            </div>
+            <div>
+              <label class="text-[11px] font-bold text-slate-600 uppercase block mb-1">Luogo Incontro (Comune)</label>
+              <input type="text" id="listar-luogo" value="CINISELLO BALSAMO" oninput="renderListaRPreview()" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-[#0f2544]" />
+            </div>
+          </div>
+
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+              <span class="text-xs font-extrabold text-[#0f2544] uppercase">Istruttori & Date di Nascita Atleti (salvate per la Lista R)</span>
+              <button type="button" onclick="saveListaRMetadata()" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl text-[11px] font-extrabold uppercase tracking-wider transition cursor-pointer">
+                Salva Date di Nascita & Istruttori
+              </button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="bg-white p-3 rounded-xl border border-slate-200 space-y-2">
+                <div class="text-[10px] font-black uppercase text-slate-500">Istruttore 1</div>
+                <div class="grid grid-cols-3 gap-2">
+                  <input type="text" id="listar-istr1-cognome" value="Aresta" oninput="renderListaRPreview()" placeholder="Cognome" class="px-2.5 py-1.5 border border-slate-300 rounded-lg text-xs font-bold" />
+                  <input type="text" id="listar-istr1-nome" value="Gaia" oninput="renderListaRPreview()" placeholder="Nome" class="px-2.5 py-1.5 border border-slate-300 rounded-lg text-xs font-bold" />
+                  <input type="text" id="listar-istr1-nascita" value="11/06/1985" oninput="renderListaRPreview()" placeholder="GG/MM/AAAA" class="px-2.5 py-1.5 border border-slate-300 rounded-lg text-xs font-bold text-center" />
+                </div>
+              </div>
+              <div class="bg-white p-3 rounded-xl border border-slate-200 space-y-2">
+                <div class="text-[10px] font-black uppercase text-slate-500">Istruttore 2</div>
+                <div class="grid grid-cols-3 gap-2">
+                  <input type="text" id="listar-istr2-cognome" value="Di Pietro" oninput="renderListaRPreview()" placeholder="Cognome" class="px-2.5 py-1.5 border border-slate-300 rounded-lg text-xs font-bold" />
+                  <input type="text" id="listar-istr2-nome" value="Elisa" oninput="renderListaRPreview()" placeholder="Nome" class="px-2.5 py-1.5 border border-slate-300 rounded-lg text-xs font-bold" />
+                  <input type="text" id="listar-istr2-nascita" value="01/01/1985" oninput="renderListaRPreview()" placeholder="GG/MM/AAAA" class="px-2.5 py-1.5 border border-slate-300 rounded-lg text-xs font-bold text-center" />
+                </div>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 max-h-52 overflow-y-auto pt-1" id="listar-dob-editor"></div>
+          </div>
+
+          <div class="border border-slate-300 rounded-2xl p-4 sm:p-6 bg-white overflow-x-auto" id="listar-preview-box"></div>
         </div>
       </div>
     </section>
@@ -1712,7 +1775,7 @@
     }
 
     function switchRegiaTab(tab) {
-      ['partite', 'ticker', 'roster'].forEach(t => {
+      ['partite', 'ticker', 'roster', 'listar'].forEach(t => {
         document.getElementById('regia-content-' + t).classList.add('hidden');
         document.getElementById('regia-tab-' + t).className = "px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap";
       });
@@ -1728,6 +1791,9 @@
       renderRegiaMatchesList();
       populateTickerForm();
       renderRegiaRosterEditor();
+      populateListaRMatchSelect();
+      renderListaRDobEditor();
+      renderListaRPreview();
       if (dbState.partite && dbState.partite.length > 0) {
         loadMatchIntoRegiaForm(dbState.partite[0].id);
       }
@@ -2023,6 +2089,363 @@
       saveToDatabase('roster');
       renderRegiaRosterEditor();
       renderRosterMain();
+    }
+
+
+    // --- LISTA R / DISTINTA GARA FIP ---
+    const FIP_LOMBARDIA_LOGO_SVG = `
+      <svg viewBox="0 0 360 72" class="h-12 w-auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="FIP Lombardia">
+        <rect x="4" y="4" width="22" height="4" fill="#008C45"/>
+        <rect x="26" y="4" width="22" height="4" fill="#F4F5F0"/>
+        <rect x="48" y="4" width="22" height="4" fill="#CD212A"/>
+        <path d="M8,12 L66,12 L66,42 Q66,62 37,68 Q8,62 8,42 Z" fill="none" stroke="#184785" stroke-width="5"/>
+        <path d="M37,14 L37,66 M14,24 Q28,38 14,54 M60,24 Q46,38 60,54" fill="none" stroke="#184785" stroke-width="4.5"/>
+        <text x="84" y="34" font-family="Arial Black, Impact, sans-serif" font-size="25" font-weight="900" fill="#184785" letter-spacing="3">F I P</text>
+        <text x="84" y="61" font-family="Arial Black, Impact, sans-serif" font-size="22" font-weight="900" fill="#184785" letter-spacing="2">LOMBARDIA</text>
+      </svg>
+    `;
+
+    const FIP_SPONSORS_BAR_HTML = `
+      <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-200 text-[9px] font-black tracking-wider uppercase text-slate-600">
+        <span class="px-2 py-0.5 border border-slate-300 rounded text-[#184785]">ITA AIRWAYS</span>
+        <span class="px-2 py-0.5 border border-slate-300 rounded text-[#184785]">IBSA</span>
+        <span class="px-2 py-0.5 border border-slate-300 rounded text-slate-800">MACRON</span>
+        <span class="px-2 py-0.5 border border-slate-300 rounded text-[#184785]">MD</span>
+        <span class="px-2 py-0.5 border border-slate-300 rounded text-[#184785]">TRENTINO</span>
+        <span class="px-2 py-0.5 border border-slate-300 rounded text-slate-800">MOLTEN</span>
+        <span class="px-2 py-0.5 border border-slate-300 rounded text-rose-700">LA GAZZETTA DELLO SPORT</span>
+        <span class="px-2 py-0.5 border border-slate-300 rounded text-red-700">CORRIERE DELLO SPORT</span>
+        <span class="px-2 py-0.5 border border-slate-300 rounded text-emerald-700">KIGILI • NEX</span>
+      </div>
+    `;
+
+    function extractPlayerDobFromDb(playerObj) {
+      if (!playerObj) return "";
+      const direct = playerObj.dataNascita || playerObj.data_nascita || playerObj.nascita || playerObj.birthDate || playerObj.dob || "";
+      if (direct) return String(direct).trim();
+      const cfg = dbState.listaRConfig || {};
+      if (cfg.birthdays && cfg.birthdays[playerObj.nome]) {
+        return String(cfg.birthdays[playerObj.nome]).trim();
+      }
+      return "";
+    }
+
+    function getListaRConfig() {
+      if (!dbState.listaRConfig) {
+        dbState.listaRConfig = {
+          trofeo: "SCOIATTOLI BIG",
+          luogoDefault: "CINISELLO BALSAMO",
+          istr1: { cognome: "Aresta", nome: "Gaia", nascita: "11/06/1985" },
+          istr2: { cognome: "Di Pietro", nome: "Elisa", nascita: "01/01/1985" },
+          birthdays: {}
+        };
+      }
+      if (!dbState.listaRConfig.istr1) {
+        dbState.listaRConfig.istr1 = { cognome: "Aresta", nome: "Gaia", nascita: "11/06/1985" };
+      }
+      if (!dbState.listaRConfig.istr2) {
+        dbState.listaRConfig.istr2 = { cognome: "Di Pietro", nome: "Elisa", nascita: "01/01/1985" };
+      }
+      return dbState.listaRConfig;
+    }
+
+    function populateListaRMatchSelect() {
+      const sel = document.getElementById('listar-match-select');
+      if (!sel || !dbState.partite) return;
+      const prevVal = sel.value;
+      sel.innerHTML = dbState.partite.map(p =>
+        `<option value="${p.id}">${p.id} • ${p.data} • vs ${p.avversario}${p.garaNumero ? ' (Gara ' + p.garaNumero + ')' : ''}</option>`
+      ).join('');
+      if (prevVal && dbState.partite.some(p => p.id === prevVal)) {
+        sel.value = prevVal;
+      } else {
+        const nextMatch = dbState.partite.find(p => p.stato === 'prossimo_incontro') || dbState.partite[0];
+        if (nextMatch) sel.value = nextMatch.id;
+      }
+
+      const cfg = getListaRConfig();
+      document.getElementById('listar-trofeo').value = cfg.trofeo || "SCOIATTOLI BIG";
+      document.getElementById('listar-luogo').value = cfg.luogoDefault || "CINISELLO BALSAMO";
+      document.getElementById('listar-istr1-cognome').value = cfg.istr1?.cognome || "Aresta";
+      document.getElementById('listar-istr1-nome').value = cfg.istr1?.nome || "Gaia";
+      document.getElementById('listar-istr1-nascita').value = cfg.istr1?.nascita || "11/06/1985";
+      document.getElementById('listar-istr2-cognome').value = cfg.istr2?.cognome || "Di Pietro";
+      document.getElementById('listar-istr2-nome').value = cfg.istr2?.nome || "Elisa";
+      document.getElementById('listar-istr2-nascita').value = cfg.istr2?.nascita || "01/01/1985";
+    }
+
+    function renderListaRDobEditor() {
+      const box = document.getElementById('listar-dob-editor');
+      if (!box || !dbState.roster) return;
+      const cfg = getListaRConfig();
+      const bdays = cfg.birthdays || {};
+
+      box.innerHTML = dbState.roster.map(a => {
+        const dob = extractPlayerDobFromDb(a);
+        return `
+          <div class="bg-white px-2.5 py-2 rounded-xl border border-slate-200 flex items-center justify-between gap-2">
+            <span class="text-[11px] font-bold text-[#0f2544] truncate">${a.nome} <span class="text-slate-400">#${a.numero}</span></span>
+            <input type="text" value="${dob}" placeholder="GG/MM/AA" oninput="updateListaRBday('${a.nome.replace(/'/g, "\'")}', this.value)" class="w-24 px-2 py-1 border border-slate-300 rounded-lg text-[11px] font-bold text-center" />
+          </div>
+        `;
+      }).join('');
+    }
+
+    function updateListaRBday(playerName, val) {
+      const cfg = getListaRConfig();
+      if (!cfg.birthdays) cfg.birthdays = {};
+      cfg.birthdays[playerName] = val.trim();
+      renderListaRPreview();
+    }
+
+    function saveListaRMetadata() {
+      const cfg = getListaRConfig();
+      cfg.trofeo = document.getElementById('listar-trofeo').value.trim() || "SCOIATTOLI BIG";
+      cfg.luogoDefault = document.getElementById('listar-luogo').value.trim() || "CINISELLO BALSAMO";
+      cfg.istr1 = {
+        cognome: document.getElementById('listar-istr1-cognome').value.trim(),
+        nome: document.getElementById('listar-istr1-nome').value.trim(),
+        nascita: document.getElementById('listar-istr1-nascita').value.trim()
+      };
+      cfg.istr2 = {
+        cognome: document.getElementById('listar-istr2-cognome').value.trim(),
+        nome: document.getElementById('listar-istr2-nome').value.trim(),
+        nascita: document.getElementById('listar-istr2-nascita').value.trim()
+      };
+      if (Array.isArray(dbState.roster) && cfg.birthdays) {
+        dbState.roster.forEach(p => {
+          if (cfg.birthdays[p.nome]) {
+            p.dataNascita = cfg.birthdays[p.nome];
+          }
+        });
+      }
+      saveToDatabase('listaRConfig');
+      renderListaRPreview();
+    }
+
+    function buildListaRRows(match) {
+      const cfg = getListaRConfig();
+      const convNames = (dbState.convocazioni && dbState.convocazioni[match.id]) ? dbState.convocazioni[match.id] : [];
+      const selectedPlayers = convNames.length > 0
+        ? convNames.map(name => (dbState.roster || []).find(r => r.nome === name) || { nome: name, numero: "" })
+        : (dbState.roster || []).slice(0, 14);
+
+      const rows = [];
+      for (let i = 0; i < 14; i++) {
+        const p = selectedPlayers[i];
+        if (p) {
+          const parts = p.nome.trim().split(/\s+/);
+          const firstName = parts[0] || "";
+          const lastName = parts.slice(1).join(" ") || "";
+          const dob = extractPlayerDobFromDb(p);
+          rows.push({
+            idx: i + 1,
+            nome: firstName,
+            cognome: lastName,
+            maglia: p.numero && p.numero !== "-" ? p.numero : "",
+            nascita: dob
+          });
+        } else {
+          rows.push({ idx: i + 1, nome: "", cognome: "", maglia: "", nascita: "" });
+        }
+      }
+      return rows;
+    }
+
+    function renderListaRPreview() {
+      const box = document.getElementById('listar-preview-box');
+      const sel = document.getElementById('listar-match-select');
+      if (!box || !sel || !dbState.partite) return;
+
+      const match = dbState.partite.find(p => p.id === sel.value) || dbState.partite[0];
+      if (!match) return;
+
+      const cfg = getListaRConfig();
+      const trofeo = document.getElementById('listar-trofeo')?.value.trim() || cfg.trofeo || "SCOIATTOLI BIG";
+      const luogo = document.getElementById('listar-luogo')?.value.trim() || cfg.luogoDefault || "CINISELLO BALSAMO";
+      const sqCasa = match.squadraCasa || (match.tipo === 'In Casa' ? 'ASA Cinisello' : match.avversario);
+      const sqTrasf = match.squadraTrasferta || (match.tipo === 'In Casa' ? match.avversario : 'ASA Cinisello');
+      const garaNum = match.garaNumero || "";
+      const rows = buildListaRRows(match);
+
+      const istr1 = {
+        cognome: document.getElementById('listar-istr1-cognome')?.value ?? cfg.istr1?.cognome ?? "Aresta",
+        nome: document.getElementById('listar-istr1-nome')?.value ?? cfg.istr1?.nome ?? "Gaia",
+        nascita: document.getElementById('listar-istr1-nascita')?.value ?? cfg.istr1?.nascita ?? "11/06/1985"
+      };
+      const istr2 = {
+        cognome: document.getElementById('listar-istr2-cognome')?.value ?? cfg.istr2?.cognome ?? "Di Pietro",
+        nome: document.getElementById('listar-istr2-nome')?.value ?? cfg.istr2?.nome ?? "Elisa",
+        nascita: document.getElementById('listar-istr2-nascita')?.value ?? cfg.istr2?.nascita ?? "01/01/1985"
+      };
+
+      const hasConv = !!(dbState.convocazioni && dbState.convocazioni[match.id] && dbState.convocazioni[match.id].length > 0);
+      const statusNote = hasConv
+        ? `Compilata automaticamente con i ${dbState.convocazioni[match.id].length} convocati confermati per ${match.id}.`
+        : `Nessun convocato ancora salvato per ${match.id}: anteprima predisposta con le prime righe del roster (o righe compilabili).`;
+
+      box.innerHTML = `
+        <div class="mb-3 text-[11px] font-bold ${hasConv ? 'text-emerald-700' : 'text-amber-700'}">${statusNote}</div>
+        <div id="lista-r-printable-sheet" class="max-w-3xl mx-auto border-2 border-slate-900 p-5 bg-white text-slate-900 space-y-4">
+          <div class="flex items-start justify-between gap-4 border-b border-slate-300 pb-3">
+            <div>
+              ${FIP_LOMBARDIA_LOGO_SVG}
+            </div>
+            <div class="text-[11px] leading-snug text-[#184785]">
+              <div class="font-extrabold">Comitato Regionale Lombardia</div>
+              <div>Via G.B.Piranesi 46<br/>20137 Milano</div>
+              <div>Settore Tel. +39 027002091<br/>@lombardia.fip.it</div>
+              <div class="font-bold underline">www.fip.it/lombardia</div>
+            </div>
+          </div>
+
+          <h4 class="text-center text-base sm:text-lg font-black uppercase tracking-wide" style="font-family: Georgia, 'Times New Roman', serif;">
+            LISTA NOMINATIVI MINIATLETI E ISTRUTTORI
+          </h4>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-x-4 gap-y-2 text-xs font-bold border-b border-slate-900 pb-3">
+            <div>Data: <span class="underline decoration-slate-900 font-extrabold">${match.data || ""}</span></div>
+            <div>Luogo: <span class="underline decoration-slate-900 font-extrabold">${luogo}</span></div>
+            <div>Gara n°: <span class="underline decoration-slate-900 font-extrabold">${garaNum}</span></div>
+            <div class="sm:col-span-2">Squadra A: <span class="underline decoration-slate-900 font-extrabold">${sqCasa}</span></div>
+            <div>Squadra B: <span class="underline decoration-slate-900 font-extrabold">${sqTrasf}</span></div>
+            <div class="sm:col-span-3">Trofeo Minibasket: <span class="underline decoration-slate-900 font-extrabold">${trofeo}</span></div>
+          </div>
+
+          <table class="w-full border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-100">
+                <th class="border-2 border-slate-900 px-2 py-1.5 w-10 text-center font-black">##</th>
+                <th class="border-2 border-slate-900 px-2 py-1.5 text-left font-black">NOME</th>
+                <th class="border-2 border-slate-900 px-2 py-1.5 text-left font-black">COGNOME</th>
+                <th class="border-2 border-slate-900 px-2 py-1.5 w-20 text-center font-black">N° Maglia</th>
+                <th class="border-2 border-slate-900 px-2 py-1.5 w-28 text-center font-black">Data di Nascita</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map(r => `
+                <tr>
+                  <td class="border border-slate-900 px-2 py-1 text-center font-bold">${r.idx}</td>
+                  <td class="border border-slate-900 px-2 py-1 font-semibold">${r.nome}</td>
+                  <td class="border border-slate-900 px-2 py-1 font-semibold">${r.cognome}</td>
+                  <td class="border border-slate-900 px-2 py-1 text-center font-bold">${r.maglia}</td>
+                  <td class="border border-slate-900 px-2 py-1 text-center">${r.nascita}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+
+          <table class="w-full border-collapse text-xs">
+            <tbody>
+              <tr>
+                <td class="border-2 border-slate-900 px-2 py-1.5 w-20 text-center font-black bg-slate-50">ISTR. 1</td>
+                <td class="border-2 border-slate-900 px-2 py-1.5 font-semibold">${istr1.cognome}</td>
+                <td class="border-2 border-slate-900 px-2 py-1.5 font-semibold">${istr1.nome}</td>
+                <td class="border-2 border-slate-900 px-2 py-1.5 w-20"></td>
+                <td class="border-2 border-slate-900 px-2 py-1.5 w-28 text-center font-semibold">${istr1.nascita}</td>
+              </tr>
+              <tr>
+                <td class="border-2 border-slate-900 px-2 py-1.5 w-20 text-center font-black bg-slate-50">ISTR.2</td>
+                <td class="border-2 border-slate-900 px-2 py-1.5 font-semibold">${istr2.cognome}</td>
+                <td class="border-2 border-slate-900 px-2 py-1.5 font-semibold">${istr2.nome}</td>
+                <td class="border-2 border-slate-900 px-2 py-1.5 w-20"></td>
+                <td class="border-2 border-slate-900 px-2 py-1.5 w-28 text-center font-semibold">${istr2.nascita}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="pt-2 text-xs font-bold">
+            Firma: <span class="inline-block w-64 border-b border-slate-900 align-baseline"></span>
+          </div>
+
+          ${FIP_SPONSORS_BAR_HTML}
+        </div>
+      `;
+    }
+
+    function downloadListaRCsv() {
+      const sel = document.getElementById('listar-match-select');
+      const match = dbState.partite.find(p => p.id === sel?.value) || dbState.partite[0];
+      if (!match) return;
+
+      const cfg = getListaRConfig();
+      const trofeo = document.getElementById('listar-trofeo')?.value.trim() || cfg.trofeo || "SCOIATTOLI BIG";
+      const luogo = document.getElementById('listar-luogo')?.value.trim() || cfg.luogoDefault || "CINISELLO BALSAMO";
+      const sqCasa = match.squadraCasa || (match.tipo === 'In Casa' ? 'ASA Cinisello' : match.avversario);
+      const sqTrasf = match.squadraTrasferta || (match.tipo === 'In Casa' ? match.avversario : 'ASA Cinisello');
+      const rows = buildListaRRows(match);
+
+      const istr1 = {
+        cognome: document.getElementById('listar-istr1-cognome')?.value ?? cfg.istr1?.cognome ?? "Aresta",
+        nome: document.getElementById('listar-istr1-nome')?.value ?? cfg.istr1?.nome ?? "Gaia",
+        nascita: document.getElementById('listar-istr1-nascita')?.value ?? cfg.istr1?.nascita ?? "11/06/1985"
+      };
+      const istr2 = {
+        cognome: document.getElementById('listar-istr2-cognome')?.value ?? cfg.istr2?.cognome ?? "Di Pietro",
+        nome: document.getElementById('listar-istr2-nome')?.value ?? cfg.istr2?.nome ?? "Elisa",
+        nascita: document.getElementById('listar-istr2-nascita')?.value ?? cfg.istr2?.nascita ?? "01/01/1985"
+      };
+
+      const esc = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+      const lines = [
+        [esc("LISTA NOMINATIVI MINIATLETI E ISTRUTTORI"), "", "", "", ""],
+        [esc("Data"), esc(match.data || ""), esc("Luogo"), esc(luogo), esc("Gara n°: " + (match.garaNumero || ""))],
+        [esc("Squadra A"), esc(sqCasa), esc("Squadra B"), esc(sqTrasf), ""],
+        [esc("Trofeo Minibasket"), esc(trofeo), "", "", ""],
+        ["", "", "", "", ""],
+        [esc("##"), esc("NOME"), esc("COGNOME"), esc("N° Maglia"), esc("Data di Nascita")]
+      ];
+
+      rows.forEach(r => {
+        lines.push([esc(r.idx), esc(r.nome), esc(r.cognome), esc(r.maglia), esc(r.nascita)]);
+      });
+
+      lines.push([esc("ISTR. 1"), esc(istr1.cognome), esc(istr1.nome), "", esc(istr1.nascita)]);
+      lines.push([esc("ISTR.2"), esc(istr2.cognome), esc(istr2.nome), "", esc(istr2.nascita)]);
+
+      const csvContent = "\uFEFF" + lines.map(l => l.join(";")).join("\r\n");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const safeId = (match.id || "Gara").replace(/[^a-zA-Z0-9_-]/g, "_");
+      a.href = url;
+      a.download = `Lista_R_${safeId}_${(match.data || "").replace(/\//g, "-")}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function printListaRPdf() {
+      const sheet = document.getElementById('lista-r-printable-sheet');
+      if (!sheet) return;
+      const win = window.open("", "_blank", "width=900,height=700");
+      if (!win) {
+        alert("Consenti l'apertura dei pop-up per stampare o salvare la Lista R in PDF.");
+        return;
+      }
+      win.document.write(`
+        <!DOCTYPE html>
+        <html lang="it">
+        <head>
+          <meta charset="UTF-8" />
+          <title>Lista R — FIP Lombardia</title>
+          <script src="https://cdn.tailwindcss.com"><\/script>
+          <style>
+            @media print {
+              body { margin: 0; padding: 10px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            }
+          </style>
+        </head>
+        <body class="p-4 bg-white">
+          ${sheet.outerHTML}
+          <script>
+            setTimeout(() => { window.print(); }, 250);
+          <\/script>
+        </body>
+        </html>
+      `);
+      win.document.close();
     }
 
     function removePlayer(idx) {
