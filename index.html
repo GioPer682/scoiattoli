@@ -43,6 +43,25 @@
   </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-[#c8102e] selection:text-white">
+  <!-- GATE AUTENTICAZIONE GENITORI -->
+  <div id="site-auth-gate" class="fixed inset-0 bg-[#0f2544] z-[100] flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-slate-200 text-center space-y-6">
+      <div class="flex flex-col items-center space-y-3">
+        <img src="logo1.png" alt="ASA Basket Cinisello" class="h-24 w-auto object-contain drop-shadow-md" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><rect width=\'100\' height=\'100\' fill=\'%23c8102e\'/><text x=\'50\' y=\'55\' font-size=\'32\' font-weight=\'bold\' fill=\'white\' text-anchor=\'middle\' dominant-baseline=\'middle\'>ASA</text></svg>'" />
+        <span class="asa-red text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-widest shadow-xs">SCOIATTOLI 2018/2019</span>
+        <h1 class="text-xl sm:text-2xl font-black text-[#0f2544] uppercase tracking-tight">Area Riservata Famiglie</h1>
+        <p class="text-xs text-slate-600 leading-relaxed">Inserisci la password del gruppo <strong>Scoiattoli</strong> per accedere al calendario ufficiale, alle convocazioni e alle disponibilità.</p>
+      </div>
+      <div class="space-y-3 text-left">
+        <input type="password" id="site-auth-pass" onkeydown="if(event.key==='Enter') verifySiteGate()" placeholder="Inserisci password..." class="w-full px-4.5 py-3.5 border border-slate-300 rounded-2xl text-sm font-bold text-[#0f2544] focus:outline-none focus:ring-2 focus:ring-[#0f2544]" />
+        <p id="site-auth-error" class="text-xs font-bold text-[#c8102e] hidden">Password non corretta. Riprova.</p>
+        <button onclick="verifySiteGate()" class="w-full py-3.5 bg-[#c8102e] hover:bg-red-700 text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition cursor-pointer shadow-lg">
+          Accedi al Portale
+        </button>
+      </div>
+    </div>
+  </div>
+
 
   <!-- TOP WRAPPER (TESTATA + TICKER) -->
   <div>
@@ -164,7 +183,7 @@
 
       <div id="coach-login-container" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 max-w-xl shadow-sm space-y-5">
         <h3 class="font-extrabold text-lg text-[#0f2544]">Autenticazione Staff Tecnico</h3>
-        <p class="text-xs text-slate-600">Inserisci la password dedicata agli allenatori (<code class="bg-slate-100 px-2 py-0.5 rounded font-bold text-asa-red">asa2026</code>) per gestire esclusivamente le convocazioni alle partite.</p>
+        <p class="text-xs text-slate-600">Inserisci la password dedicata agli allenatori per gestire esclusivamente le convocazioni alle partite.</p>
         <input type="password" id="coach-pass" onkeydown="if(event.key==='Enter') verifyCoachLogin()" placeholder="Password coach..." class="w-full px-4.5 py-3 border border-slate-300 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-[#0f2544]" />
         <button onclick="verifyCoachLogin()" class="w-full py-3.5 bg-[#0f2544] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider hover:bg-slate-800 transition cursor-pointer shadow">
           Accedi alle Convocazioni
@@ -230,7 +249,7 @@
 
       <div id="dirigente-login-container" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 max-w-xl shadow-sm space-y-5">
         <h3 class="font-extrabold text-lg text-[#0f2544]">Accesso Riservato Dirigenza</h3>
-        <p class="text-xs text-slate-600">Inserisci la password amministrativa (<code class="bg-slate-100 px-2 py-0.5 rounded font-bold text-slate-900">dirigente2026</code>) per gestire in tempo reale il calendario, gli stati partita, i risultati, la barra scorrevole e il roster sul Database Cloud.</p>
+        <p class="text-xs text-slate-600">Inserisci la password amministrativa per gestire in tempo reale il calendario, gli stati partita, i risultati, la barra scorrevole e il roster sul Database Cloud.</p>
         <input type="password" id="dirigente-pass" onkeydown="if(event.key==='Enter') verifyDirigenteLogin()" placeholder="Password dirigente..." class="w-full px-4.5 py-3 border border-slate-300 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-800" />
         <button onclick="verifyDirigenteLogin()" class="w-full py-3.5 bg-[#0f2544] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider hover:bg-slate-800 transition cursor-pointer shadow">
           Entra in Area Dirigente
@@ -261,9 +280,14 @@
               <h3 class="text-lg font-black text-[#0f2544]">Gestione Incontri</h3>
               <p class="text-xs text-slate-500">Imposta lo stato della gara: <strong>Programmata</strong>, <strong>Prossimo Incontro</strong> (verde), <strong>Rinviata</strong> (azzurra) o <strong>Conclusa</strong>.</p>
             </div>
-            <button onclick="prepareNewMatch()" class="px-4 py-2.5 bg-[#0f2544] hover:bg-slate-800 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider transition cursor-pointer shadow-sm">
-              + Nuova Partita / Amichevole
-            </button>
+            <div class="flex flex-wrap items-center gap-2">
+              <button onclick="importCalendarioDefinitivoToCloud()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider transition cursor-pointer shadow-sm">
+                ↻ Carica Calendario Definitivo (14 Gare)
+              </button>
+              <button onclick="prepareNewMatch()" class="px-4 py-2.5 bg-[#0f2544] hover:bg-slate-800 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider transition cursor-pointer shadow-sm">
+                + Nuova Partita / Amichevole
+              </button>
+            </div>
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -418,6 +442,10 @@
         <button onclick="switchNav('dirigente')" class="hover:text-slate-300 transition cursor-pointer flex items-center gap-1 font-semibold">
           Area Dirigente
         </button>
+        <span>•</span>
+        <button onclick="logoutSiteGate()" class="hover:text-slate-300 transition cursor-pointer font-semibold">
+          Blocca Accesso
+        </button>
       </div>
     </div>
   </footer>
@@ -498,7 +526,7 @@
     const defaultDbState = {
       ticker: {
         attivo: true,
-        testo: "PROSSIMA GARA: SABATO 29 NOVEMBRE • ORE 15:30 VS FORTITUDO COLOGNO (PALESTRA BUCUM) • ALLENAMENTI MARTEDI ORE 17:00 E MERCOLEDI ORE 18:00"
+        testo: "PROSSIMA GARA (1ª ANDATA): SABATO 28 NOVEMBRE • ORE 12:30 VS MALASPINA SPORT TEAM (PALESTRA BUCUM, VIA MONTE ORTIGARA 2) • ALLENAMENTI MARTEDÌ ORE 17:00 E MERCOLEDÌ ORE 18:00"
       },
       roster: [
         { nome: "Alessandro Affronti", numero: "-" },
@@ -525,66 +553,202 @@
         { nome: "Jonas Mantoan", numero: "24" }
       ],
       partite: [
-        {
-          id: "Giornata 1",
-          data: "15/11/2026",
-          ora: "15:30",
-          avversario: "Pallacanestro Cinisello",
-          tipo: "In Casa",
-          fase: "Andata",
-          stato: "programmata",
-          risultato: "",
-          sede: "Palestra BUCUM - Via Monte Ortigara 2",
-          nota: ""
-        },
-        {
-          id: "Giornata 2",
-          data: "22/11/2026",
-          ora: "16:00",
-          avversario: "Sesto Basket",
-          tipo: "Trasferta",
-          fase: "Andata",
-          stato: "programmata",
-          risultato: "",
-          sede: "Palestra Comunale - Via Marx, Sesto S.G.",
-          nota: ""
-        },
-        {
-          id: "Giornata 3",
-          data: "29/11/2026",
-          ora: "15:30",
-          avversario: "Fortitudo Cologno",
-          tipo: "In Casa",
-          fase: "Andata",
-          stato: "programmata",
-          risultato: "",
-          sede: "Palestra BUCUM - Via Monte Ortigara 2",
-          nota: ""
-        },
-        {
-          id: "Giornata 4",
-          data: "06/12/2026",
-          ora: "16:30",
-          avversario: "Rondinella Sesto",
-          tipo: "Trasferta",
-          fase: "Andata",
-          stato: "programmata",
-          risultato: "",
-          sede: "Centro Sportivo - Cologno Monzese",
-          nota: ""
-        },
-        {
-          id: "Giornata 5",
-          data: "13/12/2026",
-          ora: "15:30",
-          avversario: "San Carlo Milano",
-          tipo: "In Casa",
-          fase: "Andata",
-          stato: "programmata",
-          risultato: "",
-          sede: "Palestra BUCUM - Via Monte Ortigara 2",
-          nota: ""
-        }
+              {
+                      "id": "1ª Andata (Gara 22563)",
+                      "data": "28/11/2026",
+                      "ora": "12:30",
+                      "avversario": "MALASPINA SPORT TEAM",
+                      "squadraCasa": "ASA Cinisello",
+                      "squadraTrasferta": "MALASPINA SPORT TEAM",
+                      "tipo": "In Casa",
+                      "fase": "Andata",
+                      "stato": "prossimo_incontro",
+                      "risultato": "",
+                      "sede": "Palestra - Via Monte Ortigara 2, Cinisello Balsamo",
+                      "nota": ""
+              },
+              {
+                      "id": "2ª Andata (Gara 22568)",
+                      "data": "29/11/2026",
+                      "ora": "09:30",
+                      "avversario": "SAN GABRIELE BASKET Cesa-Trotter",
+                      "squadraCasa": "ASA Cinisello",
+                      "squadraTrasferta": "SAN GABRIELE BASKET Cesa-Trotter",
+                      "tipo": "In Casa",
+                      "fase": "Andata",
+                      "stato": "programmata",
+                      "risultato": "",
+                      "sede": "Palestra - Via Monte Ortigara 2, Cinisello Balsamo",
+                      "nota": ""
+              },
+              {
+                      "id": "3ª Andata (Gara 22573)",
+                      "data": "12/12/2026",
+                      "ora": "09:30",
+                      "avversario": "POL. RONDINELLA A.S.D. 1955",
+                      "squadraCasa": "POL. RONDINELLA A.S.D. 1955",
+                      "squadraTrasferta": "ASA Cinisello",
+                      "tipo": "Trasferta",
+                      "fase": "Andata",
+                      "stato": "programmata",
+                      "risultato": "",
+                      "sede": "Palestra - V.le Matteotti 425, Sesto San Giovanni",
+                      "nota": ""
+              },
+              {
+                      "id": "4ª Andata (Gara 22577)",
+                      "data": "07/02/2027",
+                      "ora": "11:30",
+                      "avversario": "A.S.DIL. CENTRO SCHUSTER",
+                      "squadraCasa": "A.S.DIL. CENTRO SCHUSTER",
+                      "squadraTrasferta": "ASA Cinisello",
+                      "tipo": "Trasferta",
+                      "fase": "Andata",
+                      "stato": "programmata",
+                      "risultato": "",
+                      "sede": "Centro Schuster - Via Padre Lodovico Morell s.j. 2 (via Feltre 100), Milano",
+                      "nota": ""
+              },
+              {
+                      "id": "5ª Andata (Gara 22582)",
+                      "data": "09/01/2027",
+                      "ora": "14:30",
+                      "avversario": "A.S.D. CIESSE FREEBASKET",
+                      "squadraCasa": "A.S.D. CIESSE FREEBASKET",
+                      "squadraTrasferta": "ASA Cinisello",
+                      "tipo": "Trasferta",
+                      "fase": "Andata",
+                      "stato": "programmata",
+                      "risultato": "",
+                      "sede": "Palestra - VIA GIACOSA 46, Milano",
+                      "nota": ""
+              },
+              {
+                      "id": "6ª Andata (Gara 22585)",
+                      "data": "17/01/2027",
+                      "ora": "09:00",
+                      "avversario": "A.S.DIL. BASKET P.O.S.A.L.",
+                      "squadraCasa": "A.S.DIL. BASKET P.O.S.A.L.",
+                      "squadraTrasferta": "ASA Cinisello",
+                      "tipo": "Trasferta",
+                      "fase": "Andata",
+                      "stato": "programmata",
+                      "risultato": "",
+                      "sede": "PALACARZANIGA - Via Giorgio Enrico Falck 110, Sesto San Giovanni",
+                      "nota": ""
+              },
+              {
+                      "id": "7ª Andata (Gara 22587)",
+                      "data": "24/01/2027",
+                      "ora": "09:30",
+                      "avversario": "SAN GABRIELE BASKET Frigia",
+                      "squadraCasa": "SAN GABRIELE BASKET Frigia",
+                      "squadraTrasferta": "ASA Cinisello",
+                      "tipo": "In Casa",
+                      "fase": "Andata",
+                      "stato": "programmata",
+                      "risultato": "",
+                      "sede": "Palestra - Via Monte Ortigara 2, Cinisello Balsamo",
+                      "nota": ""
+              },
+              {
+                      "id": "1ª Ritorno (Gara 22593)",
+                      "data": "31/01/2027",
+                      "ora": "09:30",
+                      "avversario": "MALASPINA SPORT TEAM",
+                      "squadraCasa": "MALASPINA SPORT TEAM",
+                      "squadraTrasferta": "ASA Cinisello",
+                      "tipo": "Trasferta",
+                      "fase": "Ritorno",
+                      "stato": "programmata",
+                      "risultato": "",
+                      "sede": "Centro Crespi Sport village - Via Valvassor Peroni 48, Milano",
+                      "nota": ""
+              },
+              {
+                      "id": "2ª Ritorno (Gara 22595)",
+                      "data": "21/02/2027",
+                      "ora": "09:15",
+                      "avversario": "SAN GABRIELE BASKET Cesa-Trotter",
+                      "squadraCasa": "SAN GABRIELE BASKET Cesa-Trotter",
+                      "squadraTrasferta": "ASA Cinisello",
+                      "tipo": "Trasferta",
+                      "fase": "Ritorno",
+                      "stato": "programmata",
+                      "risultato": "",
+                      "sede": "Palestra - VIA GIACOSA 46, Milano",
+                      "nota": ""
+              },
+              {
+                      "id": "3ª Ritorno (Gara 22600)",
+                      "data": "27/02/2027",
+                      "ora": "09:30",
+                      "avversario": "POL. RONDINELLA A.S.D. 1955",
+                      "squadraCasa": "POL. RONDINELLA A.S.D. 1955",
+                      "squadraTrasferta": "ASA Cinisello",
+                      "tipo": "Trasferta",
+                      "fase": "Ritorno",
+                      "stato": "programmata",
+                      "risultato": "",
+                      "sede": "Palestra - V.le Matteotti 425, Sesto San Giovanni",
+                      "nota": ""
+              },
+              {
+                      "id": "4ª Ritorno (Gara 22603)",
+                      "data": "06/03/2027",
+                      "ora": "14:30",
+                      "avversario": "A.S.DIL. CENTRO SCHUSTER",
+                      "squadraCasa": "ASA Cinisello",
+                      "squadraTrasferta": "A.S.DIL. CENTRO SCHUSTER",
+                      "tipo": "In Casa",
+                      "fase": "Ritorno",
+                      "stato": "programmata",
+                      "risultato": "",
+                      "sede": "Palestra - Via Monte Ortigara 2, Cinisello Balsamo",
+                      "nota": ""
+              },
+              {
+                      "id": "5ª Ritorno (Gara 22607)",
+                      "data": "14/03/2027",
+                      "ora": "09:30",
+                      "avversario": "A.S.D. CIESSE FREEBASKET",
+                      "squadraCasa": "ASA Cinisello",
+                      "squadraTrasferta": "A.S.D. CIESSE FREEBASKET",
+                      "tipo": "In Casa",
+                      "fase": "Ritorno",
+                      "stato": "programmata",
+                      "risultato": "",
+                      "sede": "Palestra - Via Monte Ortigara 2, Cinisello Balsamo",
+                      "nota": ""
+              },
+              {
+                      "id": "6ª Ritorno (Gara 22611)",
+                      "data": "21/03/2027",
+                      "ora": "09:30",
+                      "avversario": "A.S.DIL. BASKET P.O.S.A.L.",
+                      "squadraCasa": "ASA Cinisello",
+                      "squadraTrasferta": "A.S.DIL. BASKET P.O.S.A.L.",
+                      "tipo": "In Casa",
+                      "fase": "Ritorno",
+                      "stato": "programmata",
+                      "risultato": "",
+                      "sede": "Palestra - Via Monte Ortigara 2, Cinisello Balsamo",
+                      "nota": ""
+              },
+              {
+                      "id": "7ª Ritorno (Gara 22617)",
+                      "data": "04/04/2027",
+                      "ora": "09:15",
+                      "avversario": "SAN GABRIELE BASKET Frigia",
+                      "squadraCasa": "SAN GABRIELE BASKET Frigia",
+                      "squadraTrasferta": "ASA Cinisello",
+                      "tipo": "Trasferta",
+                      "fase": "Ritorno",
+                      "stato": "programmata",
+                      "risultato": "",
+                      "sede": "Scuola Media - Via Frigia 4, Milano",
+                      "nota": ""
+              }
       ],
       convocazioni: {},
       disponibilita: {}
@@ -670,6 +834,7 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+      checkSiteGate();
       initRealtimeDatabase();
     });
 
@@ -762,6 +927,59 @@
       });
       document.getElementById('squadra-content-' + tab).classList.remove('hidden');
       document.getElementById('sq-tab-' + tab).className = "px-4 py-2 rounded-xl text-xs font-bold bg-[#0f2544] text-white shadow transition cursor-pointer";
+    }
+
+        function formatSedeCliccabile(sede, lightOnDark = false) {
+      if (!sede) return "";
+      const encoded = encodeURIComponent(sede);
+      const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${encoded}`;
+      const amapsUrl = `https://maps.apple.com/?q=${encoded}`;
+      return `
+        <span class="inline-flex flex-wrap items-center gap-1.5">
+          <a href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" title="Apri su Google Maps" class="underline decoration-slate-400 hover:text-[#c8102e] hover:decoration-[#c8102e] transition">
+            📍 ${sede}
+          </a>
+          <a href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-blue-50 text-blue-800 border border-blue-200 hover:bg-blue-100 transition">
+            Google Maps
+          </a>
+          <a href="${amapsUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 transition">
+            Mappe Apple
+          </a>
+        </span>
+      `;
+    }
+
+    function checkSiteGate() {
+      const gate = document.getElementById('site-auth-gate');
+      if (!gate) return;
+      if (sessionStorage.getItem('asa_scoiattoli_unlocked') === '1') {
+        gate.classList.add('hidden');
+      } else {
+        gate.classList.remove('hidden');
+        setTimeout(() => document.getElementById('site-auth-pass')?.focus(), 50);
+      }
+    }
+
+    function verifySiteGate() {
+      const input = document.getElementById('site-auth-pass');
+      const err = document.getElementById('site-auth-error');
+      if (!input) return;
+      if (input.value === 'Edvige2027') {
+        sessionStorage.setItem('asa_scoiattoli_unlocked', '1');
+        if (err) err.classList.add('hidden');
+        document.getElementById('site-auth-gate').classList.add('hidden');
+      } else {
+        if (err) err.classList.remove('hidden');
+        input.value = '';
+        input.focus();
+      }
+    }
+
+    function logoutSiteGate() {
+      sessionStorage.removeItem('asa_scoiattoli_unlocked');
+      const input = document.getElementById('site-auth-pass');
+      if (input) input.value = '';
+      checkSiteGate();
     }
 
     function formatSquadreVerticali(match) {
@@ -857,7 +1075,7 @@
                 <div>
                   <span class="text-xs font-bold text-slate-500">${item.data}${item.ora ? ' • Ore ' + item.ora : ''}</span>
                   <h3 class="text-xl font-black text-[#0f2544] tracking-tight mt-0.5">${item.id}</h3>
-                  <p class="text-xs text-slate-600 mt-1">${item.sede}</p>
+                  <div class="text-xs text-slate-600 mt-1.5">${formatSedeCliccabile(item.sede)}</div>
                 </div>
                 ${(() => {
                   const scores = computeMatchScores(item);
@@ -945,7 +1163,7 @@
               <div>
                 <span class="text-xs font-bold text-slate-500">${item.data}${item.ora ? ' • Ore ' + item.ora : ''}</span>
                 <h3 class="text-xl font-black text-[#0f2544] tracking-tight mt-0.5">${item.id}</h3>
-                <p class="text-xs text-slate-600 mt-1">${item.sede}</p>
+                <div class="text-xs text-slate-600 mt-1.5">${formatSedeCliccabile(item.sede)}</div>
               </div>
               <div class="${centralBoxClass} rounded-2xl p-4 sm:p-5 text-center space-y-2">
                 <div class="text-[10px] font-black uppercase tracking-widest text-slate-500">${centralLabel}</div>
@@ -1228,7 +1446,7 @@
                 ${faseBadge}
               </div>
               <h4 class="text-lg font-black text-[#0f2544] mt-0.5">ASA Cinisello vs ${p.avversario}</h4>
-              <p class="text-xs text-slate-600">Sede: ${p.sede}</p>
+              <div class="text-xs text-slate-600 mt-1">Sede: ${formatSedeCliccabile(p.sede)}</div>
               ${isRinviata && p.nota ? `<p class="text-xs font-bold text-sky-800 mt-1">${p.nota}</p>` : ''}
             </div>
             <div class="flex items-center gap-3 flex-wrap">
@@ -1252,7 +1470,7 @@
       document.getElementById('modal-score').innerHTML = match.stato === 'conclusa'
         ? `<div>${scores.classificaStr}</div><div class="text-xs font-black text-[#c8102e] mt-0.5">Canestri totali: ${scores.canestriStr}</div>`
         : "Da disputare";
-      document.getElementById('modal-info').innerText = `${match.sede} • ${match.data}${match.ora ? ' (' + match.ora + ')' : ''}`;
+      document.getElementById('modal-info').innerHTML = `${formatSedeCliccabile(match.sede)} <span class="block sm:inline mt-1 sm:mt-0">• ${match.data}${match.ora ? ' (' + match.ora + ')' : ''}</span>`;
 
       const dyn = document.getElementById('modal-dynamic-content');
       dyn.innerHTML = "";
@@ -1356,7 +1574,7 @@
 
     function verifyCoachLogin() {
       const pass = document.getElementById('coach-pass').value;
-      if (pass === 'asa2026') {
+      if (pass === 'Mental2027') {
         document.getElementById('coach-login-container').classList.add('hidden');
         document.getElementById('coach-dashboard-container').classList.remove('hidden');
         populateCoachMatchSelector();
@@ -1457,7 +1675,7 @@
 
     function verifyDirigenteLogin() {
       const pass = document.getElementById('dirigente-pass').value;
-      if (pass === 'dirigente2026') {
+      if (pass === 'Paganini2027') {
         document.getElementById('dirigente-login-container').classList.add('hidden');
         document.getElementById('dirigente-dashboard-container').classList.remove('hidden');
         initRegiaPanels();
@@ -1515,6 +1733,20 @@
           </button>
         `;
       }).join('');
+    }
+
+        function importCalendarioDefinitivoToCloud() {
+      if (!confirm("Sostituire l'elenco partite sul Database Cloud con le 14 gare ufficiali del Calendario Definitivo 2026/2027 (CU n. 0)?")) return;
+      dbState.partite = JSON.parse(JSON.stringify(defaultDbState.partite));
+      dbState.ticker = JSON.parse(JSON.stringify(defaultDbState.ticker));
+      saveToDatabase('partite');
+      renderRegiaMatchesList();
+      populateTickerForm();
+      renderAllPublicViews();
+      if (dbState.partite.length > 0) {
+        loadMatchIntoRegiaForm(dbState.partite[0].id);
+      }
+      alert("Calendario Definitivo (14 gare) pubblicato in tempo reale!");
     }
 
     function prepareNewMatch() {
