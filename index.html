@@ -9,6 +9,10 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <style>
+    html, body {
+      max-width: 100%;
+      overflow-x: clip;
+    }
     body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background-color: #f8fafc; color: #0f172a; }
     .asa-navy { background-color: #0f2544; }
     .asa-red { background-color: #c8102e; }
@@ -29,13 +33,15 @@
     }
 
     @keyframes ticker {
-      0% { transform: translateX(100%); }
-      100% { transform: translateX(-100%); }
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-50%, 0, 0); }
     }
     .animate-ticker {
-      display: inline-block;
+      display: inline-flex;
+      width: max-content;
       white-space: nowrap;
-      animation: ticker 28s linear infinite;
+      will-change: transform;
+      animation: ticker var(--ticker-duration, 18s) linear infinite;
     }
     .animate-ticker:hover {
       animation-play-state: paused;
@@ -838,36 +844,68 @@
     let dbState = JSON.parse(JSON.stringify(defaultDbState));
     let currentNewsFilter = 'all';
 
+    let isDbSynced = false;
+
+    function normalizeDisponibilitaValue(val) {
+      if (val === true || val === 'disponibile') return 'disponibile';
+      if (val === false || val === 'non_disponibile') return 'non_disponibile';
+      return 'in_attesa';
+    }
+
+    function getMatchAvailabilityCounts(matchId) {
+      const roster = Array.isArray(dbState.roster) ? dbState.roster : [];
+      const matchMap = (dbState.disponibilita && dbState.disponibilita[matchId]) ? dbState.disponibilita[matchId] : {};
+      let disponibili = 0;
+      let nonDisponibili = 0;
+      let inAttesa = 0;
+
+      roster.forEach(a => {
+        const st = normalizeDisponibilitaValue(matchMap[a.nome]);
+        if (st === 'disponibile') disponibili++;
+        else if (st === 'non_disponibile') nonDisponibili++;
+        else inAttesa++;
+      });
+
+      return { disponibili, nonDisponibili, inAttesa, totale: roster.length };
+    }
+
     function initRealtimeDatabase() {
       if (db) {
         const docRef = db.collection("asa_portal").doc("scoiattoli_data");
         docRef.onSnapshot((doc) => {
           if (doc.exists) {
             dbState = doc.data();
+            isDbSynced = true;
             if (dbState.partite) {
               dbState.partite.forEach(p => {
                 if (p.stato === 'rimandata') p.stato = 'rinviata';
               });
             }
+            try { localStorage.setItem('asa_scoiattoli_db_cache', JSON.stringify(dbState)); } catch (e) {}
             sortPartite();
             renderAllPublicViews();
             if (!document.getElementById('view-dirigente').classList.contains('hidden')) {
               renderRegiaMatchesList();
+            }
+            if (!document.getElementById('view-coach').classList.contains('hidden')) {
+              loadMatchConvocazioni();
             }
           } else {
             docRef.set(defaultDbState);
           }
         }, (error) => {
           console.error("Errore ascolto Firestore in tempo reale:", error);
+          isDbSynced = false;
           loadLocalFallback();
         });
       } else {
+        isDbSynced = false;
         loadLocalFallback();
       }
     }
 
     function loadLocalFallback() {
-      const saved = localStorage.getItem('asa_scoiattoli_db_live');
+      const saved = localStorage.getItem('asa_scoiattoli_db_cache') || localStorage.getItem('asa_scoiattoli_db_live');
       if (saved) {
         try {
           dbState = JSON.parse(saved);
@@ -879,26 +917,53 @@
         } catch (e) {}
       }
       sortPartite();
-      switchNav('news');
       renderAllPublicViews();
+    }
+
+    async function savePartialToDatabase(updatePayload) {
+      sortPartite();
+      if (!db) {
+        alert("Connessione al database non disponibile. Riprova quando sei online.");
+        return false;
+      }
+      try {
+        await db.collection("asa_portal").doc("scoiattoli_data").update(updatePayload);
+        try { localStorage.setItem('asa_scoiattoli_db_cache', JSON.stringify(dbState)); } catch (e) {}
+        const toast = document.getElementById('regia-toast');
+        if (toast) {
+          toast.classList.remove('hidden');
+          setTimeout(() => toast.classList.add('hidden'), 2500);
+        }
+        return true;
+      } catch (e) {
+        console.error("[Firestore] Errore aggiornamento mirato:", e);
+        alert("Errore di rete durante il salvataggio sul server. Controlla la connessione e riprova.");
+        return false;
+      }
     }
 
     async function saveToDatabase(sectionName) {
       sortPartite();
-      localStorage.setItem('asa_scoiattoli_db_live', JSON.stringify(dbState));
-
-      if (db) {
-        try {
-          await db.collection("asa_portal").doc("scoiattoli_data").set(dbState);
-        } catch (e) {
-          console.error("[Firestore] Errore salvataggio:", e);
-        }
+      if (!db) {
+        alert("Connessione al database non disponibile. Impossibile salvare in modalità offline.");
+        return false;
       }
-
-      const toast = document.getElementById('regia-toast');
-      if (toast) {
-        toast.classList.remove('hidden');
-        setTimeout(() => toast.classList.add('hidden'), 2500);
+      try {
+        const payload = sectionName && dbState[sectionName] !== undefined
+          ? { [sectionName]: dbState[sectionName] }
+          : dbState;
+        await db.collection("asa_portal").doc("scoiattoli_data").update(payload);
+        try { localStorage.setItem('asa_scoiattoli_db_cache', JSON.stringify(dbState)); } catch (e) {}
+        const toast = document.getElementById('regia-toast');
+        if (toast) {
+          toast.classList.remove('hidden');
+          setTimeout(() => toast.classList.add('hidden'), 2500);
+        }
+        return true;
+      } catch (e) {
+        console.error("[Firestore] Errore salvataggio:", e);
+        alert("Salvataggio non riuscito: verifica la connessione internet e riprova.");
+        return false;
       }
     }
 
@@ -932,19 +997,28 @@
       const content = document.getElementById('live-ticker-content');
       if (!wrapper || !content) return;
 
-      if (!dbState.ticker.attivo || !dbState.ticker.testo.trim()) {
+      if (!dbState.ticker || !dbState.ticker.attivo || !dbState.ticker.testo.trim()) {
         wrapper.classList.add('hidden');
         return;
       }
 
       wrapper.classList.remove('hidden');
       const parts = dbState.ticker.testo.split('•').map(s => s.trim()).filter(Boolean);
-      content.innerHTML = parts.map((p, i) => `
-        <span class="inline-flex items-center gap-2">
+      const singleTrack = parts.map((p, i) => `
+        <span class="inline-flex items-center gap-2 shrink-0">
           ${i === 0 ? '<span class="w-2 h-2 rounded-full bg-white animate-ping"></span>' : ''}
           ${p}
         </span>
-      `).join('<span class="mx-4">•</span>');
+      `).join('<span class="mx-4 shrink-0">•</span>');
+
+      content.innerHTML = `
+        <div class="inline-flex items-center shrink-0 pr-8">${singleTrack}<span class="mx-4">•</span></div>
+        <div class="inline-flex items-center shrink-0 pr-8" aria-hidden="true">${singleTrack}<span class="mx-4">•</span></div>
+      `;
+
+      const totalChars = dbState.ticker.testo.length;
+      const durationSec = Math.max(12, Math.min(35, Math.round(totalChars * 0.22)));
+      content.style.setProperty('--ticker-duration', `${durationSec}s`);
     }
 
     function switchNav(navId) {
@@ -1193,7 +1267,8 @@
         const isRinviata = item.stato === 'rinviata';
         const convocatiList = dbState.convocazioni && dbState.convocazioni[item.id] ? dbState.convocazioni[item.id] : [];
         const hasConvocati = convocatiList.length > 0;
-        const dispCount = dbState.disponibilita && dbState.disponibilita[item.id] ? Object.values(dbState.disponibilita[item.id]).filter(Boolean).length : 0;
+        const availCounts = getMatchAvailabilityCounts(item.id);
+        const dispCount = availCounts.disponibili;
 
         let etichettaTop = "In Agenda";
         let cardWrapperClass = "bg-white border-2 border-slate-200 hover:border-[#0f2544]";
@@ -1281,7 +1356,9 @@
       const match = dbState.partite.find(p => p.id === matchId);
       if (!match || match.stato === 'rinviata' || match.stato === 'conclusa') return;
 
-      document.getElementById('avail-modal-title').innerText = `${match.id} vs ${match.avversario}`;
+      const counts = getMatchAvailabilityCounts(matchId);
+      document.getElementById('avail-modal-title').innerText =
+        `${match.id} vs ${match.avversario} • ${counts.disponibili} Disp. / ${counts.nonDisponibili} No / ${counts.inAttesa} In attesa`;
       document.getElementById('avail-match-id').value = matchId;
 
       const grid = document.getElementById('avail-roster-grid');
@@ -1291,27 +1368,35 @@
       if (!dbState.disponibilita[matchId]) dbState.disponibilita[matchId] = {};
 
       grid.innerHTML = dbState.roster.map(a => {
-        const isDisponibile = dbState.disponibilita[matchId][a.nome] === true;
+        const status = normalizeDisponibilitaValue(dbState.disponibilita[matchId][a.nome]);
 
-        const btnDispClass = isDisponibile
-          ? "bg-emerald-600 text-white font-black shadow-sm"
+        const btnDispClass = status === 'disponibile'
+          ? "bg-emerald-600 text-white font-black shadow-sm ring-2 ring-emerald-300"
           : "bg-slate-100 text-slate-600 hover:bg-slate-200 font-semibold";
 
-        const btnNonDispClass = !isDisponibile
-          ? "bg-red-600 text-white font-black shadow-sm"
+        const btnNonDispClass = status === 'non_disponibile'
+          ? "bg-red-600 text-white font-black shadow-sm ring-2 ring-red-300"
           : "bg-slate-100 text-slate-600 hover:bg-slate-200 font-semibold";
+
+        const statusBadge = status === 'disponibile'
+          ? '<span class="text-[10px] font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">Disponibile</span>'
+          : status === 'non_disponibile'
+            ? '<span class="text-[10px] font-extrabold text-red-700 bg-red-50 px-2 py-0.5 rounded-full">Non disp.</span>'
+            : '<span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">In attesa</span>';
+
+        const safeName = a.nome.replace(/'/g, "\'");
 
         return `
           <div class="p-3.5 rounded-2xl border border-slate-200 bg-white shadow-xs flex flex-col gap-2">
-            <div class="text-xs font-bold text-[#0f2544] flex items-center justify-between">
-              <span>${a.nome}</span>
-              <span class="text-slate-400 font-normal">#${a.numero}</span>
+            <div class="text-xs font-bold text-[#0f2544] flex items-center justify-between gap-2">
+              <span class="truncate">${a.nome} <span class="text-slate-400 font-normal">#${a.numero}</span></span>
+              ${statusBadge}
             </div>
             <div class="grid grid-cols-2 gap-2">
-              <button onclick="setPlayerAvailability('${matchId}', '${a.nome.replace(/'/g, "\\'")}', true)" class="py-2 px-3 rounded-xl text-[11px] transition cursor-pointer ${btnDispClass}">
+              <button type="button" onclick="setPlayerAvailability('${matchId}', '${safeName}', '${status === 'disponibile' ? 'in_attesa' : 'disponibile'}')" class="py-2 px-3 rounded-xl text-[11px] transition cursor-pointer ${btnDispClass}">
                 Disponibile
               </button>
-              <button onclick="setPlayerAvailability('${matchId}', '${a.nome.replace(/'/g, "\\'")}', false)" class="py-2 px-3 rounded-xl text-[11px] transition cursor-pointer ${btnNonDispClass}">
+              <button type="button" onclick="setPlayerAvailability('${matchId}', '${safeName}', '${status === 'non_disponibile' ? 'in_attesa' : 'non_disponibile'}')" class="py-2 px-3 rounded-xl text-[11px] transition cursor-pointer ${btnNonDispClass}">
                 Non disponibile
               </button>
             </div>
@@ -1322,16 +1407,25 @@
       document.getElementById('availability-modal').classList.remove('hidden');
     }
 
-    function setPlayerAvailability(matchId, playerName, status) {
+    async function setPlayerAvailability(matchId, playerName, newStatus) {
       if (!dbState.disponibilita) dbState.disponibilita = {};
       if (!dbState.disponibilita[matchId]) dbState.disponibilita[matchId] = {};
 
-      dbState.disponibilita[matchId][playerName] = status;
+      const prevStatus = dbState.disponibilita[matchId][playerName];
+      dbState.disponibilita[matchId][playerName] = newStatus;
 
-      saveToDatabase('disponibilita');
       openAvailabilityModal(matchId);
       renderNewsCards();
       renderFullSchedule();
+
+      const fieldPath = `disponibilita.${matchId}.${playerName}`;
+      const ok = await savePartialToDatabase({ [fieldPath]: newStatus });
+      if (!ok) {
+        dbState.disponibilita[matchId][playerName] = prevStatus;
+        openAvailabilityModal(matchId);
+        renderNewsCards();
+        renderFullSchedule();
+      }
     }
 
     function closeAvailabilityModal() {
@@ -1697,15 +1791,28 @@
 
       const currentConv = (dbState.convocazioni && dbState.convocazioni[matchId]) ? dbState.convocazioni[matchId] : [];
       const dispMap = (dbState.disponibilita && dbState.disponibilita[matchId]) ? dbState.disponibilita[matchId] : {};
-      const dispCount = Object.values(dispMap).filter(Boolean).length;
+      const counts = getMatchAvailabilityCounts(matchId);
 
-      document.getElementById('coach-disponibili-counter').innerText = `${dispCount} Atleti disponibili segnalati`;
+      document.getElementById('coach-disponibili-counter').innerText =
+        `${counts.disponibili} Disponibili • ${counts.nonDisponibili} Non disp. • ${counts.inAttesa} In attesa`;
 
       checklist.innerHTML = dbState.roster.map(a => {
         const checked = currentConv.includes(a.nome) ? 'checked' : '';
-        const isDisp = dispMap[a.nome] === true;
+        const st = normalizeDisponibilitaValue(dispMap[a.nome]);
+        const cardBorder = st === 'disponibile'
+          ? 'border-emerald-300 bg-emerald-50/50'
+          : st === 'non_disponibile'
+            ? 'border-red-200 bg-red-50/30'
+            : 'border-slate-200 bg-white';
+        const badgeStyle = st === 'disponibile'
+          ? 'bg-emerald-100 text-emerald-800'
+          : st === 'non_disponibile'
+            ? 'bg-red-100 text-red-800'
+            : 'bg-slate-100 text-slate-500';
+        const badgeLabel = st === 'disponibile' ? 'Disp.' : st === 'non_disponibile' ? 'No' : 'In attesa';
+
         return `
-          <label class="flex items-center justify-between p-3 rounded-2xl border ${isDisp ? 'border-emerald-300 bg-emerald-50/50' : 'border-slate-200 bg-white'} cursor-pointer hover:border-[#0f2544] transition">
+          <label class="flex items-center justify-between p-3 rounded-2xl border ${cardBorder} cursor-pointer hover:border-[#0f2544] transition">
             <div class="flex items-center gap-3">
               <input type="checkbox" value="${a.nome}" onchange="updateSelectedCoachCounter()" ${checked} class="w-4 h-4 rounded text-[#c8102e]" />
               <div>
@@ -1713,8 +1820,8 @@
                 <div class="text-[10px] font-bold text-slate-400">Maglia #${a.numero}</div>
               </div>
             </div>
-            <span class="text-[10px] font-black px-2 py-0.5 rounded-full ${isDisp ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-500'}">
-              ${isDisp ? 'Disp.' : 'N/D'}
+            <span class="text-[10px] font-black px-2 py-0.5 rounded-full ${badgeStyle}">
+              ${badgeLabel}
             </span>
           </label>
         `;
@@ -1733,7 +1840,7 @@
       const matchId = document.getElementById('coach-match-selector').value;
       const dispMap = (dbState.disponibilita && dbState.disponibilita[matchId]) ? dbState.disponibilita[matchId] : {};
       document.querySelectorAll('#coach-roster-checklist input[type="checkbox"]').forEach(cb => {
-        cb.checked = dispMap[cb.value] === true;
+        cb.checked = normalizeDisponibilitaValue(dispMap[cb.value]) === 'disponibile';
       });
       updateSelectedCoachCounter();
     }
@@ -1745,19 +1852,28 @@
       updateSelectedCoachCounter();
     }
 
-    function saveConvocazioni() {
+    async function saveConvocazioni() {
       const matchId = document.getElementById('coach-match-selector').value;
       if (!matchId) return;
       const selected = Array.from(document.querySelectorAll('#coach-roster-checklist input[type="checkbox"]:checked')).map(cb => cb.value);
       if (!dbState.convocazioni) dbState.convocazioni = {};
       dbState.convocazioni[matchId] = selected;
+
+      const updatePayload = {
+        [`convocazioni.${matchId}`]: selected
+      };
+
       if (dbState.listaRConfig && dbState.listaRConfig.customRowsByMatch && dbState.listaRConfig.customRowsByMatch[matchId]) {
         delete dbState.listaRConfig.customRowsByMatch[matchId];
+        updatePayload[`listaRConfig.customRowsByMatch.${matchId}`] = firebase.firestore.FieldValue.delete();
       }
-      saveToDatabase('convocazioni');
-      renderNewsCards();
-      renderFullSchedule();
-      alert(`Convocazioni salvate per ${matchId} (${selected.length} atleti).`);
+
+      const ok = await savePartialToDatabase(updatePayload);
+      if (ok) {
+        renderNewsCards();
+        renderFullSchedule();
+        alert(`Convocazioni pubblicate sul server per ${matchId} (${selected.length} atleti).`);
+      }
     }
 
     function verifyDirigenteLogin() {
