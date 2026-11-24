@@ -1499,7 +1499,16 @@
 
       const counts = getMatchAvailabilityCounts(matchId);
       document.getElementById('avail-modal-title').innerText =
-        `${match.id} vs ${match.avversario} • ${counts.disponibili} Disp. / ${counts.nonDisponibili} No / ${counts.inAttesa} In attesa`;
+        `${match.id} vs ${match.avversario}`;
+
+      const availEl = document.getElementById('avail-count-available');
+      const pendingEl = document.getElementById('avail-count-pending');
+      const unavailEl = document.getElementById('avail-count-unavailable');
+
+      if (availEl) availEl.textContent = counts.disponibili ?? 0;
+      if (pendingEl) pendingEl.textContent = counts.inAttesa ?? 0;
+      if (unavailEl) unavailEl.textContent = counts.nonDisponibili ?? 0;
+
       document.getElementById('avail-match-id').value = matchId;
 
       const grid = document.getElementById('avail-roster-grid');
@@ -1565,7 +1574,6 @@
 
       document.getElementById('availability-modal').classList.remove('hidden');
     }
-
     async function setPlayerAvailability(matchId, playerName, newStatus) {
       if (!dbState.disponibilita) dbState.disponibilita = {};
       if (!dbState.disponibilita[matchId]) dbState.disponibilita[matchId] = {};
