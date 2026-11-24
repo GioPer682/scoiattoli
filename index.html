@@ -1352,6 +1352,129 @@
       filterNews(currentNewsFilter);
     }
 
+    const FAVORITE_ATHLETE_STORAGE_KEY = 'asa_scoiattoli_fav_athlete_v1';
+
+    function escapeHtmlFav(str) {
+      return String(str ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function getFavoriteAthlete() {
+      try {
+        return localStorage.getItem(FAVORITE_ATHLETE_STORAGE_KEY) || '';
+      } catch (e) {
+        return '';
+      }
+    }
+
+    function setFavoriteAthlete(athleteName) {
+      try {
+        if (athleteName) {
+          localStorage.setItem(FAVORITE_ATHLETE_STORAGE_KEY, athleteName);
+        } else {
+          localStorage.removeItem(FAVORITE_ATHLETE_STORAGE_KEY);
+        }
+      } catch (e) {
+        console.warn('Impossibile salvare atleta preferito:', e);
+      }
+    }
+
+    function getOrderedRosterForAvailability(rosterList) {
+      const fav = getFavoriteAthlete();
+      if (!fav) return [...rosterList];
+      const favItem = rosterList.find(p => p.nome === fav);
+      const others = rosterList.filter(p => p.nome !== fav);
+      return favItem ? [favItem, ...others] : [...rosterList];
+    }
+
+    function renderFavoritePromptBanner(athletesList, matchId) {
+      const fav = getFavoriteAthlete();
+      const encodedMatch = encodeURIComponent(matchId || '');
+
+      if (fav) {
+        return `
+          <div class="col-span-full mb-1 px-3.5 py-2.5 rounded-2xl bg-sky-50 border border-sky-200 text-sky-950 flex items-center justify-between gap-2 text-xs">
+            <div class="truncate">
+              <span class="font-bold">Il tuo atleta in evidenza:</span>
+              <span class="font-extrabold text-[#0f2544]">${escapeHtmlFav(fav)}</span>
+            </div>
+            <button
+              type="button"
+              onclick="clearFavoriteAthlete('${encodedMatch}')"
+              class="text-[11px] font-bold text-blue-700 hover:underline shrink-0 cursor-pointer"
+            >
+              Cambia atleta
+            </button>
+          </div>
+        `;
+      }
+
+      const optionsHtml = (athletesList || [])
+        .map(p => `<option value="${escapeHtmlFav(p.nome)}">${escapeHtmlFav(p.nome)} (#${escapeHtmlFav(p.numero ?? '-')})</option>`)
+        .join('');
+
+      return `
+        <div class="col-span-full mb-1 p-3.5 rounded-2xl bg-sky-50 border border-sky-200 text-sky-950 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5">
+          <div class="text-xs leading-relaxed">
+            <span class="font-bold">Primo accesso?</span>
+            Seleziona il tuo atleta per metterlo sempre in cima ed evitare tocchi accidentali su altri nomi.
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <select id="quick-favorite-select" class="text-xs rounded-xl border border-sky-300 bg-white px-2.5 py-1.5 text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-400">
+              <option value="">Scegli atleta...</option>
+              ${optionsHtml}
+            </select>
+            <button
+              type="button"
+              onclick="applyQuickFavorite('${encodedMatch}')"
+              class="text-xs font-bold px-3 py-1.5 rounded-xl bg-sky-600 text-white hover:bg-sky-700 transition cursor-pointer"
+            >
+              Salva
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function applyQuickFavorite(encodedMatchId) {
+      const sel = document.getElementById('quick-favorite-select');
+      if (!sel || !sel.value) return;
+      setFavoriteAthlete(sel.value);
+      const matchId = decodeURIComponent(encodedMatchId || '') || document.getElementById('avail-match-id')?.value;
+      if (matchId) refreshAvailabilityModal(matchId);
+    }
+
+    function clearFavoriteAthlete(encodedMatchId) {
+      setFavoriteAthlete('');
+      const matchId = decodeURIComponent(encodedMatchId || '') || document.getElementById('avail-match-id')?.value;
+      if (matchId) refreshAvailabilityModal(matchId);
+    }
+
+    function refreshAvailabilityModal(matchId) {
+      const targetMatchId = matchId || document.getElementById('avail-match-id')?.value;
+      if (targetMatchId) {
+        openAvailabilityModal(targetMatchId);
+      }
+    }
+
+    function handleAvailabilityChange(matchId, athleteName, newStatus) {
+      const favorite = getFavoriteAthlete();
+      if (favorite && favorite !== athleteName) {
+        const ok = window.confirm(
+          `Hai impostato "${favorite}" come tuo atleta. Vuoi davvero modificare la disponibilità di "${athleteName}"?`
+        );
+        if (!ok) {
+          refreshAvailabilityModal(matchId);
+          return;
+        }
+      }
+      setPlayerAvailability(matchId, athleteName, newStatus);
+    }
+
     function openAvailabilityModal(matchId) {
       const match = dbState.partite.find(p => p.id === matchId);
       if (!match || match.stato === 'rinviata' || match.stato === 'conclusa') return;
@@ -1367,8 +1490,13 @@
       if (!dbState.disponibilita) dbState.disponibilita = {};
       if (!dbState.disponibilita[matchId]) dbState.disponibilita[matchId] = {};
 
-      grid.innerHTML = dbState.roster.map(a => {
+      const currentFav = getFavoriteAthlete();
+      const orderedRoster = getOrderedRosterForAvailability(dbState.roster);
+      const bannerHtml = renderFavoritePromptBanner(dbState.roster, matchId);
+
+      const cardsHtml = orderedRoster.map(a => {
         const status = normalizeDisponibilitaValue(dbState.disponibilita[matchId][a.nome]);
+        const isFav = Boolean(currentFav && a.nome === currentFav);
 
         const btnDispClass = status === 'disponibile'
           ? "bg-emerald-600 text-white font-black shadow-sm ring-2 ring-emerald-300"
@@ -1384,25 +1512,38 @@
             ? '<span class="text-[10px] font-extrabold text-red-700 bg-red-50 px-2 py-0.5 rounded-full">Non disp.</span>'
             : '<span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">In attesa</span>';
 
-        const safeName = a.nome.replace(/'/g, "\'");
+        const favPill = isFav
+          ? '<span class="text-[10px] font-black text-sky-800 bg-sky-100 border border-sky-200 px-2 py-0.5 rounded-full shrink-0">★ Mio atleta</span>'
+          : '';
+
+        const cardClass = isFav
+          ? "p-3.5 rounded-2xl border-2 border-sky-400 bg-sky-50/40 shadow-xs flex flex-col gap-2"
+          : "p-3.5 rounded-2xl border border-slate-200 bg-white shadow-xs flex flex-col gap-2";
+
+        const safeName = String(a.nome).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 
         return `
-          <div class="p-3.5 rounded-2xl border border-slate-200 bg-white shadow-xs flex flex-col gap-2">
+          <div class="${cardClass}">
             <div class="text-xs font-bold text-[#0f2544] flex items-center justify-between gap-2">
-              <span class="truncate">${a.nome} <span class="text-slate-400 font-normal">#${a.numero}</span></span>
+              <span class="truncate flex items-center gap-1.5">
+                <span class="truncate">${escapeHtmlFav(a.nome)} <span class="text-slate-400 font-normal">#${escapeHtmlFav(a.numero)}</span></span>
+                ${favPill}
+              </span>
               ${statusBadge}
             </div>
             <div class="grid grid-cols-2 gap-2">
-              <button type="button" onclick="setPlayerAvailability('${matchId}', '${safeName}', '${status === 'disponibile' ? 'in_attesa' : 'disponibile'}')" class="py-2 px-3 rounded-xl text-[11px] transition cursor-pointer ${btnDispClass}">
+              <button type="button" onclick="handleAvailabilityChange('${matchId}', '${safeName}', '${status === 'disponibile' ? 'in_attesa' : 'disponibile'}')" class="py-2 px-3 rounded-xl text-[11px] transition cursor-pointer ${btnDispClass}">
                 Disponibile
               </button>
-              <button type="button" onclick="setPlayerAvailability('${matchId}', '${safeName}', '${status === 'non_disponibile' ? 'in_attesa' : 'non_disponibile'}')" class="py-2 px-3 rounded-xl text-[11px] transition cursor-pointer ${btnNonDispClass}">
+              <button type="button" onclick="handleAvailabilityChange('${matchId}', '${safeName}', '${status === 'non_disponibile' ? 'in_attesa' : 'non_disponibile'}')" class="py-2 px-3 rounded-xl text-[11px] transition cursor-pointer ${btnNonDispClass}">
                 Non disponibile
               </button>
             </div>
           </div>
         `;
       }).join('');
+
+      grid.innerHTML = bannerHtml + cardsHtml;
 
       document.getElementById('availability-modal').classList.remove('hidden');
     }
