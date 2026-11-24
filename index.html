@@ -557,10 +557,28 @@
     <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-200 relative max-h-[92vh] overflow-y-auto">
       <button onclick="closeAvailabilityModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-700 font-extrabold text-lg cursor-pointer">✕</button>
 
-      <div class="space-y-1 text-center border-b border-slate-200 pb-4">
-        <span class="text-xs font-extrabold text-amber-600 uppercase tracking-widest">CONFERMA LA TUA PRESENZA</span>
-        <h3 class="text-xl font-black text-[#0f2544]" id="avail-modal-title">Disponibilità Atleti</h3>
-        <p class="text-xs text-slate-500">Seleziona lo stato per ciascun atleta in vista dell'incontro.</p>
+      <div class="space-y-2.5 text-center border-b border-slate-200 pb-4">
+        <span class="text-xs font-extrabold text-amber-600 uppercase tracking-widest block">CONFERMA LA TUA PRESENZA</span>
+        <h3 class="text-xl font-black text-[#0f2544] leading-snug" id="avail-modal-title">Disponibilità Atleti</h3>
+
+        <div class="grid grid-cols-3 gap-2.5 pt-1">
+          <div class="rounded-2xl bg-emerald-50 border border-emerald-200 px-2 py-2.5 text-center">
+            <div id="avail-count-available" class="text-xl font-black text-emerald-700 leading-none">0</div>
+            <div class="text-[11px] font-bold text-emerald-800 mt-1">Disponibile</div>
+          </div>
+
+          <div class="rounded-2xl bg-amber-50 border border-amber-200 px-2 py-2.5 text-center">
+            <div id="avail-count-pending" class="text-xl font-black text-amber-700 leading-none">0</div>
+            <div class="text-[11px] font-bold text-amber-800 mt-1">In Attesa</div>
+          </div>
+
+          <div class="rounded-2xl bg-rose-50 border border-rose-200 px-2 py-2.5 text-center">
+            <div id="avail-count-unavailable" class="text-xl font-black text-rose-700 leading-none">0</div>
+            <div class="text-[11px] font-bold text-rose-800 mt-1">Non Disponibile</div>
+          </div>
+        </div>
+
+        <p class="text-xs text-slate-500 pt-0.5">Seleziona lo stato per ciascun atleta in vista dell'incontro.</p>
       </div>
 
       <input type="hidden" id="avail-match-id" value="" />
