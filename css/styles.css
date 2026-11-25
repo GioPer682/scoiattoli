@@ -1,0 +1,39 @@
+
+    html, body {
+      max-width: 100%;
+      overflow-x: clip;
+    }
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background-color: #f8fafc; color: #0f172a; }
+    .asa-navy { background-color: #0f2544; }
+    .asa-red { background-color: #c8102e; }
+    .text-asa-red { color: #c8102e; }
+
+    .arena-court-bg {
+      background: linear-gradient(to top, #0f2544 0%, #1e3a6f 100%);
+      box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .jersey-text {
+      font-family: 'Impact', 'Arial Narrow', 'Inter', sans-serif;
+      fill: #c8102e;
+      stroke: #0f2544;
+      paint-order: stroke fill;
+      stroke-linejoin: round;
+    }
+
+    @keyframes ticker {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-50%, 0, 0); }
+    }
+    .animate-ticker {
+      display: inline-flex;
+      width: max-content;
+      white-space: nowrap;
+      will-change: transform;
+      animation: ticker var(--ticker-duration, 18s) linear infinite;
+    }
+    .animate-ticker:hover {
+      animation-play-state: paused;
+    }
+  
