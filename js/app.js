@@ -704,95 +704,158 @@ function verifySiteGate() {
         `;
       }
 
-      function renderActiveCard(item, cardClasses) {
-        const isProssimoIncontro = item.stato === 'prossimo_incontro';
-        const isRinviata = item.stato === 'rinviata';
-        const convocatiList = dbState.convocazioni && dbState.convocazioni[item.id] ? dbState.convocazioni[item.id] : [];
-        const hasConvocati = convocatiList.length > 0;
-        const availCounts = getMatchAvailabilityCounts(item.id);
-        const dispCount = availCounts.disponibili;
+ function renderNewsCards() {
+  const container = document.getElementById('news-cards-container');
+  if (!container || !dbState.partite) return;
 
-        let etichettaTop = "In Agenda";
-        let cardWrapperClass = "bg-white border-2 border-slate-200 hover:border-[#0f2544]";
-        let badgeHTML = `<span class="px-3 py-1 rounded-full text-[10px] font-black bg-amber-500 text-white uppercase tracking-widest shadow-xs">Programmata (${item.tipo})</span>`;
-        let centralBoxClass = "bg-amber-100/70 border border-amber-200 text-amber-950";
-        let centralLabel = "In Agenda • " + item.tipo.toUpperCase();
-        let centralSubText = "Partita di campionato";
-        let buttonHTML = hasConvocati
-          ? `<button onclick="openMatchModal('${item.id}')" class="w-full py-3 bg-[#0f2544] hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">LISTA CONVOCATI (${convocatiList.length})</button>`
-          : `<button onclick="openAvailabilityModal('${item.id}')" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow flex items-center justify-between px-5"><span>CONFERMA DISPONIBILITÀ</span> <span class="bg-slate-950 text-amber-300 px-2.5 py-0.5 rounded-full text-[10px] font-bold">${dispCount} disponibili</span></button>`;
+  const concluse = dbState.partite.filter(p => p.stato === 'conclusa');
+  const attive = dbState.partite.filter(p => p.stato !== 'conclusa');
 
-        if (isProssimoIncontro) {
-          etichettaTop = "Prossimo Incontro";
-          cardWrapperClass = "bg-emerald-50/70 border-2 border-emerald-400 shadow-emerald-100";
-          badgeHTML = `
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black bg-emerald-600 text-white uppercase tracking-widest shadow-xs">
-              <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> Confermata (${item.tipo})
-            </span>`;
-          centralBoxClass = "bg-emerald-100/70 border border-emerald-300 text-emerald-950";
-          centralLabel = "Prossima Gara • " + item.tipo.toUpperCase();
+  attive.sort((a, b) => {
+    const parseDate = (d) => {
+      if (!d || !d.includes('/')) return 0;
+      const p = d.split('/');
+      return parseInt(p[2] + p[1] + p[0], 10);
+    };
+    return parseDate(a.data) - parseDate(b.data);
+  });
 
-          if (hasConvocati) {
-            buttonHTML = `<button onclick="openMatchModal('${item.id}')" class="w-full py-3 bg-slate-900 hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">LISTA CONVOCATI (${convocatiList.length})</button>`;
-          } else {
-            buttonHTML = `<button onclick="openAvailabilityModal('${item.id}')" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow flex items-center justify-between px-5"><span>CONFERMA DISPONIBILITÀ</span> <span class="bg-slate-950 text-emerald-300 px-2.5 py-0.5 rounded-full text-[10px] font-bold">${dispCount} disponibili</span></button>`;
-          }
-        }
+  let htmlContent = "";
 
-        if (isRinviata) {
-          etichettaTop = "Gara Rinviata";
-          cardWrapperClass = "bg-sky-50/80 border-2 border-sky-400 shadow-sky-100";
-          badgeHTML = `
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black bg-sky-600 text-white uppercase tracking-widest shadow-xs">
-              <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> Rinviata
-            </span>`;
-          centralBoxClass = "bg-sky-100/80 border border-sky-300 text-sky-950";
-          centralLabel = "Avviso Gara Rinviata";
-          centralSubText = item.nota ? item.nota : "Nuova data da definire";
-          buttonHTML = `<div class="w-full py-3 bg-sky-200/70 text-sky-900 rounded-2xl text-xs font-extrabold uppercase tracking-wider text-center border border-sky-300 select-none">Disponibilità Sospese • In Attesa Nuova Data</div>`;
-        }
-
-        return `
-          <div class="news-card ${cardClasses} ${cardWrapperClass} rounded-3xl p-6 sm:p-7 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group relative overflow-hidden">
-            <div class="space-y-4">
-              <div class="flex items-center justify-between border-b border-slate-200/60 pb-3">
-                <span class="text-xs font-extrabold text-slate-700 uppercase tracking-wider">${etichettaTop}</span>
-                ${badgeHTML}
-              </div>
-              <div>
-                <span class="text-xs font-bold text-slate-500">${item.data}${item.ora ? ' • Ore ' + item.ora : ''}</span>
-                <h3 class="text-xl font-black text-[#0f2544] tracking-tight mt-0.5">${item.id}</h3>
-                <div class="text-xs text-slate-600 mt-1.5">${formatSedeCliccabile(item.sede)}</div>
-              </div>
-              <div class="${centralBoxClass} rounded-2xl p-4 sm:p-5 text-center space-y-2">
-                <div class="text-[10px] font-black uppercase tracking-widest text-slate-500">${centralLabel}</div>
-                ${formatSquadreVerticali(item)}
-                <div class="text-xs font-bold text-slate-700 pt-0.5">${centralSubText}</div>
-              </div>
+  if (concluse.length > 0) {
+    [...concluse].reverse().forEach((item, idx) => {
+      let etichettaTop = idx === 0 ? "Ultima Partita Giocata" : "Partita Recente";
+      let extraClasses = idx === 0 ? "card-recenti card-panoramica" : "card-recenti";
+      htmlContent += `
+        <div class="news-card ${extraClasses} min-w-0 max-w-full bg-white border-2 border-slate-200 hover:border-[#0f2544] rounded-3xl p-6 sm:p-7 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group relative overflow-hidden">
+          <div class="space-y-4 min-w-0">
+            <div class="flex items-center justify-between gap-2 border-b border-slate-200/60 pb-3 min-w-0">
+              <span class="text-xs font-extrabold text-slate-700 uppercase tracking-wider truncate">${etichettaTop}</span>
+              <span class="px-3 py-1 rounded-full text-[10px] font-black bg-slate-100 text-slate-700 uppercase tracking-widest shrink-0">Conclusa</span>
             </div>
-            <div class="pt-6">
-              ${buttonHTML}
+            <div class="min-w-0">
+              <span class="text-xs font-bold text-slate-500">${item.data}${item.ora ? ' • Ore ' + item.ora : ''}</span>
+              <h3 class="text-xl font-black text-[#0f2544] tracking-tight mt-0.5 break-words">${item.id}</h3>
+              <div class="text-xs text-slate-600 mt-1.5 break-words">${formatSedeCliccabile(item.sede)}</div>
             </div>
+            ${(() => {
+              const scores = computeMatchScores(item);
+              return `
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 text-center space-y-2 min-w-0 overflow-hidden">
+                  <div class="text-[10px] font-black uppercase tracking-widest text-slate-500">Full Time</div>
+                  <div class="text-3xl font-black tracking-tighter text-[#0f2544] break-words">${scores.classificaStr}</div>
+                  <div class="min-w-0 break-words">${formatSquadreVerticali(item)}</div>
+                </div>
+              `;
+            })()}
           </div>
-        `;
+          <div class="pt-6 min-w-0">
+            <button onclick="openMatchModal('${item.id}')" class="w-full py-3 bg-[#0f2544] hover:bg-slate-800 text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">DETTAGLI & STATISTICHE</button>
+          </div>
+        </div>
+      `;
+    });
+  } else {
+    htmlContent += `
+      <div class="news-card card-recenti min-w-0 max-w-full bg-white border-2 border-slate-200 rounded-3xl p-6 sm:p-7 shadow-sm flex flex-col justify-between">
+        <div class="space-y-4 text-center py-10 min-w-0">
+          <span class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Archivio Recenti</span>
+          <h3 class="text-lg font-black text-[#0f2544]">Nessuna partita conclusa</h3>
+          <p class="text-xs text-slate-500">Le partite concluse appariranno qui non appena archiviate dallo staff.</p>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderActiveCard(item, cardClasses) {
+    const isProssimoIncontro = item.stato === 'prossimo_incontro';
+    const isRinviata = item.stato === 'rinviata';
+    const convocatiList = dbState.convocazioni && dbState.convocazioni[item.id] ? dbState.convocazioni[item.id] : [];
+    const hasConvocati = convocatiList.length > 0;
+    const availCounts = getMatchAvailabilityCounts(item.id);
+    const dispCount = availCounts.disponibili;
+
+    let etichettaTop = "In Agenda";
+    let cardWrapperClass = "bg-white border-2 border-slate-200 hover:border-[#0f2544]";
+    let badgeHTML = `<span class="px-3 py-1 rounded-full text-[10px] font-black bg-amber-500 text-white uppercase tracking-widest shadow-xs shrink-0">Programmata (${item.tipo})</span>`;
+    let centralBoxClass = "bg-amber-100/70 border border-amber-200 text-amber-950";
+    let centralLabel = "In Agenda • " + item.tipo.toUpperCase();
+    let centralSubText = "Partita di campionato";
+    let buttonHTML = hasConvocati
+      ? `<button onclick="openMatchModal('${item.id}')" class="w-full py-3 bg-[#0f2544] hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">LISTA CONVOCATI (${convocatiList.length})</button>`
+      : `<button onclick="openAvailabilityModal('${item.id}')" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow flex items-center justify-between gap-2 px-4 sm:px-5"><span class="truncate">CONFERMA DISPONIBILITÀ</span> <span class="bg-slate-950 text-amber-300 px-2.5 py-0.5 rounded-full text-[10px] font-bold shrink-0">${dispCount} disponibili</span></button>`;
+
+    if (isProssimoIncontro) {
+      etichettaTop = "Prossimo Incontro";
+      cardWrapperClass = "bg-emerald-50/70 border-2 border-emerald-400 shadow-emerald-100";
+      badgeHTML = `
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black bg-emerald-600 text-white uppercase tracking-widest shadow-xs shrink-0">
+          <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> Confermata (${item.tipo})
+        </span>`;
+      centralBoxClass = "bg-emerald-100/70 border border-emerald-300 text-emerald-950";
+      centralLabel = "Prossima Gara • " + item.tipo.toUpperCase();
+
+      if (hasConvocati) {
+        buttonHTML = `<button onclick="openMatchModal('${item.id}')" class="w-full py-3 bg-slate-900 hover:bg-[#c8102e] text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow">LISTA CONVOCATI (${convocatiList.length})</button>`;
+      } else {
+        buttonHTML = `<button onclick="openAvailabilityModal('${item.id}')" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shadow flex items-center justify-between gap-2 px-4 sm:px-5"><span class="truncate">CONFERMA DISPONIBILITÀ</span> <span class="bg-slate-950 text-emerald-300 px-2.5 py-0.5 rounded-full text-[10px] font-bold shrink-0">${dispCount} disponibili</span></button>`;
       }
-
-      const limitePanoramica = concluse.length > 0 ? 2 : 3;
-      const codaProssimi = attive.slice(0, 3);
-      const attiveVisibili = attive.slice(0, Math.max(limitePanoramica, codaProssimi.length));
-
-      attiveVisibili.forEach((item, idx) => {
-        const classi = [
-          idx < limitePanoramica ? 'card-panoramica' : '',
-          idx < 3 ? 'card-prossimi' : ''
-        ].filter(Boolean).join(' ');
-
-        htmlContent += renderActiveCard(item, classi);
-      });
-
-      container.innerHTML = htmlContent;
-      filterNews(currentNewsFilter);
     }
+
+    if (isRinviata) {
+      etichettaTop = "Gara Rinviata";
+      cardWrapperClass = "bg-sky-50/80 border-2 border-sky-400 shadow-sky-100";
+      badgeHTML = `
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black bg-sky-600 text-white uppercase tracking-widest shadow-xs shrink-0">
+          <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> Rinviata
+        </span>`;
+      centralBoxClass = "bg-sky-100/80 border border-sky-300 text-sky-950";
+      centralLabel = "Avviso Gara Rinviata";
+      centralSubText = item.nota ? item.nota : "Nuova data da definire";
+      buttonHTML = `<div class="w-full py-3 bg-sky-200/70 text-sky-900 rounded-2xl text-xs font-extrabold uppercase tracking-wider text-center border border-sky-300 select-none break-words px-3">Disponibilità Sospese • In Attesa Nuova Data</div>`;
+    }
+
+    return `
+      <div class="news-card ${cardClasses} min-w-0 max-w-full ${cardWrapperClass} rounded-3xl p-6 sm:p-7 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group relative overflow-hidden">
+        <div class="space-y-4 min-w-0">
+          <div class="flex items-center justify-between gap-2 border-b border-slate-200/60 pb-3 min-w-0">
+            <span class="text-xs font-extrabold text-slate-700 uppercase tracking-wider truncate">${etichettaTop}</span>
+            ${badgeHTML}
+          </div>
+          <div class="min-w-0">
+            <span class="text-xs font-bold text-slate-500">${item.data}${item.ora ? ' • Ore ' + item.ora : ''}</span>
+            <h3 class="text-xl font-black text-[#0f2544] tracking-tight mt-0.5 break-words">${item.id}</h3>
+            <div class="text-xs text-slate-600 mt-1.5 break-words">${formatSedeCliccabile(item.sede)}</div>
+          </div>
+          <div class="${centralBoxClass} rounded-2xl p-4 sm:p-5 text-center space-y-2 min-w-0 overflow-hidden">
+            <div class="text-[10px] font-black uppercase tracking-widest text-slate-500 break-words">${centralLabel}</div>
+            <div class="min-w-0 break-words">${formatSquadreVerticali(item)}</div>
+            <div class="text-xs font-bold text-slate-700 pt-0.5 break-words">${centralSubText}</div>
+          </div>
+        </div>
+        <div class="pt-6 min-w-0">
+          ${buttonHTML}
+        </div>
+      </div>
+    `;
+  }
+
+  const limitePanoramica = concluse.length > 0 ? 2 : 3;
+  const codaProssimi = attive.slice(0, 3);
+  const attiveVisibili = attive.slice(0, Math.max(limitePanoramica, codaProssimi.length));
+
+  attiveVisibili.forEach((item, idx) => {
+    const classi = [
+      idx < limitePanoramica ? 'card-panoramica' : '',
+      idx < 3 ? 'card-prossimi' : ''
+    ].filter(Boolean).join(' ');
+
+    htmlContent += renderActiveCard(item, classi);
+  });
+
+  container.innerHTML = htmlContent;
+  filterNews(currentNewsFilter);
+}
 
     const FAVORITE_ATHLETE_STORAGE_KEY = STORAGE_PREFIX + 'asa_scoiattoli_fav_athlete_v1';
 
