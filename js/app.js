@@ -703,6 +703,7 @@ function verifySiteGate() {
           </div>
         `;
       }
+    }
 
  function renderNewsCards() {
   const container = document.getElementById('news-cards-container');
