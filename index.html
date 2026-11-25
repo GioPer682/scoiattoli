@@ -629,9 +629,9 @@
     const IS_PROD_ENV = (window.location.hostname === 'scoiattoliasabasket.vercel.app');
     const FIRESTORE_DOC_ID = IS_PROD_ENV ? 'scoiattoli_data' : 'scoiattoli_data_test';
     const STORAGE_PREFIX = IS_PROD_ENV ? '' : 'test_';
-    const DB_CACHE_KEY = STORAGE_PREFIX + DB_CACHE_KEY;
-    const DB_LIVE_KEY = STORAGE_PREFIX + DB_LIVE_KEY;
-    const UNLOCKED_SESSION_KEY = STORAGE_PREFIX + UNLOCKED_SESSION_KEY;
+    const DB_CACHE_KEY = STORAGE_PREFIX + 'asa_scoiattoli_db_cache_v1';
+    const DB_LIVE_KEY = STORAGE_PREFIX + 'asa_scoiattoli_db_live_v1';
+    const UNLOCKED_SESSION_KEY = STORAGE_PREFIX + 'asa_scoiattoli_unlocked_v1';
 
     const defaultDbState = {
       ticker: {
