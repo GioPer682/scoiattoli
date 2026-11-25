@@ -997,10 +997,27 @@
       });
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      checkSiteGate();
-      initRealtimeDatabase();
-    });
+
+const APP_VERSION = '2026-11-25-v2';
+
+function ensureLatestPageVersion() {
+  try {
+    const url = new URL(window.location.href);
+    if (url.searchParams.get('v') !== APP_VERSION) {
+      url.searchParams.set('v', APP_VERSION);
+      window.location.replace(url.toString());
+      return false;
+    }
+  } catch (e) {}
+  return true;
+}
+
+
+  window.addEventListener('DOMContentLoaded', () => {
+  if (!ensureLatestPageVersion()) return;
+  checkSiteGate();
+  initRealtimeDatabase();
+});
 
     function renderAllPublicViews() {
       sortPartite();
@@ -1480,18 +1497,25 @@
     }
 
     function handleAvailabilityChange(matchId, athleteName, newStatus) {
-      const favorite = getFavoriteAthlete();
-      if (favorite && favorite !== athleteName) {
-        const ok = window.confirm(
-          `Hai impostato "${favorite}" come tuo atleta. Vuoi davvero modificare la disponibilità di "${athleteName}"?`
-        );
-        if (!ok) {
-          refreshAvailabilityModal(matchId);
-          return;
-        }
-      }
-      setPlayerAvailability(matchId, athleteName, newStatus);
+  const currentParamV = new URLSearchParams(window.location.search).get('v');
+  if (typeof APP_VERSION !== 'undefined' && currentParamV !== APP_VERSION) {
+    alert("La pagina era una versione precedente. Ora verrà aggiornata: reinserisci la disponibilità.");
+    ensureLatestPageVersion();
+    return;
+  }
+
+  const favorite = getFavoriteAthlete();
+  if (favorite && favorite !== athleteName) {
+    const ok = window.confirm(
+      `Hai impostato "${favorite}" come tuo atleta. Vuoi davvero modificare la disponibilità di "${athleteName}"?`
+    );
+    if (!ok) {
+      refreshAvailabilityModal(matchId);
+      return;
     }
+  }
+  setPlayerAvailability(matchId, athleteName, newStatus);
+}
 
     function openAvailabilityModal(matchId) {
       const match = dbState.partite.find(p => p.id === matchId);
