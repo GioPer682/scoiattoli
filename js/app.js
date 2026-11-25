@@ -533,12 +533,12 @@ if (window.location.hostname !== 'scoiattoliasabasket.vercel.app') {
     }
 
     function formatSedeCliccabile(sede) {
-      const cleanSede = stripVenuePrefix(sede);
-      if (!cleanSede) return "";
-      const encoded = encodeURIComponent(cleanSede);
-      const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${encoded}`;
-      return `<a href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" title="Apri indirizzo nel navigatore" class="inline-flex items-center gap-1 underline decoration-slate-400 hover:text-[#c8102e] hover:decoration-[#c8102e] transition">📍 ${cleanSede}</a>`;
-    }
+  const cleanSede = stripVenuePrefix(sede);
+  if (!cleanSede) return "";
+  const encoded = encodeURIComponent(cleanSede);
+  const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${encoded}`;
+  return `<a href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" title="Apri indirizzo nel navigatore" class="inline break-words underline decoration-slate-400 hover:text-[#c8102e] hover:decoration-[#c8102e] transition">📍 ${cleanSede}</a>`;
+}
 
     function checkSiteGate() {
       const gate = document.getElementById('site-auth-gate');
