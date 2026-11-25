@@ -953,8 +953,7 @@ if (window.location.hostname !== 'scoiattoliasabasket.vercel.app') {
           workspace.innerHTML = `
             <div class="rounded-2xl bg-rose-50 border border-rose-200 p-4 text-center space-y-2.5">
               <div class="text-xs font-extrabold text-rose-800">Impossibile leggere lo stato attuale dal database.</div>
-              <button type="button" onclick="openAvailabilityModal('${String(matchId).replace(/\/g, '\\').replace(/'/g, "\'")}')" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-extrabold uppercase cursor-pointer">
-                Riprova
+              <button type="button" onclick="openAvailabilityModal('${String(matchId).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}')" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold">                Riprova
               </button>
             </div>
           `;
