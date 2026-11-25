@@ -540,31 +540,38 @@ if (window.location.hostname !== 'scoiattoliasabasket.vercel.app') {
   return `<a href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" title="Apri indirizzo nel navigatore" class="inline break-words underline decoration-slate-400 hover:text-[#c8102e] hover:decoration-[#c8102e] transition">📍 ${cleanSede}</a>`;
 }
 
-    function checkSiteGate() {
-      const gate = document.getElementById('site-auth-gate');
-      if (!gate) return;
-      if (sessionStorage.getItem(UNLOCKED_SESSION_KEY) === '1') {
-        gate.classList.add('hidden');
-      } else {
-        gate.classList.remove('hidden');
-        setTimeout(() => document.getElementById('site-auth-pass')?.focus(), 50);
-      }
-    }
+  function setAuthGateScrollLock(locked) {
+  document.documentElement.classList.toggle('overflow-hidden', locked);
+  document.body.classList.toggle('overflow-hidden', locked);
+}
 
-    function verifySiteGate() {
-      const input = document.getElementById('site-auth-pass');
-      const err = document.getElementById('site-auth-error');
-      if (!input) return;
-      if (input.value === 'Edvige2027') {
-        sessionStorage.setItem(UNLOCKED_SESSION_KEY, '1');
-        if (err) err.classList.add('hidden');
-        document.getElementById('site-auth-gate').classList.add('hidden');
-      } else {
-        if (err) err.classList.remove('hidden');
-        input.value = '';
-        input.focus();
-      }
-    }
+function checkSiteGate() {
+  const gate = document.getElementById('site-auth-gate');
+  if (!gate) return;
+  if (sessionStorage.getItem(UNLOCKED_SESSION_KEY) === '1') {
+    gate.classList.add('hidden');
+    setAuthGateScrollLock(false);
+  } else {
+    gate.classList.remove('hidden');
+    setAuthGateScrollLock(true);
+  }
+}
+
+function verifySiteGate() {
+  const input = document.getElementById('site-auth-pass');
+  const err = document.getElementById('site-auth-error');
+  if (!input) return;
+  if (input.value === 'Edvige2027') {
+    sessionStorage.setItem(UNLOCKED_SESSION_KEY, '1');
+    if (err) err.classList.add('hidden');
+    document.getElementById('site-auth-gate').classList.add('hidden');
+    setAuthGateScrollLock(false);
+  } else {
+    if (err) err.classList.remove('hidden');
+    input.value = '';
+    input.focus();
+  }
+}
 
     function logoutSiteGate() {
       sessionStorage.removeItem(UNLOCKED_SESSION_KEY);
