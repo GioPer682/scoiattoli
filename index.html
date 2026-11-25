@@ -49,6 +49,18 @@
   </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-[#c8102e] selection:text-white">
+  <!-- BANNER AMBIENTE DI TEST -->
+  <div id="test-env-banner" class="hidden bg-amber-500 text-slate-950 text-[11px] font-extrabold uppercase tracking-wider text-center py-1.5 px-3 shadow-md relative z-[110] border-b border-amber-600">
+    ⚠️ AMBIENTE DI TEST • DB: <span class="underline">scoiattoli_data_test</span> • HOST: <span id="test-env-host"></span>
+  </div>
+  <script>
+    if (window.location.hostname !== 'scoiattoliasabasket.vercel.app') {
+      const b = document.getElementById('test-env-banner');
+      const h = document.getElementById('test-env-host');
+      if (b) b.classList.remove('hidden');
+      if (h) h.textContent = window.location.hostname || 'locale';
+    }
+  </script>
   <!-- GATE AUTENTICAZIONE GENITORI -->
   <div id="site-auth-gate" class="fixed inset-0 bg-[#0f2544] z-[100] flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-slate-200 text-center space-y-6">
@@ -614,6 +626,13 @@
       console.error("Errore inizializzazione Firebase", e);
     }
 
+    const IS_PROD_ENV = (window.location.hostname === 'scoiattoliasabasket.vercel.app');
+    const FIRESTORE_DOC_ID = IS_PROD_ENV ? 'scoiattoli_data' : 'scoiattoli_data_test';
+    const STORAGE_PREFIX = IS_PROD_ENV ? '' : 'test_';
+    const DB_CACHE_KEY = STORAGE_PREFIX + DB_CACHE_KEY;
+    const DB_LIVE_KEY = STORAGE_PREFIX + DB_LIVE_KEY;
+    const UNLOCKED_SESSION_KEY = STORAGE_PREFIX + UNLOCKED_SESSION_KEY;
+
     const defaultDbState = {
       ticker: {
         attivo: true,
@@ -889,7 +908,7 @@
 
     function initRealtimeDatabase() {
       if (db) {
-        const docRef = db.collection("asa_portal").doc("scoiattoli_data");
+        const docRef = db.collection("asa_portal").doc(FIRESTORE_DOC_ID);
         docRef.onSnapshot((doc) => {
           if (doc.exists) {
             dbState = doc.data();
@@ -899,7 +918,7 @@
                 if (p.stato === 'rimandata') p.stato = 'rinviata';
               });
             }
-            try { localStorage.setItem('asa_scoiattoli_db_cache', JSON.stringify(dbState)); } catch (e) {}
+            try { localStorage.setItem(DB_CACHE_KEY, JSON.stringify(dbState)); } catch (e) {}
             sortPartite();
             renderAllPublicViews();
             if (!document.getElementById('view-dirigente').classList.contains('hidden')) {
@@ -923,7 +942,7 @@
     }
 
     function loadLocalFallback() {
-      const saved = localStorage.getItem('asa_scoiattoli_db_cache') || localStorage.getItem('asa_scoiattoli_db_live');
+      const saved = localStorage.getItem(DB_CACHE_KEY) || localStorage.getItem(DB_LIVE_KEY);
       if (saved) {
         try {
           dbState = JSON.parse(saved);
@@ -945,8 +964,8 @@
         return false;
       }
       try {
-        await db.collection("asa_portal").doc("scoiattoli_data").update(updatePayload);
-        try { localStorage.setItem('asa_scoiattoli_db_cache', JSON.stringify(dbState)); } catch (e) {}
+        await db.collection("asa_portal").doc(FIRESTORE_DOC_ID).update(updatePayload);
+        try { localStorage.setItem(DB_CACHE_KEY, JSON.stringify(dbState)); } catch (e) {}
         const toast = document.getElementById('regia-toast');
         if (toast) {
           toast.classList.remove('hidden');
@@ -970,8 +989,8 @@
         const payload = sectionName && dbState[sectionName] !== undefined
           ? { [sectionName]: dbState[sectionName] }
           : dbState;
-        await db.collection("asa_portal").doc("scoiattoli_data").update(payload);
-        try { localStorage.setItem('asa_scoiattoli_db_cache', JSON.stringify(dbState)); } catch (e) {}
+        await db.collection("asa_portal").doc(FIRESTORE_DOC_ID).update(payload);
+        try { localStorage.setItem(DB_CACHE_KEY, JSON.stringify(dbState)); } catch (e) {}
         const toast = document.getElementById('regia-toast');
         if (toast) {
           toast.classList.remove('hidden');
@@ -1126,7 +1145,7 @@
     function checkSiteGate() {
       const gate = document.getElementById('site-auth-gate');
       if (!gate) return;
-      if (sessionStorage.getItem('asa_scoiattoli_unlocked') === '1') {
+      if (sessionStorage.getItem(UNLOCKED_SESSION_KEY) === '1') {
         gate.classList.add('hidden');
       } else {
         gate.classList.remove('hidden');
@@ -1139,7 +1158,7 @@
       const err = document.getElementById('site-auth-error');
       if (!input) return;
       if (input.value === 'Edvige2027') {
-        sessionStorage.setItem('asa_scoiattoli_unlocked', '1');
+        sessionStorage.setItem(UNLOCKED_SESSION_KEY, '1');
         if (err) err.classList.add('hidden');
         document.getElementById('site-auth-gate').classList.add('hidden');
       } else {
@@ -1150,7 +1169,7 @@
     }
 
     function logoutSiteGate() {
-      sessionStorage.removeItem('asa_scoiattoli_unlocked');
+      sessionStorage.removeItem(UNLOCKED_SESSION_KEY);
       const input = document.getElementById('site-auth-pass');
       if (input) input.value = '';
       checkSiteGate();
@@ -1370,7 +1389,7 @@
       filterNews(currentNewsFilter);
     }
 
-    const FAVORITE_ATHLETE_STORAGE_KEY = 'asa_scoiattoli_fav_athlete_v1';
+    const FAVORITE_ATHLETE_STORAGE_KEY = STORAGE_PREFIX + 'asa_scoiattoli_fav_athlete_v1';
 
     function escapeHtmlFav(str) {
       return String(str ?? '')
@@ -2545,7 +2564,7 @@
         cfg.customRowsByMatch[matchId] = generateAutoRowsFromConvocati(matchId);
       }
       cfg.customRowsByMatch[matchId][rowIdx][field] = value;
-      localStorage.setItem('asa_scoiattoli_db_live', JSON.stringify(dbState));
+      localStorage.setItem(DB_LIVE_KEY, JSON.stringify(dbState));
     }
 
     function resetListaRToConvocati() {
