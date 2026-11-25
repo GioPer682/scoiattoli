@@ -73,25 +73,25 @@
   </div>
 
   <!-- MAIN APP CONTAINER -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 w-full flex-grow space-y-8 sm:space-y-10">
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 w-full flex-grow space-y-8 sm:space-y-10 min-w-0">
 
-    <!-- NEWS VIEW -->
-    <section id="view-news" class="space-y-6 sm:space-y-8">
-      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-300 pb-5">
-        <div>
-          <span class="text-xs font-extrabold text-asa-red uppercase tracking-widest block mb-1">Stagione Ufficiale 2026/2027</span>
-          <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#0f2544] tracking-tight uppercase">News & Incontri Ufficiali</h1>
-        </div>
-
-        <div class="flex items-center gap-1 bg-slate-200/80 p-1.5 rounded-2xl overflow-x-auto">
-          <button onclick="filterNews('all')" id="tab-all" class="px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-bold bg-[#0f2544] text-white shadow transition cursor-pointer whitespace-nowrap">Panoramica</button>
-          <button onclick="filterNews('recenti')" id="tab-recenti" class="px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap">Recenti</button>
-          <button onclick="filterNews('prossimi')" id="tab-prossimi" class="px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap">Prossimi</button>
-        </div>
+  <!-- NEWS VIEW -->
+  <section id="view-news" class="space-y-6 sm:space-y-8 min-w-0 max-w-full">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-300 pb-5 min-w-0 max-w-full">
+      <div class="min-w-0">
+        <span class="text-xs font-extrabold text-asa-red uppercase tracking-widest block mb-1">Stagione Ufficiale 2026/2027</span>
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#0f2544] tracking-tight uppercase">News &amp; Incontri Ufficiali</h1>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8" id="news-cards-container"></div>
-    </section>
+      <div class="flex items-center gap-1 bg-slate-200/80 p-1.5 rounded-2xl overflow-x-auto max-w-full min-w-0">
+        <button onclick="filterNews('all')" id="tab-all" class="px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-bold bg-[#0f2544] text-white shadow transition cursor-pointer whitespace-nowrap">Panoramica</button>
+        <button onclick="filterNews('recenti')" id="tab-recenti" class="px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap">Recenti</button>
+        <button onclick="filterNews('prossimi')" id="tab-prossimi" class="px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 transition cursor-pointer whitespace-nowrap">Prossimi</button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 min-w-0 max-w-full" id="news-cards-container"></div>
+  </section>
 
     <!-- SQUADRA VIEW -->
     <section id="view-squadra" class="space-y-8 hidden">
