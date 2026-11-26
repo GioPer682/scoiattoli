@@ -2022,6 +2022,40 @@ function formatDobToItalian(rawDob) {
       return String(val || "").toLowerCase().replace(/\s+/g, " ").trim();
     }
 
+let firestoreAtletiMap = null;
+    let firestoreAtletiLoadingPromise = null;
+
+    async function loadFirestoreAtletiMap() {
+      if (firestoreAtletiMap) return firestoreAtletiMap;
+      if (firestoreAtletiLoadingPromise) return firestoreAtletiLoadingPromise;
+
+      firestoreAtletiLoadingPromise = (async () => {
+        const map = new Map();
+        try {
+          if (typeof db !== "undefined" && db && typeof db.collection === "function") {
+            const snap = await db.collection("atleti").get();
+            snap.forEach(doc => {
+              const d = doc.data() || {};
+              const full = String(d.nome_completo || `${d.nome || ""} ${d.cognome || ""}` || "").trim();
+              const key = normalizeAthleteKey(full);
+              if (key) {
+                map.set(key, d);
+              }
+            });
+          }
+        } catch (err) {
+          console.error("Errore lettura collezione atleti:", err);
+        }
+        firestoreAtletiMap = map;
+        firestoreAtletiLoadingPromise = null;
+        return map;
+      })();
+
+      return firestoreAtletiLoadingPromise;
+    }
+
+
+
 function extractPlayerDobFromDb(playerObj) {
       if (!playerObj) return "";
       const direct =
@@ -2150,21 +2184,31 @@ function generateAutoRowsFromConvocati(matchId) {
         const name = convNames[i];
         if (name) {
           const targetKey = normalizeAthleteKey(name);
-          const playerObj =
+          const rosterObj =
             roster.find(r => {
               const k1 = normalizeAthleteKey(r.nome_completo);
               const k2 = normalizeAthleteKey(r.nome);
               const k3 = normalizeAthleteKey(`${r.nome || ""} ${r.cognome || ""}`);
               return (k1 && k1 === targetKey) || (k2 && k2 === targetKey) || (k3 && k3 === targetKey);
-            }) || { nome_completo: name };
-          if (i === 0) alert("DEBUG PLAYER 1:\n" + JSON.stringify(playerObj));
-          const fullNameStr = String(playerObj.nome_completo || playerObj.nome || name).trim();
-          const parts = fullNameStr.split(/\s+/);
-          const firstName = parts[0] || "";
-          const lastName = String(playerObj.cognome || parts.slice(1).join(" ") || "").trim();
+            }) || {};
 
-          const dob = extractPlayerDobFromDb(playerObj);
-          const rawJersey = playerObj.numero_maglia ?? playerObj.numero ?? "";
+          const fsDoc = firestoreAtletiMap ? (firestoreAtletiMap.get(targetKey) || {}) : {};
+          const mergedPlayer = { ...rosterObj, ...fsDoc };
+
+          const fullNameStr = String(
+            fsDoc.nome_completo ||
+            ((fsDoc.nome && fsDoc.cognome) ? `${fsDoc.nome} ${fsDoc.cognome}` : "") ||
+            rosterObj.nome_completo ||
+            rosterObj.nome ||
+            name
+          ).trim();
+
+          const parts = fullNameStr.split(/\s+/);
+          const firstName = String(fsDoc.nome || parts[0] || "").trim();
+          const lastName = String(fsDoc.cognome || rosterObj.cognome || parts.slice(1).join(" ") || "").trim();
+
+          const dob = extractPlayerDobFromDb(mergedPlayer);
+          const rawJersey = mergedPlayer.numero_maglia ?? mergedPlayer.numero ?? "";
           const jersey =
             rawJersey !== null &&
             rawJersey !== undefined &&
@@ -2229,6 +2273,15 @@ function generateAutoRowsFromConvocati(matchId) {
     }
 
     function renderListaRPreview() {
+
+if (typeof firestoreAtletiMap !== "undefined" && firestoreAtletiMap === null && typeof loadFirestoreAtletiMap === "function") {
+      loadFirestoreAtletiMap().then(() => {
+        if (typeof renderListaRPreview === "function") {
+          renderListaRPreview();
+        }
+      });
+    }
+
       const box = document.getElementById('listar-preview-box');
       const sel = document.getElementById('listar-match-select');
       if (!box || !sel || !dbState.partite) return;
