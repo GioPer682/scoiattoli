@@ -414,10 +414,23 @@ if (window.location.hostname !== 'scoiattoliasabasket.vercel.app') {
       });
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      checkSiteGate();
-      initRealtimeDatabase();
-    });
+const APP_VERSION = '2026-11-25-v2';
+
+function ensureLatestPageVersion() {
+  const url = new URL(window.location.href);
+  if (url.searchParams.get('v') !== APP_VERSION) {
+    url.searchParams.set('v', APP_VERSION);
+    window.location.replace(url.toString());
+    return false;
+  }
+  return true;
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  if (!ensureLatestPageVersion()) return;
+  checkSiteGate();
+  initRealtimeDatabase();
+});
 
     function renderAllPublicViews() {
       sortPartite();
@@ -874,43 +887,45 @@ function verifySiteGate() {
     }
 
     function renderReadonlyAvailabilityBreakdown(matchMap) {
-      const panel = document.getElementById('avail-readonly-panel');
-      if (!panel) return;
-      const roster = Array.isArray(dbState.roster) ? dbState.roster : [];
-      const gruppi = { disponibile: [], non_disponibile: [], in_attesa: [] };
+  const panel = document.getElementById('avail-readonly-panel');
+  if (!panel) return;
+  const roster = Array.isArray(dbState.roster) ? dbState.roster : [];
+  const gruppi = { disponibile: [], non_disponibile: [], in_attesa: [] };
 
-      roster.forEach(a => {
-        const st = normalizeDisponibilitaValue(matchMap[a.nome]);
-        gruppi[st].push(`${escapeHtmlFav(a.nome)} <span class="text-slate-400 font-semibold">#${escapeHtmlFav(a.numero ?? '-')}</span>`);
-      });
+  roster.forEach(a => {
+    const st = normalizeDisponibilitaValue(matchMap[a.nome]);
+    gruppi[st].push(`${escapeHtmlFav(a.nome)} <span class="text-slate-400 font-semibold">#${escapeHtmlFav(a.numero ?? '-')}</span>`);
+  });
 
-      const sectionHtml = (title, list, pillClasses) => `
-        <div class="rounded-xl bg-white border border-slate-200 p-2.5 space-y-1.5">
-          <div class="flex items-center justify-between gap-2">
-            <span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full ${pillClasses}">${title}</span>
-            <span class="text-xs font-black text-slate-800">${list.length}</span>
-          </div>
-          <div class="text-xs text-slate-700 leading-relaxed">
-            ${list.length ? list.join(', ') : '<span class="text-slate-400 italic">Nessun atleta</span>'}
-          </div>
-        </div>
-      `;
+  const sectionHtml = (title, list, pillClasses) => `
+    <div class="rounded-xl bg-white border border-slate-200 p-2.5 space-y-1.5">
+      <div class="flex items-center justify-between gap-2">
+        <span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full ${pillClasses}">${title}</span>
+        <span class="text-xs font-black text-slate-800">${list.length}</span>
+      </div>
+      <div class="text-xs text-slate-700 leading-relaxed">
+        ${list.length ? list.join(', ') : '<span class="text-slate-400 italic">Nessun atleta</span>'}
+      </div>
+    </div>
+  `;
 
-      panel.innerHTML =
-        sectionHtml('Disponibili', gruppi.disponibile, 'bg-emerald-100 text-emerald-800') +
-        sectionHtml('Non disponibili', gruppi.non_disponibile, 'bg-rose-100 text-rose-800') +
-        sectionHtml('In attesa', gruppi.in_attesa, 'bg-amber-100 text-amber-800');
-    }
+  panel.innerHTML =
+    sectionHtml('Disponibili', gruppi.disponibile, 'bg-emerald-100 text-emerald-800') +
+    sectionHtml('Non disponibili', gruppi.non_disponibile, 'bg-rose-100 text-rose-800');
+}
 
-    function toggleReadonlyAvailabilityList() {
-      availReadonlyOpen = !availReadonlyOpen;
-      const panel = document.getElementById('avail-readonly-panel');
-      const btn = document.getElementById('avail-readonly-toggle-btn');
-      if (panel) panel.classList.toggle('hidden', !availReadonlyOpen);
-      if (btn) {
-        btn.textContent = availReadonlyOpen ? 'Nascondi elenco disponibilità' : 'Vedi elenco disponibilità';
-      }
-    }
+   function toggleReadonlyAvailabilityList() {
+  availReadonlyOpen = !availReadonlyOpen;
+  const panel = document.getElementById('avail-readonly-panel');
+  const workspace = document.getElementById('avail-athlete-workspace');
+  const btn = document.getElementById('avail-readonly-toggle-btn');
+
+  if (panel) panel.classList.toggle('hidden', !availReadonlyOpen);
+  if (workspace) workspace.classList.toggle('hidden', availReadonlyOpen);
+  if (btn) {
+    btn.textContent = availReadonlyOpen ? 'Nascondi elenco disponibilità' : 'Vedi elenco disponibilità';
+  }
+}
 
     async function openAvailabilityModal(matchId) {
       const match = (dbState.partite || []).find(p => p.id === matchId);
@@ -933,6 +948,7 @@ function verifySiteGate() {
       if (titleEl) titleEl.innerText = `${match.id} vs ${match.avversario}`;
       if (successBanner) successBanner.classList.add('hidden');
       if (readonlyPanel) readonlyPanel.classList.add('hidden');
+      if (workspace) workspace.classList.remove('hidden');
       if (toggleBtn) toggleBtn.textContent = 'Vedi elenco disponibilità';
 
       const savedAthlete = getFavoriteAthlete();
@@ -960,13 +976,14 @@ function verifySiteGate() {
           workspace.innerHTML = `
             <div class="rounded-2xl bg-rose-50 border border-rose-200 p-4 text-center space-y-2.5">
               <div class="text-xs font-extrabold text-rose-800">Impossibile leggere lo stato attuale dal database.</div>
-              <button type="button" onclick="openAvailabilityModal('${String(matchId).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}')" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold">                Riprova
+              <button type="button" onclick="openAvailabilityModal('${String(matchId).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}')" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold">
+                Riprova
               </button>
             </div>
           `;
         }
       }
-    }
+      }
 
     function startChangeAthleteFlow() {
       const matchId = document.getElementById('avail-match-id')?.value;
@@ -1080,111 +1097,103 @@ function verifySiteGate() {
       }
     }
 
-    function renderAvailabilityWorkspace(matchId, liveMap, isPickingAthlete) {
-      const box = document.getElementById('avail-athlete-workspace');
-      if (!box) return;
+   function renderAvailabilityWorkspace(matchId, liveMap, isPickingAthlete) {
+  const box = document.getElementById('avail-athlete-workspace');
+  if (!box) return;
 
-      const roster = Array.isArray(dbState.roster) ? dbState.roster : [];
-      if (isPickingAthlete) {
-        const options = roster
-          .map(a => {
-            const selected = a.nome === availSelectedAthleteDraft ? 'selected' : '';
-            return `<option value="${escapeHtmlFav(a.nome)}" ${selected}>${escapeHtmlFav(a.nome)} (#${escapeHtmlFav(a.numero ?? '-')})</option>`;
-          })
-          .join('');
+  const roster = Array.isArray(dbState.roster) ? dbState.roster : [];
+  if (isPickingAthlete) {
+    const options = roster
+      .map(a => {
+        const selected = a.nome === availSelectedAthleteDraft ? 'selected' : '';
+        return `<option value="${escapeHtmlFav(a.nome)}" ${selected}>${escapeHtmlFav(a.nome)} (#${escapeHtmlFav(a.numero ?? '-')})</option>`;
+      })
+      .join('');
 
-        box.innerHTML = `
-          <div class="rounded-2xl bg-sky-50 border border-sky-200 p-4 space-y-3">
-            <label for="avail-athlete-picker" class="block text-xs font-black text-[#0f2544] uppercase tracking-wider">
-              Seleziona il tuo atleta
-            </label>
-            <select id="avail-athlete-picker" onchange="availSelectedAthleteDraft = this.value" class="w-full px-3.5 py-3 rounded-xl border border-sky-300 bg-white text-sm font-bold text-[#0f2544] focus:outline-none focus:ring-2 focus:ring-[#0f2544]">
-              <option value="">-- Scegli atleta --</option>
-              ${options}
-            </select>
-            <div class="grid grid-cols-2 gap-2.5 pt-1">
-              <button type="button" onclick="cancelChangeAthleteFlow()" class="py-3 px-3 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-xs font-extrabold uppercase cursor-pointer">
-                Annulla
-              </button>
-              <button type="button" onclick="confirmSelectedAthlete()" class="py-3 px-3 rounded-xl bg-[#0f2544] hover:bg-slate-800 text-white text-xs font-extrabold uppercase cursor-pointer shadow-sm">
-                Conferma
-              </button>
-            </div>
-          </div>
-        `;
-        return;
-      }
-
-      const athleteName = getFavoriteAthlete();
-      const currentStatus = normalizeDisponibilitaValue(liveMap[athleteName]);
-      const currentStatusText = currentStatus === 'disponibile'
-        ? 'Disponibile'
-        : currentStatus === 'non_disponibile'
-          ? 'Non disponibile'
-          : 'In attesa';
-
-      const currentStatusBadgeClass = currentStatus === 'disponibile'
-        ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
-        : currentStatus === 'non_disponibile'
-          ? 'bg-rose-100 text-rose-800 border-rose-200'
-          : 'bg-amber-100 text-amber-800 border-amber-200';
-
-      let doubleConfirmHtml = '';
-      if (availPendingChoice) {
-        const chosenText = availPendingChoice === 'disponibile' ? 'DISPONIBILE' : 'NON DISPONIBILE';
-        const chosenToneClass = availPendingChoice === 'disponibile'
-          ? 'text-emerald-700'
-          : 'text-rose-700';
-
-        doubleConfirmHtml = `
-          <div class="rounded-2xl bg-amber-50 border-2 border-amber-400 p-4 space-y-3 text-center shadow-sm">
-            <div class="text-[11px] font-black text-amber-900 uppercase tracking-wider">Conferma finale • Riepilogo</div>
-            <div class="rounded-xl bg-white border border-amber-200 p-3 space-y-1 text-xs text-slate-800">
-              <div>Atleta: <strong class="text-[#0f2544]">${escapeHtmlFav(athleteName)}</strong></div>
-              <div>Partita: <strong class="text-[#0f2544]">${escapeHtmlFav(matchId)}</strong></div>
-              <div>Stato da inviare: <strong class="${chosenToneClass}">${chosenText}</strong></div>
-            </div>
-            <div class="grid grid-cols-2 gap-2.5">
-              <button type="button" onclick="cancelPendingChoice()" class="py-3 px-3 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-xs font-extrabold uppercase cursor-pointer">
-                Annulla
-              </button>
-              <button type="button" onclick="confirmAndSaveSingleAthleteAvailability()" class="py-3 px-3 rounded-xl bg-[#0f2544] hover:bg-slate-800 text-white text-xs font-extrabold uppercase cursor-pointer shadow-sm">
-                Conferma invio
-              </button>
-            </div>
-          </div>
-        `;
-      }
-
-      box.innerHTML = `
-        <div class="rounded-2xl bg-slate-50 border border-slate-200 p-4 space-y-3.5">
-          <div class="flex items-center justify-between gap-2">
-            <div class="min-w-0">
-              <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Atleta selezionato</div>
-              <div class="text-base font-black text-[#0f2544] truncate">${escapeHtmlFav(athleteName)}</div>
-            </div>
-            <button type="button" onclick="startChangeAthleteFlow()" class="px-3 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 text-xs font-extrabold shrink-0 cursor-pointer">
-              Cambia atleta
-            </button>
-          </div>
-
-          <div class="flex items-center justify-between text-xs pt-2 border-t border-slate-200">
-            <span class="font-semibold text-slate-600">Stato attuale sul DB:</span>
-            <span class="px-2.5 py-0.5 rounded-full border font-extrabold text-[11px] ${currentStatusBadgeClass}">${currentStatusText}</span>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2.5 pt-1">
-            <button type="button" onclick="stageAthleteAvailabilityChoice('disponibile')" class="py-3.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold uppercase tracking-wider transition cursor-pointer shadow-sm">
-              Disponibile
-            </button>
-            <button type="button" onclick="stageAthleteAvailabilityChoice('non_disponibile')" class="py-3.5 px-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-extrabold uppercase tracking-wider transition cursor-pointer shadow-sm">
-              Non disponibile
-            </button>
-          </div>
+    box.innerHTML = `
+      <div class="rounded-2xl bg-sky-50 border border-sky-200 p-4 space-y-3">
+        <label for="avail-athlete-picker" class="block text-xs font-black text-[#0f2544] uppercase tracking-wider">
+          Seleziona il tuo atleta
+        </label>
+        <select id="avail-athlete-picker" onchange="availSelectedAthleteDraft = this.value" class="w-full px-3.5 py-3 rounded-xl border border-sky-300 bg-white text-sm font-bold text-[#0f2544] focus:outline-none focus:ring-2 focus:ring-[#0f2544]">
+          <option value="">-- Scegli atleta --</option>
+          ${options}
+        </select>
+        <div class="grid grid-cols-2 gap-2.5 pt-1">
+          <button type="button" onclick="cancelChangeAthleteFlow()" class="py-3 px-3 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-xs font-extrabold uppercase cursor-pointer">
+            Annulla
+          </button>
+          <button type="button" onclick="confirmSelectedAthlete()" class="py-3 px-3 rounded-xl bg-[#0f2544] hover:bg-slate-800 text-white text-xs font-extrabold uppercase cursor-pointer shadow-sm">
+            Conferma
+          </button>
         </div>
-        ${doubleConfirmHtml}
-      `;
-    }
+      </div>
+    `;
+    return;
+  }
+
+  const athleteName = getFavoriteAthlete();
+  const currentStatus = normalizeDisponibilitaValue(liveMap[athleteName]);
+
+  const availBtnClass = currentStatus === 'disponibile'
+    ? 'bg-emerald-600 hover:bg-emerald-700 text-white opacity-70 ring-2 ring-emerald-300'
+    : 'bg-emerald-600 hover:bg-emerald-700 text-white opacity-100 shadow-sm';
+
+  const unavailBtnClass = currentStatus === 'non_disponibile'
+    ? 'bg-rose-600 hover:bg-rose-700 text-white opacity-70 ring-2 ring-rose-300'
+    : 'bg-rose-600 hover:bg-rose-700 text-white opacity-100 shadow-sm';
+
+  let doubleConfirmHtml = '';
+  if (availPendingChoice) {
+    const chosenText = availPendingChoice === 'disponibile' ? 'DISPONIBILE' : 'NON DISPONIBILE';
+    const chosenToneClass = availPendingChoice === 'disponibile'
+      ? 'text-emerald-700'
+      : 'text-rose-700';
+
+    doubleConfirmHtml = `
+      <div class="rounded-2xl bg-amber-50 border-2 border-amber-400 p-4 space-y-3 text-center shadow-sm">
+        <div class="text-[11px] font-black text-amber-900 uppercase tracking-wider">Conferma finale • Riepilogo</div>
+        <div class="rounded-xl bg-white border border-amber-200 p-3 space-y-1 text-xs text-slate-800">
+          <div>Atleta: <strong class="text-[#0f2544]">${escapeHtmlFav(athleteName)}</strong></div>
+          <div>Partita: <strong class="text-[#0f2544]">${escapeHtmlFav(matchId)}</strong></div>
+          <div>Stato da inviare: <strong class="${chosenToneClass}">${chosenText}</strong></div>
+        </div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <button type="button" onclick="cancelPendingChoice()" class="py-3 px-3 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-xs font-extrabold uppercase cursor-pointer">
+            Annulla
+          </button>
+          <button type="button" onclick="confirmAndSaveSingleAthleteAvailability()" class="py-3 px-3 rounded-xl bg-[#0f2544] hover:bg-slate-800 text-white text-xs font-extrabold uppercase cursor-pointer shadow-sm">
+            Conferma invio
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  box.innerHTML = `
+    ${doubleConfirmHtml}
+    <div class="rounded-2xl bg-slate-50 border border-slate-200 p-4 space-y-3.5">
+      <div class="flex items-center justify-between gap-2">
+        <div class="min-w-0">
+          <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Atleta selezionato</div>
+          <div class="text-base font-black text-[#0f2544] truncate">${escapeHtmlFav(athleteName)}</div>
+        </div>
+        <button type="button" onclick="startChangeAthleteFlow()" class="px-3 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 text-xs font-extrabold shrink-0 cursor-pointer">
+          Cambia atleta
+        </button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2.5 pt-1">
+        <button type="button" onclick="stageAthleteAvailabilityChoice('disponibile')" class="py-3.5 px-3 rounded-xl text-xs font-extrabold uppercase tracking-wider transition cursor-pointer ${availBtnClass}">
+          Disponibile
+        </button>
+        <button type="button" onclick="stageAthleteAvailabilityChoice('non_disponibile')" class="py-3.5 px-3 rounded-xl text-xs font-extrabold uppercase tracking-wider transition cursor-pointer ${unavailBtnClass}">
+          Non disponibile
+        </button>
+      </div>
+    </div>
+  `;
+}
 
     function closeAvailabilityModal() {
       availModalRequestSeq++;
