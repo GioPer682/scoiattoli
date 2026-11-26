@@ -2036,11 +2036,19 @@ let firestoreAtletiMap = null;
             const snap = await db.collection("atleti").get();
             snap.forEach(doc => {
               const d = doc.data() || {};
-              const full = String(d.nome_completo || `${d.nome || ""} ${d.cognome || ""}` || "").trim();
-              const key = normalizeAthleteKey(full);
-              if (key) {
-                map.set(key, d);
-              }
+              const candidates = [
+                d.nome_completo,
+                `${d.nome || ""} ${d.cognome || ""}`,
+                `${d.cognome || ""} ${d.nome || ""}`,
+                d.nome,
+                d.cognome
+              ];
+              candidates.forEach(rawVal => {
+                const k = normalizeAthleteKey(rawVal);
+                if (k && !map.has(k)) {
+                  map.set(k, d);
+                }
+              });
             });
           }
         } catch (err) {
