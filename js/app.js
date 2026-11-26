@@ -1090,7 +1090,7 @@ function verifySiteGate() {
         clearAvailAutoCloseTimer();
         availAutoCloseTimer = setTimeout(() => {
           closeAvailabilityModal();
-        }, 1500);
+        }, 2500);
       } catch (err) {
         console.error('Errore salvataggio disponibilità singolo atleta:', err);
         alert('Impossibile registrare la scelta su Firestore. Controlla la connessione e riprova.');
@@ -1098,7 +1098,8 @@ function verifySiteGate() {
     }
 
    function renderAvailabilityWorkspace(matchId, liveMap, isPickingAthlete) {
-  const box = document.getElementById('avail-athlete-workspace');
+  
+    const box = document.getElementById('avail-athlete-workspace');
   if (!box) return;
 
   const roster = Array.isArray(dbState.roster) ? dbState.roster : [];
@@ -1134,14 +1135,16 @@ function verifySiteGate() {
 
   const athleteName = getFavoriteAthlete();
   const currentStatus = normalizeDisponibilitaValue(liveMap[athleteName]);
+  const isAlreadyAvail = currentStatus === 'disponibile';
+  const isAlreadyUnavail = currentStatus === 'non_disponibile';
 
-  const availBtnClass = currentStatus === 'disponibile'
-    ? 'bg-emerald-600 hover:bg-emerald-700 text-white opacity-70 ring-2 ring-emerald-300'
-    : 'bg-emerald-600 hover:bg-emerald-700 text-white opacity-100 shadow-sm';
+  const availBtnClass = isAlreadyAvail
+    ? 'bg-emerald-600 text-white opacity-35 ring-2 ring-emerald-400 cursor-not-allowed'
+    : 'bg-emerald-600 hover:bg-emerald-700 text-white opacity-100 cursor-pointer shadow-sm';
 
-  const unavailBtnClass = currentStatus === 'non_disponibile'
-    ? 'bg-rose-600 hover:bg-rose-700 text-white opacity-70 ring-2 ring-rose-300'
-    : 'bg-rose-600 hover:bg-rose-700 text-white opacity-100 shadow-sm';
+  const unavailBtnClass = isAlreadyUnavail
+    ? 'bg-rose-600 text-white opacity-35 ring-2 ring-rose-400 cursor-not-allowed'
+    : 'bg-rose-600 hover:bg-rose-700 text-white opacity-100 cursor-pointer shadow-sm';
 
   let doubleConfirmHtml = '';
   if (availPendingChoice) {
@@ -1184,16 +1187,23 @@ function verifySiteGate() {
       </div>
 
       <div class="grid grid-cols-2 gap-2.5 pt-1">
-        <button type="button" onclick="stageAthleteAvailabilityChoice('disponibile')" class="py-3.5 px-3 rounded-xl text-xs font-extrabold uppercase tracking-wider transition cursor-pointer ${availBtnClass}">
+        <button
+          type="button"
+          ${isAlreadyAvail ? 'disabled aria-disabled="true"' : 'onclick="stageAthleteAvailabilityChoice(\'disponibile\')"'}
+          class="py-3.5 px-3 rounded-xl text-xs font-extrabold uppercase tracking-wider transition ${availBtnClass}"
+        >
           Disponibile
         </button>
-        <button type="button" onclick="stageAthleteAvailabilityChoice('non_disponibile')" class="py-3.5 px-3 rounded-xl text-xs font-extrabold uppercase tracking-wider transition cursor-pointer ${unavailBtnClass}">
+        <button
+          type="button"
+          ${isAlreadyUnavail ? 'disabled aria-disabled="true"' : 'onclick="stageAthleteAvailabilityChoice(\'non_disponibile\')"'}
+          class="py-3.5 px-3 rounded-xl text-xs font-extrabold uppercase tracking-wider transition ${unavailBtnClass}"
+        >
           Non disponibile
         </button>
       </div>
     </div>
-  `;
-}
+  `;}
 
     function closeAvailabilityModal() {
       availModalRequestSeq++;
