@@ -2157,7 +2157,7 @@ function generateAutoRowsFromConvocati(matchId) {
               const k3 = normalizeAthleteKey(`${r.nome || ""} ${r.cognome || ""}`);
               return (k1 && k1 === targetKey) || (k2 && k2 === targetKey) || (k3 && k3 === targetKey);
             }) || { nome_completo: name };
-
+          if (i === 0) alert("DEBUG PLAYER 1:\n" + JSON.stringify(playerObj));
           const fullNameStr = String(playerObj.nome_completo || playerObj.nome || name).trim();
           const parts = fullNameStr.split(/\s+/);
           const firstName = parts[0] || "";
