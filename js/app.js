@@ -2535,8 +2535,7 @@ if (typeof firestoreAtletiMap !== "undefined" && firestoreAtletiMap === null && 
       URL.revokeObjectURL(url);
     }
 
-  function printListaRPdf() {
-    const sheet = document.getElementById('lista-r-printable-sheet');
+  function printListaRPdf() {const sheet = document.getElementById('lista-r-printable-sheet');
       if (!sheet) return;
       const clone = sheet.cloneNode(true);
       clone.querySelectorAll('input').forEach(inp => {
@@ -2741,7 +2740,7 @@ if (typeof firestoreAtletiMap !== "undefined" && firestoreAtletiMap === null && 
         </html>
       `);
       win.document.close();
-  }
+    }
 
     function removePlayer(idx) {
       if (!dbState.roster[idx]) return;
