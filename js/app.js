@@ -2205,7 +2205,7 @@ function saveListaRMetadata() {
     }
 
 function generateAutoRowsFromConvocati(matchId) {
-      const convNames = getPublishedConvocatiForMatch(matchId);
+  const convNames = getPublishedConvocatiForMatch(matchId);
       const roster = Array.isArray(dbState.roster) ? dbState.roster : [];
       const rows = [];
 
@@ -2232,9 +2232,25 @@ function generateAutoRowsFromConvocati(matchId) {
             name
           ).trim();
 
-          const parts = fullNameStr.split(/\s+/);
-          const firstName = String(fsDoc.nome || parts[0] || "").trim();
-          const lastName = String(fsDoc.cognome || rosterObj.cognome || parts.slice(1).join(" ") || "").trim();
+          const knownLastName = String(fsDoc.cognome || rosterObj.cognome || "").trim();
+          let cleanGivenName = String(fsDoc.nome || "").trim();
+
+          if (!cleanGivenName && fullNameStr) {
+            if (knownLastName) {
+              cleanGivenName = fullNameStr
+                .replace(new RegExp(`\\b${knownLastName}\\b`, "i"), "")
+                .replace(/\s+/g, " ")
+                .trim();
+            }
+            if (!cleanGivenName) {
+              const parts = fullNameStr.split(/\s+/).filter(Boolean);
+              cleanGivenName = parts[0] || "";
+            }
+          }
+
+          const partsFallback = fullNameStr.split(/\s+/).filter(Boolean);
+          const firstName = cleanGivenName || partsFallback[0] || "";
+          const lastName = knownLastName || (partsFallback.length > 1 ? partsFallback.slice(1).join(" ") : "");
 
           const dob = extractPlayerDobFromDb(mergedPlayer);
           const rawJersey = mergedPlayer.numero_maglia ?? mergedPlayer.numero ?? "";
@@ -2258,7 +2274,7 @@ function generateAutoRowsFromConvocati(matchId) {
         }
       }
       return rows;
-    }
+}
 
     function getListaRRowsForMatch(matchId) {
       const autoRows = generateAutoRowsFromConvocati(matchId);
@@ -2500,17 +2516,16 @@ if (typeof firestoreAtletiMap !== "undefined" && firestoreAtletiMap === null && 
       URL.revokeObjectURL(url);
     }
 
-  function printListaRPdf() {
-      const sheet = document.getElementById('lista-r-printable-sheet');
+  function printListaRPdf() {const sheet = document.getElementById('lista-r-printable-sheet');
       if (!sheet) return;
       const clone = sheet.cloneNode(true);
       clone.querySelectorAll('input').forEach(inp => {
         const span = document.createElement('span');
         span.textContent = inp.value || '';
-        span.className = 'inline-block w-full text-[11px] leading-tight ' + (inp.classList.contains('text-center') ? 'text-center ' : '') + (inp.classList.contains('font-bold') ? 'font-bold' : 'font-semibold');
+        span.className = 'inline-block w-full text-[12px] leading-snug ' + (inp.classList.contains('text-center') ? 'text-center ' : '') + (inp.classList.contains('font-bold') ? 'font-bold' : 'font-semibold');
         inp.parentNode.replaceChild(span, inp);
       });
-      const win = window.open("", "_blank", "width=900,height=700");
+      const win = window.open("", "_blank", "width=950,height=800");
       if (!win) {
         alert("Consenti l'apertura dei pop-up per stampare o salvare la Lista R in PDF.");
         return;
@@ -2525,49 +2540,47 @@ if (typeof firestoreAtletiMap !== "undefined" && firestoreAtletiMap === null && 
           <style>
             @page {
               size: A4 portrait;
-              margin: 5mm 6mm;
+              margin: 6mm 7mm;
+            }
+            * {
+              box-sizing: border-box;
             }
             html, body {
+              width: 100%;
               margin: 0;
               padding: 0;
               background: #ffffff;
               -webkit-print-color-adjust: exact;
               print-color-adjust: exact;
             }
+            .print-fit-wrapper {
+              width: 100%;
+              margin: 0 auto;
+            }
             #lista-r-printable-sheet {
               max-width: 100% !important;
               width: 100% !important;
-              padding: 10px 14px !important;
-              gap: 6px !important;
+              margin: 0 !important;
+              padding: 14px 18px !important;
+              border: 2px solid #0f172a !important;
+              background: #ffffff !important;
               break-inside: avoid !important;
               page-break-inside: avoid !important;
             }
-            #lista-r-printable-sheet > * + * {
-              margin-top: 6px !important;
-            }
-            #lista-r-printable-sheet h4 {
-              font-size: 14px !important;
-              line-height: 1.15 !important;
-              margin-top: 4px !important;
-              margin-bottom: 2px !important;
-            }
-            #lista-r-printable-sheet img {
-              max-height: 36px !important;
-              width: auto !important;
-              object-fit: contain !important;
-            }
             #lista-r-printable-sheet table {
-              font-size: 10.5px !important;
-              line-height: 1.15 !important;
+              width: 100% !important;
+              border-collapse: collapse !important;
+              font-size: 11.5px !important;
+              line-height: 1.25 !important;
               break-inside: avoid !important;
               page-break-inside: avoid !important;
             }
             #lista-r-printable-sheet th,
             #lista-r-printable-sheet td {
-              padding-top: 2px !important;
-              padding-bottom: 2px !important;
-              padding-left: 5px !important;
-              padding-right: 5px !important;
+              padding-top: 4px !important;
+              padding-bottom: 4px !important;
+              padding-left: 6px !important;
+              padding-right: 6px !important;
             }
             #lista-r-printable-sheet tr {
               break-inside: avoid !important;
@@ -2575,18 +2588,14 @@ if (typeof firestoreAtletiMap !== "undefined" && firestoreAtletiMap === null && 
             }
             @media print {
               html, body {
-                width: 198mm;
+                width: 100% !important;
                 margin: 0 !important;
                 padding: 0 !important;
-              }
-              .print-fit-wrapper {
-                width: 100%;
-                overflow: hidden;
               }
             }
           </style>
         </head>
-        <body class="p-2 bg-white">
+        <body class="bg-white">
           <div id="print-fit-wrapper" class="print-fit-wrapper">
             ${clone.outerHTML}
           </div>
@@ -2594,18 +2603,22 @@ if (typeof firestoreAtletiMap !== "undefined" && firestoreAtletiMap === null && 
             function fitListaRToSinglePage() {
               const sheetEl = document.getElementById('lista-r-printable-sheet');
               if (!sheetEl) return;
+              sheetEl.style.zoom = '1';
               sheetEl.style.transform = '';
-              sheetEl.style.transformOrigin = 'top center';
-              sheetEl.style.width = '';
-              const maxHeightPx = 1015;
+              sheetEl.style.width = '100%';
+
+              // Altezza utile A4 portrait con margini 6mm (~1060px a 96dpi)
+              const maxHeightPx = 1055;
               const rect = sheetEl.getBoundingClientRect();
               if (rect.height > maxHeightPx) {
-                const scale = Math.max(0.70, maxHeightPx / rect.height);
-                sheetEl.style.transform = 'scale(' + scale.toFixed(4) + ')';
-                sheetEl.style.transformOrigin = 'top center';
-                sheetEl.style.width = (100 / scale).toFixed(2) + '%';
-                sheetEl.style.marginLeft = 'auto';
-                sheetEl.style.marginRight = 'auto';
+                const scale = Math.max(0.75, maxHeightPx / rect.height);
+                if ('zoom' in sheetEl.style) {
+                  sheetEl.style.zoom = scale.toFixed(4);
+                } else {
+                  sheetEl.style.transform = 'scale(' + scale.toFixed(4) + ')';
+                  sheetEl.style.transformOrigin = 'top left';
+                  sheetEl.style.width = (100 / scale).toFixed(2) + '%';
+                }
               }
             }
             window.addEventListener('beforeprint', fitListaRToSinglePage);
@@ -2615,7 +2628,7 @@ if (typeof firestoreAtletiMap !== "undefined" && firestoreAtletiMap === null && 
                 setTimeout(function() {
                   fitListaRToSinglePage();
                   window.print();
-                }, 450);
+                }, 400);
               };
               if (document.fonts && document.fonts.ready) {
                 document.fonts.ready.then(runPrint);
@@ -2627,8 +2640,7 @@ if (typeof firestoreAtletiMap !== "undefined" && firestoreAtletiMap === null && 
         </body>
         </html>
       `);
-      win.document.close();
-    }
+      win.document.close();}
 
     function removePlayer(idx) {
       if (!dbState.roster[idx]) return;
