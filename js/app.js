@@ -2536,7 +2536,7 @@ if (typeof firestoreAtletiMap !== "undefined" && firestoreAtletiMap === null && 
     }
 
   function printListaRPdf() {
-const sheet = document.getElementById('lista-r-printable-sheet');
+    const sheet = document.getElementById('lista-r-printable-sheet');
       if (!sheet) return;
       const clone = sheet.cloneNode(true);
       clone.querySelectorAll('input').forEach(inp => {
@@ -2545,6 +2545,39 @@ const sheet = document.getElementById('lista-r-printable-sheet');
         span.className = 'inline-block w-full text-[12.5px] leading-snug ' + (inp.classList.contains('text-center') ? 'text-center ' : '') + (inp.classList.contains('font-bold') ? 'font-bold' : 'font-semibold');
         inp.parentNode.replaceChild(span, inp);
       });
+
+      // Individua il blocco "Firma:" e l'eventuale barra grigia sopra gli sponsor
+      clone.querySelectorAll('*').forEach(el => {
+        const directText = Array.from(el.childNodes)
+          .filter(n => n.nodeType === Node.TEXT_NODE)
+          .map(n => n.textContent.trim())
+          .join(' ');
+        if (/^firma\s*:?/i.test(directText)) {
+          el.classList.add('lista-r-firma-block');
+          const prev = el.previousElementSibling;
+          if (prev && prev.tagName === 'HR') {
+            prev.classList.add('lista-r-hidden-divider');
+          }
+        }
+        // Se contiene una striscia di immagini sponsor, nasconde l'eventuale separatore subito sopra
+        const imgs = el.querySelectorAll('img');
+        if (imgs.length >= 3 && el.children.length === imgs.length) {
+          el.classList.add('lista-r-sponsors-row');
+          const prev = el.previousElementSibling;
+          if (prev) {
+            if (prev.tagName === 'HR') {
+              prev.classList.add('lista-r-hidden-divider');
+            } else {
+              const styleAttr = (prev.getAttribute('style') || '') + ' ' + (prev.className || '');
+              const isThinBar = prev.getBoundingClientRect ? prev.getBoundingClientRect().height <= 6 : false;
+              if (isThinBar || /border-t|border-b|bg-gray|bg-slate|divider|hr/i.test(styleAttr)) {
+                prev.classList.add('lista-r-hidden-divider');
+              }
+            }
+          }
+        }
+      });
+
       const win = window.open("", "_blank", "width=950,height=800");
       if (!win) {
         alert("Consenti l'apertura dei pop-up per stampare o salvare la Lista R in PDF.");
@@ -2642,6 +2675,18 @@ const sheet = document.getElementById('lista-r-printable-sheet');
               break-inside: avoid !important;
               page-break-inside: avoid !important;
             }
+            .lista-r-firma-block {
+              margin-top: 22mm !important;
+            }
+            .lista-r-sponsors-row {
+              margin-top: 8mm !important;
+              border-top: none !important;
+            }
+            .lista-r-hidden-divider {
+              display: none !important;
+              border: none !important;
+              background: transparent !important;
+            }
             @media print {
               html, body {
                 width: 100% !important;
@@ -2696,7 +2741,6 @@ const sheet = document.getElementById('lista-r-printable-sheet');
         </html>
       `);
       win.document.close();
-
   }
 
     function removePlayer(idx) {
