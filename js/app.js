@@ -2548,19 +2548,29 @@ function printListaRPdf() {
     inp.parentNode.replaceChild(span, inp);
   });
 
+  // 1. Abbassa il blocco "Firma:" di circa 2 cm
   clone.querySelectorAll('div').forEach(div => {
     if (div.textContent.trim().startsWith('Firma:')) {
       div.classList.add('lista-r-firma-block');
     }
   });
 
+  // 2. Mantiene la barra sponsor ma nasconde solo l'eventuale riga/bordo grigio subito sopra
   const firmaEl = clone.querySelector('.lista-r-firma-block');
   if (firmaEl) {
     let next = firmaEl.nextElementSibling;
     while (next) {
-      const toRemove = next;
+      const isImg = next.tagName === 'IMG' || !!next.querySelector('img');
+      if (isImg) {
+        next.classList.add('lista-r-sponsors-row');
+      } else {
+        const styleAttr = (next.getAttribute('style') || '') + ' ' + (next.className || '');
+        const h = next.getBoundingClientRect ? next.getBoundingClientRect().height : 0;
+        if (next.tagName === 'HR' || (h > 0 && h <= 6) || /border-t|border-b|bg-gray|bg-slate|divider|hr/i.test(styleAttr)) {
+          next.classList.add('lista-r-hidden-divider');
+        }
+      }
       next = next.nextElementSibling;
-      toRemove.remove();
     }
   }
 
@@ -2664,6 +2674,16 @@ function printListaRPdf() {
           margin-top: 24mm !important;
           padding-top: 0 !important;
         }
+        .lista-r-sponsors-row {
+          margin-top: 8mm !important;
+          display: block !important;
+          max-width: 100% !important;
+        }
+        .lista-r-hidden-divider {
+          display: none !important;
+          border: none !important;
+          background: transparent !important;
+        }
         @media print {
           html, body {
             width: 100% !important;
@@ -2719,7 +2739,6 @@ function printListaRPdf() {
   `);
   win.document.close();
 }
-
     function removePlayer(idx) {
       if (!dbState.roster[idx]) return;
       if (!confirm(`Rimuovere ${dbState.roster[idx].nome} dal roster?`)) return;
