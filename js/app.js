@@ -2026,62 +2026,61 @@ let firestoreAtletiMap = null;
     let firestoreAtletiLoadingPromise = null;
 
     async function loadFirestoreAtletiMap() {
-      if (firestoreAtletiMap) return firestoreAtletiMap;
-      if (firestoreAtletiLoadingPromise) return firestoreAtletiLoadingPromise;
+  if (firestoreAtletiMap) return firestoreAtletiMap;
+  if (firestoreAtletiLoadingPromise) return firestoreAtletiLoadingPromise;
 
-      firestoreAtletiLoadingPromise = (async () => {
-        const map = new Map();
-        try {
-          if (typeof db !== "undefined" && db && typeof db.collection === "function") {
-            const snap = await db.collection("atleti").get();
-            snap.forEach(doc => {
-              const d = doc.data() || {};
-              const full = String(d.nome_completo || "").trim();
-              const cognome = String(d.cognome || "").trim();
-              const nome = String(d.nome || "").trim();
+  firestoreAtletiLoadingPromise = (async () => {
+    const map = new Map();
+    try {
+      if (typeof db !== "undefined" && db && typeof db.collection === "function") {
+        const snap = await db.collection("atleti").get();
+        snap.forEach(doc => {
+          const d = doc.data() || {};
+          const full = String(d.nome_completo || "").trim();
+          const cognome = String(d.cognome || "").trim();
+          const nome = String(d.nome || "").trim();
 
-              const parts = full.split(/\s+/).filter(Boolean);
-              const firstFromFull = parts[0] || "";
-              const lastFromFull = parts.length > 1 ? parts[parts.length - 1] : "";
+          const parts = full.split(/\s+/).filter(Boolean);
+          const firstFromFull = parts[0] || "";
+          const lastFromFull = parts.length > 1 ? parts[parts.length - 1] : "";
 
-              // Se manca d.nome ma ci sono d.nome_completo e d.cognome (es. "Oliverio Mattia" e cognome "Oliverio")
-              let derivedNome = nome;
-              if (!derivedNome && full && cognome) {
-                derivedNome = full.replace(new RegExp(`\\b${cognome}\\b`, "i"), "").trim();
-              }
-              const derivedParts = derivedNome.split(/\s+/).filter(Boolean);
-              const firstName = derivedParts[0] || firstFromFull;
-              const lastName = cognome || lastFromFull;
-
-              const candidates = [
-                full,
-                `${nome} ${cognome}`,
-                `${cognome} ${nome}`,
-                `${derivedNome} ${lastName}`,
-                `${lastName} ${derivedNome}`,
-                `${firstName} ${lastName}`,
-                `${lastName} ${firstName}`,
-                cognome
-              ];
-
-              candidates.forEach(rawVal => {
-                const k = normalizeAthleteKey(rawVal);
-                if (k && !map.has(k)) {
-                  map.set(k, d);
-                }
-              });
-            });
+          let derivedNome = nome;
+          if (!derivedNome && full && cognome) {
+            derivedNome = full.replace(new RegExp(`\\b${cognome}\\b`, "i"), "").trim();
           }
-        } catch (err) {
-          console.error("Errore lettura collezione atleti:", err);
-        }
-        firestoreAtletiMap = map;
-        firestoreAtletiLoadingPromise = null;
-        return map;
-      })();
+          const derivedParts = derivedNome.split(/\s+/).filter(Boolean);
+          const firstName = derivedParts[0] || firstFromFull;
+          const lastName = cognome || lastFromFull;
 
-      return firestoreAtletiLoadingPromise;
+          const candidates = [
+            full,
+            `${nome} ${cognome}`,
+            `${cognome} ${nome}`,
+            `${derivedNome} ${lastName}`,
+            `${lastName} ${derivedNome}`,
+            `${firstName} ${lastName}`,
+            `${lastName} ${firstName}`,
+            cognome
+          ];
+
+          candidates.forEach(rawVal => {
+            const k = normalizeAthleteKey(rawVal);
+            if (k && !map.has(k)) {
+              map.set(k, d);
+            }
+          });
+        });
+      }
+    } catch (err) {
+      console.error("Errore lettura collezione atleti:", err);
     }
+    firestoreAtletiMap = map;
+    firestoreAtletiLoadingPromise = null;
+    return map;
+  })();
+
+  return firestoreAtletiLoadingPromise;
+}
 
 
 
@@ -2205,94 +2204,93 @@ function saveListaRMetadata() {
     }
 
 function generateAutoRowsFromConvocati(matchId) {
-const convNames = getPublishedConvocatiForMatch(matchId);
-      const roster = Array.isArray(dbState.roster) ? dbState.roster : [];
-      const filledRows = [];
+  const convNames = getPublishedConvocatiForMatch(matchId);
+  const roster = Array.isArray(dbState.roster) ? dbState.roster : [];
+  const filledRows = [];
 
-      for (let i = 0; i < 14; i++) {
-        const name = convNames[i];
-        if (!name) continue;
+  for (let i = 0; i < 14; i++) {
+    const name = convNames[i];
+    if (!name) continue;
 
-        const targetKey = normalizeAthleteKey(name);
-        const rosterObj =
-          roster.find(r => {
-            const k1 = normalizeAthleteKey(r.nome_completo);
-            const k2 = normalizeAthleteKey(r.nome);
-            const k3 = normalizeAthleteKey(`${r.nome || ""} ${r.cognome || ""}`);
-            return (k1 && k1 === targetKey) || (k2 && k2 === targetKey) || (k3 && k3 === targetKey);
-          }) || {};
+    const targetKey = normalizeAthleteKey(name);
+    const rosterObj =
+      roster.find(r => {
+        const k1 = normalizeAthleteKey(r.nome_completo);
+        const k2 = normalizeAthleteKey(r.nome);
+        const k3 = normalizeAthleteKey(`${r.nome || ""} ${r.cognome || ""}`);
+        return (k1 && k1 === targetKey) || (k2 && k2 === targetKey) || (k3 && k3 === targetKey);
+      }) || {};
 
-        const fsDoc = firestoreAtletiMap ? (firestoreAtletiMap.get(targetKey) || {}) : {};
-        const mergedPlayer = { ...rosterObj, ...fsDoc };
+    const fsDoc = firestoreAtletiMap ? (firestoreAtletiMap.get(targetKey) || {}) : {};
+    const mergedPlayer = { ...rosterObj, ...fsDoc };
 
-        const fullNameStr = String(
-          fsDoc.nome_completo ||
-          ((fsDoc.nome && fsDoc.cognome) ? `${fsDoc.nome} ${fsDoc.cognome}` : "") ||
-          rosterObj.nome_completo ||
-          rosterObj.nome ||
-          name
-        ).trim();
+    const fullNameStr = String(
+      fsDoc.nome_completo ||
+      ((fsDoc.nome && fsDoc.cognome) ? `${fsDoc.nome} ${fsDoc.cognome}` : "") ||
+      rosterObj.nome_completo ||
+      rosterObj.nome ||
+      name
+    ).trim();
 
-        const knownLastName = String(fsDoc.cognome || rosterObj.cognome || "").trim();
-        let cleanGivenName = String(fsDoc.nome || "").trim();
+    const knownLastName = String(fsDoc.cognome || rosterObj.cognome || "").trim();
+    let cleanGivenName = String(fsDoc.nome || "").trim();
 
-        if (!cleanGivenName && fullNameStr) {
-          if (knownLastName) {
-            cleanGivenName = fullNameStr
-              .replace(new RegExp(`\\b${knownLastName}\\b`, "i"), "")
-              .replace(/\s+/g, " ")
-              .trim();
-          }
-          if (!cleanGivenName) {
-            const parts = fullNameStr.split(/\s+/).filter(Boolean);
-            cleanGivenName = parts[0] || "";
-          }
-        }
-
-        const partsFallback = fullNameStr.split(/\s+/).filter(Boolean);
-        const firstName = cleanGivenName || partsFallback[0] || "";
-        const lastName = knownLastName || (partsFallback.length > 1 ? partsFallback.slice(1).join(" ") : "");
-
-        const dob = extractPlayerDobFromDb(mergedPlayer);
-        const rawJersey = mergedPlayer.numero_maglia ?? mergedPlayer.numero ?? "";
-        const jersey =
-          rawJersey !== null &&
-          rawJersey !== undefined &&
-          String(rawJersey).trim() !== "" &&
-          String(rawJersey).trim() !== "-"
-            ? String(rawJersey).trim()
-            : "";
-
-        filledRows.push({
-          nome: firstName,
-          cognome: lastName,
-          maglia: jersey,
-          nascita: dob
-        });
+    if (!cleanGivenName && fullNameStr) {
+      if (knownLastName) {
+        cleanGivenName = fullNameStr
+          .replace(new RegExp(`\\b${knownLastName}\\b`, "i"), "")
+          .replace(/\s+/g, " ")
+          .trim();
       }
+      if (!cleanGivenName) {
+        const parts = fullNameStr.split(/\s+/).filter(Boolean);
+        cleanGivenName = parts[0] || "";
+      }
+    }
 
-      // Ordina per numero di maglia crescente; chi non ha numero va in fondo ai convocati
-      filledRows.sort((a, b) => {
-        const numA = /^\d+$/.test(String(a.maglia || "").trim()) ? parseInt(a.maglia, 10) : Number.MAX_SAFE_INTEGER;
-        const numB = /^\d+$/.test(String(b.maglia || "").trim()) ? parseInt(b.maglia, 10) : Number.MAX_SAFE_INTEGER;
-        if (numA !== numB) return numA - numB;
-        return `${a.cognome} ${a.nome}`.localeCompare(`${b.cognome} ${b.nome}`, "it", { sensitivity: "base" });
+    const partsFallback = fullNameStr.split(/\s+/).filter(Boolean);
+    const firstName = cleanGivenName || partsFallback[0] || "";
+    const lastName = knownLastName || (partsFallback.length > 1 ? partsFallback.slice(1).join(" ") : "");
+
+    const dob = extractPlayerDobFromDb(mergedPlayer);
+    const rawJersey = mergedPlayer.numero_maglia ?? mergedPlayer.numero ?? "";
+    const jersey =
+      rawJersey !== null &&
+      rawJersey !== undefined &&
+      String(rawJersey).trim() !== "" &&
+      String(rawJersey).trim() !== "-"
+        ? String(rawJersey).trim()
+        : "";
+
+    filledRows.push({
+      nome: firstName,
+      cognome: lastName,
+      maglia: jersey,
+      nascita: dob
+    });
+  }
+
+  // Ordina per numero di maglia crescente; chi non ha numero va in fondo ai convocati
+  filledRows.sort((a, b) => {
+    const numA = /^\d+$/.test(String(a.maglia || "").trim()) ? parseInt(a.maglia, 10) : Number.MAX_SAFE_INTEGER;
+    const numB = /^\d+$/.test(String(b.maglia || "").trim()) ? parseInt(b.maglia, 10) : Number.MAX_SAFE_INTEGER;
+    if (numA !== numB) return numA - numB;
+    return `${a.cognome} ${a.nome}`.localeCompare(`${b.cognome} ${b.nome}`, "it", { sensitivity: "base" });
+  });
+
+  const rows = [];
+  for (let i = 0; i < 14; i++) {
+    if (filledRows[i]) {
+      rows.push({
+        idx: i + 1,
+        ...filledRows[i]
       });
+    } else {
+      rows.push({ idx: i + 1, nome: "", cognome: "", maglia: "", nascita: "" });
+    }
+  }
 
-      const rows = [];
-      for (let i = 0; i < 14; i++) {
-        if (filledRows[i]) {
-          rows.push({
-            idx: i + 1,
-            ...filledRows[i]
-          });
-        } else {
-          rows.push({ idx: i + 1, nome: "", cognome: "", maglia: "", nascita: "" });
-        }
-      }
-
-      return rows;
-
+  return rows;
 }
 
     function getListaRRowsForMatch(matchId) {
@@ -2336,151 +2334,155 @@ const convNames = getPublishedConvocatiForMatch(matchId);
       renderListaRPreview();
     }
 
-    function renderListaRPreview() {
-
-if (typeof firestoreAtletiMap !== "undefined" && firestoreAtletiMap === null && typeof loadFirestoreAtletiMap === "function") {
-      loadFirestoreAtletiMap().then(() => {
-        if (typeof renderListaRPreview === "function") {
-          renderListaRPreview();
-        }
-      });
-    }
-
-      const box = document.getElementById('listar-preview-box');
-      const sel = document.getElementById('listar-match-select');
-      if (!box || !sel || !dbState.partite) return;
-
-      const match = dbState.partite.find(p => p.id === sel.value) || dbState.partite[0];
-      if (!match) return;
-
-      const cfg = getListaRConfig();
-      const trofeo = document.getElementById('listar-trofeo')?.value.trim() || cfg.trofeo || "SCOIATTOLI BIG";
-      const luogo = document.getElementById('listar-luogo')?.value.trim() || cfg.luogoDefault || "CINISELLO BALSAMO";
-      const sqCasa = match.squadraCasa || (match.tipo === 'In Casa' ? 'ASA Cinisello' : match.avversario);
-      const sqTrasf = match.squadraTrasferta || (match.tipo === 'In Casa' ? match.avversario : 'ASA Cinisello');
-      const garaNum = match.garaNumero || "";
-
-      const convNames = getPublishedConvocatiForMatch(match.id);
-      const hasPublishedConv = convNames.length > 0;
-      const isCustomized = !!(cfg.customRowsByMatch && Array.isArray(cfg.customRowsByMatch[match.id]));
-      const rows = getListaRRowsForMatch(match.id);
-
-      const istr1 = {
-        cognome: document.getElementById('listar-istr1-cognome')?.value ?? cfg.istr1?.cognome ?? "Aresta",
-        nome: document.getElementById('listar-istr1-nome')?.value ?? cfg.istr1?.nome ?? "Gaia",
-        nascita: document.getElementById('listar-istr1-nascita')?.value ?? cfg.istr1?.nascita ?? "11/06/1985"
-      };
-      const istr2 = {
-        cognome: document.getElementById('listar-istr2-cognome')?.value ?? cfg.istr2?.cognome ?? "Di Pietro",
-        nome: document.getElementById('listar-istr2-nome')?.value ?? cfg.istr2?.nome ?? "Elisa",
-        nascita: document.getElementById('listar-istr2-nascita')?.value ?? cfg.istr2?.nascita ?? "01/01/1985"
-      };
-
-      let statusBanner = "";
-      if (!hasPublishedConv && !isCustomized) {
-        statusBanner = `
-          <div class="mb-3 px-3.5 py-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-bold flex items-center justify-between flex-wrap gap-2">
-            <span>Convocazioni non ancora pubblicate da Gaia per <strong>${match.id}</strong>: la distinta è vuota (puoi comunque compilare o modificare le celle direttamente qui).</span>
-          </div>
-        `;
-      } else {
-        statusBanner = `
-          <div class="mb-3 px-3.5 py-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-bold flex items-center justify-between flex-wrap gap-2">
-            <span>${isCustomized ? 'Distinta personalizzata in Area Dirigente (modifiche dell\'ultimo minuto attive).' : `Lista pronta: caricate automaticamente ${convNames.length} convocazioni pubblicate per <strong>${match.id}</strong> con numeri maglia e date di nascita.`} Celle editabili al volo.</span>
-            ${isCustomized && hasPublishedConv ? `<button type="button" onclick="resetListaRToConvocati()" class="text-[11px] font-extrabold underline text-emerald-950 hover:text-[#c8102e] cursor-pointer">Riallinea a convocazioni coach</button>` : ''}
-          </div>
-        `;
+function renderListaRPreview() {
+  if (typeof firestoreAtletiMap !== "undefined" && firestoreAtletiMap === null && typeof loadFirestoreAtletiMap === "function") {
+    loadFirestoreAtletiMap().then(() => {
+      if (typeof renderListaRPreview === "function") {
+        renderListaRPreview();
       }
+    });
+  }
 
-      const escAttr = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
-      const escHtml = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const box = document.getElementById('listar-preview-box');
+  const sel = document.getElementById('listar-match-select');
+  if (!box || !sel || !dbState.partite) return;
 
-      box.innerHTML = `
-        ${statusBanner}
-        <div id="lista-r-printable-sheet" class="max-w-3xl mx-auto border-2 border-slate-900 p-5 bg-white text-slate-900 space-y-4">
-          <div class="flex items-start justify-between gap-4 border-b border-slate-300 pb-3">
-            <div>
-              ${FIP_LOMBARDIA_LOGO_IMG}
-            </div>
-            <div class="text-[11px] leading-snug text-[#184785]">
-              <div class="font-extrabold">Comitato Regionale Lombardia</div>
-              <div>Via G.B.Piranesi 46<br/>20137 Milano</div>
-              <div>Settore Tel. +39 027002091<br/>@lombardia.fip.it</div>
-              <div class="font-bold underline">www.fip.it/lombardia</div>
-            </div>
-          </div>
+  const match = dbState.partite.find(p => p.id === sel.value) || dbState.partite[0];
+  if (!match) return;
 
-          <h4 class="text-center text-base sm:text-lg font-black uppercase tracking-wide" style="font-family: Georgia, 'Times New Roman', serif;">
-            LISTA NOMINATIVI MINIATLETI E ISTRUTTORI
-          </h4>
+  const cfg = getListaRConfig();
+  const trofeoInput = document.getElementById('listar-trofeo');
+  const defaultTrofeo = "Campionato: Scoiattoli Big - MILANO - Girone F";
+  if (trofeoInput && (!trofeoInput.value.trim() || trofeoInput.value.trim() === "SCOIATTOLI BIG")) {
+    trofeoInput.value = defaultTrofeo;
+  }
+  const trofeo = trofeoInput?.value.trim() || defaultTrofeo;
+  const luogo = document.getElementById('listar-luogo')?.value.trim() || cfg.luogoDefault || "CINISELLO BALSAMO";
+  const sqCasa = match.squadraCasa || (match.tipo === 'In Casa' ? 'ASA Cinisello' : match.avversario);
+  const sqTrasf = match.squadraTrasferta || (match.tipo === 'In Casa' ? match.avversario : 'ASA Cinisello');
+  const garaNum = match.garaNumero || "";
 
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-x-4 gap-y-2 text-xs font-bold border-b border-slate-900 pb-3">
-            <div>Data: <span class="underline decoration-slate-900 font-extrabold">${escHtml(match.data || "")}</span></div>
-            <div>Luogo: <span class="underline decoration-slate-900 font-extrabold">${escHtml(luogo)}</span></div>
-            <div>Gara n°: <span class="underline decoration-slate-900 font-extrabold">${escHtml(garaNum)}</span></div>
-            <div class="sm:col-span-2">Squadra A: <span class="underline decoration-slate-900 font-extrabold">${escHtml(sqCasa)}</span></div>
-            <div>Squadra B: <span class="underline decoration-slate-900 font-extrabold">${escHtml(sqTrasf)}</span></div>
-            <div class="sm:col-span-3">Competizione: <span class="underline decoration-slate-900 font-extrabold">${escHtml(trofeo)}</span></div>
-          </div>
+  const convNames = getPublishedConvocatiForMatch(match.id);
+  const hasPublishedConv = convNames.length > 0;
+  const isCustomized = !!(cfg.customRowsByMatch && Array.isArray(cfg.customRowsByMatch[match.id]));
+  const rows = getListaRRowsForMatch(match.id);
 
-          <table class="w-full border-collapse text-xs">
-            <thead>
-              <tr class="bg-slate-100">
-                <th class="border-2 border-slate-900 px-2 py-1.5 w-10 text-center font-black">##</th>
-                <th class="border-2 border-slate-900 px-2 py-1.5 text-left font-black">NOME</th>
-                <th class="border-2 border-slate-900 px-2 py-1.5 text-left font-black">COGNOME</th>
-                <th class="border-2 border-slate-900 px-2 py-1.5 w-20 text-center font-black">N° Maglia</th>
-                <th class="border-2 border-slate-900 px-2 py-1.5 w-28 text-center font-black">Data di Nascita</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${rows.map((r, i) => `
-                <tr>
-                  <td class="border border-slate-900 px-2 py-1 text-center font-bold">${r.idx}</td>
-                  <td class="border border-slate-900 px-1 py-0.5 font-semibold">
-                    <input type="text" data-print-val="${escAttr(r.nome)}" value="${escAttr(r.nome)}" oninput="updateListaRCell('${match.id.replace(/'/g, "\\'")}', ${i}, 'nome', this.value); this.setAttribute('data-print-val', this.value);" class="w-full px-1 py-0.5 text-xs font-semibold bg-transparent focus:bg-amber-50 focus:outline-none" />
-                  </td>
-                  <td class="border border-slate-900 px-1 py-0.5 font-semibold">
-                    <input type="text" data-print-val="${escAttr(r.cognome)}" value="${escAttr(r.cognome)}" oninput="updateListaRCell('${match.id.replace(/'/g, "\\'")}', ${i}, 'cognome', this.value); this.setAttribute('data-print-val', this.value);" class="w-full px-1 py-0.5 text-xs font-semibold bg-transparent focus:bg-amber-50 focus:outline-none" />
-                  </td>
-                  <td class="border border-slate-900 px-1 py-0.5 text-center font-bold">
-                    <input type="text" data-print-val="${escAttr(r.maglia)}" value="${escAttr(r.maglia)}" oninput="updateListaRCell('${match.id.replace(/'/g, "\\'")}', ${i}, 'maglia', this.value); this.setAttribute('data-print-val', this.value);" class="w-full px-1 py-0.5 text-xs font-bold text-center bg-transparent focus:bg-amber-50 focus:outline-none" />
-                  </td>
-                  <td class="border border-slate-900 px-1 py-0.5 text-center">
-                    <input type="text" data-print-val="${escAttr(r.nascita)}" value="${escAttr(r.nascita)}" oninput="updateListaRCell('${match.id.replace(/'/g, "\\'")}', ${i}, 'nascita', this.value); this.setAttribute('data-print-val', this.value);" class="w-full px-1 py-0.5 text-xs text-center bg-transparent focus:bg-amber-50 focus:outline-none" />
-                  </td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
+  const istr1 = {
+    cognome: document.getElementById('listar-istr1-cognome')?.value ?? cfg.istr1?.cognome ?? "Aresta",
+    nome: document.getElementById('listar-istr1-nome')?.value ?? cfg.istr1?.nome ?? "Gaia",
+    nascita: document.getElementById('listar-istr1-nascita')?.value ?? cfg.istr1?.nascita ?? "11/06/1985"
+  };
+  const istr2 = {
+    cognome: document.getElementById('listar-istr2-cognome')?.value ?? cfg.istr2?.cognome ?? "Di Pietro",
+    nome: document.getElementById('listar-istr2-nome')?.value ?? cfg.istr2?.nome ?? "Elisa",
+    nascita: document.getElementById('listar-istr2-nascita')?.value ?? cfg.istr2?.nascita ?? "01/01/1985"
+  };
 
-          <table class="w-full border-collapse text-xs">
-            <tbody>
-              <tr>
-                <td class="border-2 border-slate-900 px-2 py-1.5 w-20 text-center font-black bg-slate-50">ISTR. 1</td>
-                <td class="border-2 border-slate-900 px-2 py-1.5 font-semibold">${escHtml(istr1.cognome)}</td>
-                <td class="border-2 border-slate-900 px-2 py-1.5 font-semibold">${escHtml(istr1.nome)}</td>
-                <td class="border-2 border-slate-900 px-2 py-1.5 w-20"></td>
-                <td class="border-2 border-slate-900 px-2 py-1.5 w-28 text-center font-semibold">${escHtml(istr1.nascita)}</td>
-              </tr>
-              <tr>
-                <td class="border-2 border-slate-900 px-2 py-1.5 w-20 text-center font-black bg-slate-50">ISTR.2</td>
-                <td class="border-2 border-slate-900 px-2 py-1.5 font-semibold">${escHtml(istr2.cognome)}</td>
-                <td class="border-2 border-slate-900 px-2 py-1.5 font-semibold">${escHtml(istr2.nome)}</td>
-                <td class="border-2 border-slate-900 px-2 py-1.5 w-20"></td>
-                <td class="border-2 border-slate-900 px-2 py-1.5 w-28 text-center font-semibold">${escHtml(istr2.nascita)}</td>
-              </tr>
-            </tbody>
-          </table>
+  let statusBanner = "";
+  if (!hasPublishedConv && !isCustomized) {
+    statusBanner = `
+      <div class="mb-3 px-3.5 py-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-bold flex items-center justify-between flex-wrap gap-2">
+        <span>Convocazioni non ancora pubblicate da Gaia per <strong>${match.id}</strong>: la distinta è vuota (puoi comunque compilare o modificare le celle direttamente qui).</span>
+      </div>
+    `;
+  } else {
+    statusBanner = `
+      <div class="mb-3 px-3.5 py-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-bold flex items-center justify-between flex-wrap gap-2">
+        <span>${isCustomized ? 'Distinta personalizzata in Area Dirigente (modifiche dell\'ultimo minuto attive).' : `Lista pronta: caricate automaticamente ${convNames.length} convocazioni pubblicate per <strong>${match.id}</strong> con numeri maglia e date di nascita.`} Celle editabili al volo.</span>
+        ${isCustomized && hasPublishedConv ? `<button type="button" onclick="resetListaRToConvocati()" class="text-[11px] font-extrabold underline text-emerald-950 hover:text-[#c8102e] cursor-pointer">Riallinea a convocazioni coach</button>` : ''}
+      </div>
+    `;
+  }
 
-          <div class="pt-2 text-xs font-bold">
-            Firma: <span class="inline-block w-64 border-b border-slate-900 align-baseline"></span>
-          </div>
+  const escAttr = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+  const escHtml = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-          ${FIP_SPONSORS_BAR_IMG}
+  box.innerHTML = `
+    ${statusBanner}
+    <div id="lista-r-printable-sheet" class="max-w-3xl mx-auto border-2 border-slate-900 p-5 bg-white text-slate-900 space-y-4">
+      <div class="flex items-start justify-between gap-4 border-b border-slate-300 pb-3">
+        <div>
+          ${FIP_LOMBARDIA_LOGO_IMG}
         </div>
-      `;
-    }
+        <div class="text-[11px] leading-snug text-[#184785]">
+          <div class="font-extrabold">Comitato Regionale Lombardia</div>
+          <div>Via G.B.Piranesi 46<br/>20137 Milano</div>
+          <div>Settore Tel. +39 027002091<br/>@lombardia.fip.it</div>
+          <div class="font-bold underline">www.fip.it/lombardia</div>
+        </div>
+      </div>
+
+      <h4 class="text-center text-base sm:text-lg font-black uppercase tracking-wide" style="font-family: Georgia, 'Times New Roman', serif;">
+        LISTA NOMINATIVI MINIATLETI E ISTRUTTORI
+      </h4>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-x-4 gap-y-2 text-xs font-bold border-b border-slate-900 pb-3">
+        <div>Data: <span class="underline decoration-slate-900 font-extrabold">${escHtml(match.data || "")}</span></div>
+        <div>Luogo: <span class="underline decoration-slate-900 font-extrabold">${escHtml(luogo)}</span></div>
+        <div>Gara n°: <span class="underline decoration-slate-900 font-extrabold">${escHtml(garaNum)}</span></div>
+        <div class="sm:col-span-2">Squadra A: <span class="underline decoration-slate-900 font-extrabold">${escHtml(sqCasa)}</span></div>
+        <div>Squadra B: <span class="underline decoration-slate-900 font-extrabold">${escHtml(sqTrasf)}</span></div>
+        <div class="sm:col-span-3">Competizione: <span class="underline decoration-slate-900 font-extrabold">${escHtml(trofeo)}</span></div>
+      </div>
+
+      <table class="w-full border-collapse text-xs">
+        <thead>
+          <tr class="bg-slate-100">
+            <th class="border-2 border-slate-900 px-2 py-1.5 w-10 text-center font-black">##</th>
+            <th class="border-2 border-slate-900 px-2 py-1.5 text-left font-black">NOME</th>
+            <th class="border-2 border-slate-900 px-2 py-1.5 text-left font-black">COGNOME</th>
+            <th class="border-2 border-slate-900 px-2 py-1.5 w-20 text-center font-black">N° Maglia</th>
+            <th class="border-2 border-slate-900 px-2 py-1.5 w-28 text-center font-black">Data di Nascita</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map((r, i) => `
+            <tr>
+              <td class="border border-slate-900 px-2 py-1 text-center font-bold">${r.idx}</td>
+              <td class="border border-slate-900 px-1 py-0.5 font-semibold">
+                <input type="text" data-print-val="${escAttr(r.nome)}" value="${escAttr(r.nome)}" oninput="updateListaRCell('${match.id.replace(/'/g, "\\'")}', ${i}, 'nome', this.value); this.setAttribute('data-print-val', this.value);" class="w-full px-1 py-0.5 text-xs font-semibold bg-transparent focus:bg-amber-50 focus:outline-none" />
+              </td>
+              <td class="border border-slate-900 px-1 py-0.5 font-semibold">
+                <input type="text" data-print-val="${escAttr(r.cognome)}" value="${escAttr(r.cognome)}" oninput="updateListaRCell('${match.id.replace(/'/g, "\\'")}', ${i}, 'cognome', this.value); this.setAttribute('data-print-val', this.value);" class="w-full px-1 py-0.5 text-xs font-semibold bg-transparent focus:bg-amber-50 focus:outline-none" />
+              </td>
+              <td class="border border-slate-900 px-1 py-0.5 text-center font-bold">
+                <input type="text" data-print-val="${escAttr(r.maglia)}" value="${escAttr(r.maglia)}" oninput="updateListaRCell('${match.id.replace(/'/g, "\\'")}', ${i}, 'maglia', this.value); this.setAttribute('data-print-val', this.value);" class="w-full px-1 py-0.5 text-xs font-bold text-center bg-transparent focus:bg-amber-50 focus:outline-none" />
+              </td>
+              <td class="border border-slate-900 px-1 py-0.5 text-center">
+                <input type="text" data-print-val="${escAttr(r.nascita)}" value="${escAttr(r.nascita)}" oninput="updateListaRCell('${match.id.replace(/'/g, "\\'")}', ${i}, 'nascita', this.value); this.setAttribute('data-print-val', this.value);" class="w-full px-1 py-0.5 text-xs text-center bg-transparent focus:bg-amber-50 focus:outline-none" />
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+
+      <table class="w-full border-collapse text-xs">
+        <tbody>
+          <tr>
+            <td class="border-2 border-slate-900 px-2 py-1.5 w-20 text-center font-black bg-slate-50">ISTR. 1</td>
+            <td class="border-2 border-slate-900 px-2 py-1.5 font-semibold">${escHtml(istr1.cognome)}</td>
+            <td class="border-2 border-slate-900 px-2 py-1.5 font-semibold">${escHtml(istr1.nome)}</td>
+            <td class="border-2 border-slate-900 px-2 py-1.5 w-20"></td>
+            <td class="border-2 border-slate-900 px-2 py-1.5 w-28 text-center font-semibold">${escHtml(istr1.nascita)}</td>
+          </tr>
+          <tr>
+            <td class="border-2 border-slate-900 px-2 py-1.5 w-20 text-center font-black bg-slate-50">ISTR.2</td>
+            <td class="border-2 border-slate-900 px-2 py-1.5 font-semibold">${escHtml(istr2.cognome)}</td>
+            <td class="border-2 border-slate-900 px-2 py-1.5 font-semibold">${escHtml(istr2.nome)}</td>
+            <td class="border-2 border-slate-900 px-2 py-1.5 w-20"></td>
+            <td class="border-2 border-slate-900 px-2 py-1.5 w-28 text-center font-semibold">${escHtml(istr2.nascita)}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="pt-2 text-xs font-bold">
+        Firma: <span class="inline-block w-64 border-b border-slate-900 align-baseline"></span>
+      </div>
+
+      ${FIP_SPONSORS_BAR_IMG}
+    </div>
+  `;
+}
 
     function downloadListaRCsv() {
       const sel = document.getElementById('listar-match-select');
@@ -2535,212 +2537,188 @@ if (typeof firestoreAtletiMap !== "undefined" && firestoreAtletiMap === null && 
       URL.revokeObjectURL(url);
     }
 
-  function printListaRPdf() {const sheet = document.getElementById('lista-r-printable-sheet');
-      if (!sheet) return;
-      const clone = sheet.cloneNode(true);
-      clone.querySelectorAll('input').forEach(inp => {
-        const span = document.createElement('span');
-        span.textContent = inp.value || '';
-        span.className = 'inline-block w-full text-[12.5px] leading-snug ' + (inp.classList.contains('text-center') ? 'text-center ' : '') + (inp.classList.contains('font-bold') ? 'font-bold' : 'font-semibold');
-        inp.parentNode.replaceChild(span, inp);
-      });
+function printListaRPdf() {
+  const sheet = document.getElementById('lista-r-printable-sheet');
+  if (!sheet) return;
+  const clone = sheet.cloneNode(true);
+  clone.querySelectorAll('input').forEach(inp => {
+    const span = document.createElement('span');
+    span.textContent = inp.value || '';
+    span.className = 'inline-block w-full text-[12.5px] leading-snug ' + (inp.classList.contains('text-center') ? 'text-center ' : '') + (inp.classList.contains('font-bold') ? 'font-bold' : 'font-semibold');
+    inp.parentNode.replaceChild(span, inp);
+  });
 
-      // Individua il blocco "Firma:" e l'eventuale barra grigia sopra gli sponsor
-      clone.querySelectorAll('*').forEach(el => {
-        const directText = Array.from(el.childNodes)
-          .filter(n => n.nodeType === Node.TEXT_NODE)
-          .map(n => n.textContent.trim())
-          .join(' ');
-        if (/^firma\s*:?/i.test(directText)) {
-          el.classList.add('lista-r-firma-block');
-          const prev = el.previousElementSibling;
-          if (prev && prev.tagName === 'HR') {
-            prev.classList.add('lista-r-hidden-divider');
-          }
-        }
-        // Se contiene una striscia di immagini sponsor, nasconde l'eventuale separatore subito sopra
-        const imgs = el.querySelectorAll('img');
-        if (imgs.length >= 3 && el.children.length === imgs.length) {
-          el.classList.add('lista-r-sponsors-row');
-          const prev = el.previousElementSibling;
-          if (prev) {
-            if (prev.tagName === 'HR') {
-              prev.classList.add('lista-r-hidden-divider');
-            } else {
-              const styleAttr = (prev.getAttribute('style') || '') + ' ' + (prev.className || '');
-              const isThinBar = prev.getBoundingClientRect ? prev.getBoundingClientRect().height <= 6 : false;
-              if (isThinBar || /border-t|border-b|bg-gray|bg-slate|divider|hr/i.test(styleAttr)) {
-                prev.classList.add('lista-r-hidden-divider');
-              }
-            }
-          }
-        }
-      });
-
-      const win = window.open("", "_blank", "width=950,height=800");
-      if (!win) {
-        alert("Consenti l'apertura dei pop-up per stampare o salvare la Lista R in PDF.");
-        return;
-      }
-      win.document.write(`
-        <!DOCTYPE html>
-        <html lang="it">
-        <head>
-          <meta charset="UTF-8" />
-          <title>Lista R — FIP Lombardia</title>
-          <script src="https://cdn.tailwindcss.com"><\/script>
-          <style>
-            @page {
-              size: A4 portrait;
-              margin: 6mm 7mm;
-            }
-            * {
-              box-sizing: border-box;
-            }
-            html, body {
-              width: 100%;
-              margin: 0;
-              padding: 0;
-              background: #ffffff;
-              -webkit-print-color-adjust: exact;
-              print-color-adjust: exact;
-            }
-            .print-fit-wrapper {
-              width: 100%;
-              margin: 0 auto;
-              display: flex;
-              justify-content: center;
-            }
-            #lista-r-printable-sheet {
-              max-width: 100% !important;
-              width: 100% !important;
-              margin: 0 auto !important;
-              padding: 16px 20px !important;
-              border: none !important;
-              box-shadow: none !important;
-              background: #ffffff !important;
-              break-inside: avoid !important;
-              page-break-inside: avoid !important;
-            }
-            #lista-r-printable-sheet table {
-              width: 100% !important;
-              border-collapse: collapse !important;
-              font-size: 12.5px !important;
-              line-height: 1.3 !important;
-              break-inside: avoid !important;
-              page-break-inside: avoid !important;
-            }
-            #lista-r-printable-sheet table.roster-main-table,
-            #lista-r-printable-sheet > div > table:first-child {
-              table-layout: fixed !important;
-            }
-            #lista-r-printable-sheet > div > table:first-child th:nth-child(1),
-            #lista-r-printable-sheet > div > table:first-child td:nth-child(1) {
-              width: 6% !important;
-              text-align: center !important;
-            }
-            #lista-r-printable-sheet > div > table:first-child th:nth-child(2),
-            #lista-r-printable-sheet > div > table:first-child td:nth-child(2) {
-              width: 28% !important;
-            }
-            #lista-r-printable-sheet > div > table:first-child th:nth-child(3),
-            #lista-r-printable-sheet > div > table:first-child td:nth-child(3) {
-              width: 30% !important;
-            }
-            #lista-r-printable-sheet > div > table:first-child th:nth-child(4),
-            #lista-r-printable-sheet > div > table:first-child td:nth-child(4) {
-              width: 14% !important;
-              text-align: center !important;
-            }
-            #lista-r-printable-sheet > div > table:first-child th:nth-child(5),
-            #lista-r-printable-sheet > div > table:first-child td:nth-child(5) {
-              width: 22% !important;
-              text-align: center !important;
-            }
-            #lista-r-printable-sheet th,
-            #lista-r-printable-sheet td {
-              padding-top: 7px !important;
-              padding-bottom: 7px !important;
-              padding-left: 8px !important;
-              padding-right: 8px !important;
-            }
-            #lista-r-printable-sheet > div > table:first-child th,
-            #lista-r-printable-sheet > div > table:first-child td {
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-            }
-            #lista-r-printable-sheet tr {
-              break-inside: avoid !important;
-              page-break-inside: avoid !important;
-            }
-            .lista-r-firma-block {
-              margin-top: 22mm !important;
-            }
-            .lista-r-sponsors-row {
-              margin-top: 8mm !important;
-              border-top: none !important;
-            }
-            .lista-r-hidden-divider {
-              display: none !important;
-              border: none !important;
-              background: transparent !important;
-            }
-            @media print {
-              html, body {
-                width: 100% !important;
-                margin: 0 !important;
-                padding: 0 !important;
-              }
-            }
-          </style>
-        </head>
-        <body class="bg-white">
-          <div id="print-fit-wrapper" class="print-fit-wrapper">
-            ${clone.outerHTML}
-          </div>
-          <script>
-            function fitListaRToSinglePage() {
-              const sheetEl = document.getElementById('lista-r-printable-sheet');
-              if (!sheetEl) return;
-              sheetEl.style.zoom = '1';
-              sheetEl.style.transform = '';
-              sheetEl.style.width = '100%';
-
-              const maxHeightPx = 1060;
-              const rect = sheetEl.getBoundingClientRect();
-              if (rect.height > maxHeightPx) {
-                const scale = Math.max(0.75, maxHeightPx / rect.height);
-                if ('zoom' in sheetEl.style) {
-                  sheetEl.style.zoom = scale.toFixed(4);
-                } else {
-                  sheetEl.style.transform = 'scale(' + scale.toFixed(4) + ')';
-                  sheetEl.style.transformOrigin = 'top left';
-                  sheetEl.style.width = (100 / scale).toFixed(2) + '%';
-                }
-              }
-            }
-            window.addEventListener('beforeprint', fitListaRToSinglePage);
-            window.onload = function() {
-              const runPrint = function() {
-                fitListaRToSinglePage();
-                setTimeout(function() {
-                  fitListaRToSinglePage();
-                  window.print();
-                }, 400);
-              };
-              if (document.fonts && document.fonts.ready) {
-                document.fonts.ready.then(runPrint);
-              } else {
-                runPrint();
-              }
-            };
-          <\/script>
-        </body>
-        </html>
-      `);
-      win.document.close();
+  clone.querySelectorAll('div').forEach(div => {
+    if (div.textContent.trim().startsWith('Firma:')) {
+      div.classList.add('lista-r-firma-block');
     }
+  });
+
+  const firmaEl = clone.querySelector('.lista-r-firma-block');
+  if (firmaEl) {
+    let next = firmaEl.nextElementSibling;
+    while (next) {
+      const toRemove = next;
+      next = next.nextElementSibling;
+      toRemove.remove();
+    }
+  }
+
+  const win = window.open("", "_blank", "width=950,height=800");
+  if (!win) {
+    alert("Consenti l'apertura dei pop-up per stampare o salvare la Lista R in PDF.");
+    return;
+  }
+  win.document.write(`
+    <!DOCTYPE html>
+    <html lang="it">
+    <head>
+      <meta charset="UTF-8" />
+      <title>Lista R — FIP Lombardia</title>
+      <script src="https://cdn.tailwindcss.com"><\/script>
+      <style>
+        @page {
+          size: A4 portrait;
+          margin: 6mm 7mm;
+        }
+        * {
+          box-sizing: border-box;
+        }
+        html, body {
+          width: 100%;
+          margin: 0;
+          padding: 0;
+          background: #ffffff;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+        .print-fit-wrapper {
+          width: 100%;
+          margin: 0 auto;
+          display: flex;
+          justify-content: center;
+        }
+        #lista-r-printable-sheet {
+          max-width: 100% !important;
+          width: 100% !important;
+          margin: 0 auto !important;
+          padding: 16px 20px !important;
+          border: none !important;
+          box-shadow: none !important;
+          background: #ffffff !important;
+          break-inside: avoid !important;
+          page-break-inside: avoid !important;
+        }
+        #lista-r-printable-sheet table {
+          width: 100% !important;
+          border-collapse: collapse !important;
+          font-size: 12.5px !important;
+          line-height: 1.3 !important;
+          break-inside: avoid !important;
+          page-break-inside: avoid !important;
+        }
+        #lista-r-printable-sheet > table:first-of-type {
+          table-layout: fixed !important;
+        }
+        #lista-r-printable-sheet > table:first-of-type th:nth-child(1),
+        #lista-r-printable-sheet > table:first-of-type td:nth-child(1) {
+          width: 6% !important;
+          text-align: center !important;
+        }
+        #lista-r-printable-sheet > table:first-of-type th:nth-child(2),
+        #lista-r-printable-sheet > table:first-of-type td:nth-child(2) {
+          width: 28% !important;
+        }
+        #lista-r-printable-sheet > table:first-of-type th:nth-child(3),
+        #lista-r-printable-sheet > table:first-of-type td:nth-child(3) {
+          width: 30% !important;
+        }
+        #lista-r-printable-sheet > table:first-of-type th:nth-child(4),
+        #lista-r-printable-sheet > table:first-of-type td:nth-child(4) {
+          width: 14% !important;
+          text-align: center !important;
+        }
+        #lista-r-printable-sheet > table:first-of-type th:nth-child(5),
+        #lista-r-printable-sheet > table:first-of-type td:nth-child(5) {
+          width: 22% !important;
+          text-align: center !important;
+        }
+        #lista-r-printable-sheet th,
+        #lista-r-printable-sheet td {
+          padding-top: 7px !important;
+          padding-bottom: 7px !important;
+          padding-left: 8px !important;
+          padding-right: 8px !important;
+        }
+        #lista-r-printable-sheet > table:first-of-type th,
+        #lista-r-printable-sheet > table:first-of-type td {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        #lista-r-printable-sheet tr {
+          break-inside: avoid !important;
+          page-break-inside: avoid !important;
+        }
+        .lista-r-firma-block {
+          margin-top: 24mm !important;
+          padding-top: 0 !important;
+        }
+        @media print {
+          html, body {
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+          }
+        }
+      </style>
+    </head>
+    <body class="bg-white">
+      <div id="print-fit-wrapper" class="print-fit-wrapper">
+        ${clone.outerHTML}
+      </div>
+      <script>
+        function fitListaRToSinglePage() {
+          const sheetEl = document.getElementById('lista-r-printable-sheet');
+          if (!sheetEl) return;
+          sheetEl.style.zoom = '1';
+          sheetEl.style.transform = '';
+          sheetEl.style.width = '100%';
+
+          const maxHeightPx = 1060;
+          const rect = sheetEl.getBoundingClientRect();
+          if (rect.height > maxHeightPx) {
+            const scale = Math.max(0.75, maxHeightPx / rect.height);
+            if ('zoom' in sheetEl.style) {
+              sheetEl.style.zoom = scale.toFixed(4);
+            } else {
+              sheetEl.style.transform = 'scale(' + scale.toFixed(4) + ')';
+              sheetEl.style.transformOrigin = 'top left';
+              sheetEl.style.width = (100 / scale).toFixed(2) + '%';
+            }
+          }
+        }
+        window.addEventListener('beforeprint', fitListaRToSinglePage);
+        window.onload = function() {
+          const runPrint = function() {
+            fitListaRToSinglePage();
+            setTimeout(function() {
+              fitListaRToSinglePage();
+              window.print();
+            }, 400);
+          };
+          if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(runPrint);
+          } else {
+            runPrint();
+          }
+        };
+      <\/script>
+    </body>
+    </html>
+  `);
+  win.document.close();
+}
 
     function removePlayer(idx) {
       if (!dbState.roster[idx]) return;

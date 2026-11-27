@@ -36,4 +36,13 @@
     .animate-ticker:hover {
       animation-play-state: paused;
     }
+
+
+    .lista-r-firma-block {
+              margin-top: 22mm !important;
+            }
+            .lista-r-sponsors-row,
+            .lista-r-hidden-divider {
+              display: none !important;
+            }
   
