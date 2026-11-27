@@ -2036,13 +2036,34 @@ let firestoreAtletiMap = null;
             const snap = await db.collection("atleti").get();
             snap.forEach(doc => {
               const d = doc.data() || {};
+              const full = String(d.nome_completo || "").trim();
+              const cognome = String(d.cognome || "").trim();
+              const nome = String(d.nome || "").trim();
+
+              const parts = full.split(/\s+/).filter(Boolean);
+              const firstFromFull = parts[0] || "";
+              const lastFromFull = parts.length > 1 ? parts[parts.length - 1] : "";
+
+              // Se manca d.nome ma ci sono d.nome_completo e d.cognome (es. "Oliverio Mattia" e cognome "Oliverio")
+              let derivedNome = nome;
+              if (!derivedNome && full && cognome) {
+                derivedNome = full.replace(new RegExp(`\\b${cognome}\\b`, "i"), "").trim();
+              }
+              const derivedParts = derivedNome.split(/\s+/).filter(Boolean);
+              const firstName = derivedParts[0] || firstFromFull;
+              const lastName = cognome || lastFromFull;
+
               const candidates = [
-                d.nome_completo,
-                `${d.nome || ""} ${d.cognome || ""}`,
-                `${d.cognome || ""} ${d.nome || ""}`,
-                d.nome,
-                d.cognome
+                full,
+                `${nome} ${cognome}`,
+                `${cognome} ${nome}`,
+                `${derivedNome} ${lastName}`,
+                `${lastName} ${derivedNome}`,
+                `${firstName} ${lastName}`,
+                `${lastName} ${firstName}`,
+                cognome
               ];
+
               candidates.forEach(rawVal => {
                 const k = normalizeAthleteKey(rawVal);
                 if (k && !map.has(k)) {
