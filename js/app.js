@@ -2205,75 +2205,94 @@ function saveListaRMetadata() {
     }
 
 function generateAutoRowsFromConvocati(matchId) {
-  const convNames = getPublishedConvocatiForMatch(matchId);
+const convNames = getPublishedConvocatiForMatch(matchId);
       const roster = Array.isArray(dbState.roster) ? dbState.roster : [];
-      const rows = [];
+      const filledRows = [];
 
       for (let i = 0; i < 14; i++) {
         const name = convNames[i];
-        if (name) {
-          const targetKey = normalizeAthleteKey(name);
-          const rosterObj =
-            roster.find(r => {
-              const k1 = normalizeAthleteKey(r.nome_completo);
-              const k2 = normalizeAthleteKey(r.nome);
-              const k3 = normalizeAthleteKey(`${r.nome || ""} ${r.cognome || ""}`);
-              return (k1 && k1 === targetKey) || (k2 && k2 === targetKey) || (k3 && k3 === targetKey);
-            }) || {};
+        if (!name) continue;
 
-          const fsDoc = firestoreAtletiMap ? (firestoreAtletiMap.get(targetKey) || {}) : {};
-          const mergedPlayer = { ...rosterObj, ...fsDoc };
+        const targetKey = normalizeAthleteKey(name);
+        const rosterObj =
+          roster.find(r => {
+            const k1 = normalizeAthleteKey(r.nome_completo);
+            const k2 = normalizeAthleteKey(r.nome);
+            const k3 = normalizeAthleteKey(`${r.nome || ""} ${r.cognome || ""}`);
+            return (k1 && k1 === targetKey) || (k2 && k2 === targetKey) || (k3 && k3 === targetKey);
+          }) || {};
 
-          const fullNameStr = String(
-            fsDoc.nome_completo ||
-            ((fsDoc.nome && fsDoc.cognome) ? `${fsDoc.nome} ${fsDoc.cognome}` : "") ||
-            rosterObj.nome_completo ||
-            rosterObj.nome ||
-            name
-          ).trim();
+        const fsDoc = firestoreAtletiMap ? (firestoreAtletiMap.get(targetKey) || {}) : {};
+        const mergedPlayer = { ...rosterObj, ...fsDoc };
 
-          const knownLastName = String(fsDoc.cognome || rosterObj.cognome || "").trim();
-          let cleanGivenName = String(fsDoc.nome || "").trim();
+        const fullNameStr = String(
+          fsDoc.nome_completo ||
+          ((fsDoc.nome && fsDoc.cognome) ? `${fsDoc.nome} ${fsDoc.cognome}` : "") ||
+          rosterObj.nome_completo ||
+          rosterObj.nome ||
+          name
+        ).trim();
 
-          if (!cleanGivenName && fullNameStr) {
-            if (knownLastName) {
-              cleanGivenName = fullNameStr
-                .replace(new RegExp(`\\b${knownLastName}\\b`, "i"), "")
-                .replace(/\s+/g, " ")
-                .trim();
-            }
-            if (!cleanGivenName) {
-              const parts = fullNameStr.split(/\s+/).filter(Boolean);
-              cleanGivenName = parts[0] || "";
-            }
+        const knownLastName = String(fsDoc.cognome || rosterObj.cognome || "").trim();
+        let cleanGivenName = String(fsDoc.nome || "").trim();
+
+        if (!cleanGivenName && fullNameStr) {
+          if (knownLastName) {
+            cleanGivenName = fullNameStr
+              .replace(new RegExp(`\\b${knownLastName}\\b`, "i"), "")
+              .replace(/\s+/g, " ")
+              .trim();
           }
+          if (!cleanGivenName) {
+            const parts = fullNameStr.split(/\s+/).filter(Boolean);
+            cleanGivenName = parts[0] || "";
+          }
+        }
 
-          const partsFallback = fullNameStr.split(/\s+/).filter(Boolean);
-          const firstName = cleanGivenName || partsFallback[0] || "";
-          const lastName = knownLastName || (partsFallback.length > 1 ? partsFallback.slice(1).join(" ") : "");
+        const partsFallback = fullNameStr.split(/\s+/).filter(Boolean);
+        const firstName = cleanGivenName || partsFallback[0] || "";
+        const lastName = knownLastName || (partsFallback.length > 1 ? partsFallback.slice(1).join(" ") : "");
 
-          const dob = extractPlayerDobFromDb(mergedPlayer);
-          const rawJersey = mergedPlayer.numero_maglia ?? mergedPlayer.numero ?? "";
-          const jersey =
-            rawJersey !== null &&
-            rawJersey !== undefined &&
-            String(rawJersey).trim() !== "" &&
-            String(rawJersey).trim() !== "-"
-              ? String(rawJersey).trim()
-              : "";
+        const dob = extractPlayerDobFromDb(mergedPlayer);
+        const rawJersey = mergedPlayer.numero_maglia ?? mergedPlayer.numero ?? "";
+        const jersey =
+          rawJersey !== null &&
+          rawJersey !== undefined &&
+          String(rawJersey).trim() !== "" &&
+          String(rawJersey).trim() !== "-"
+            ? String(rawJersey).trim()
+            : "";
 
+        filledRows.push({
+          nome: firstName,
+          cognome: lastName,
+          maglia: jersey,
+          nascita: dob
+        });
+      }
+
+      // Ordina per numero di maglia crescente; chi non ha numero va in fondo ai convocati
+      filledRows.sort((a, b) => {
+        const numA = /^\d+$/.test(String(a.maglia || "").trim()) ? parseInt(a.maglia, 10) : Number.MAX_SAFE_INTEGER;
+        const numB = /^\d+$/.test(String(b.maglia || "").trim()) ? parseInt(b.maglia, 10) : Number.MAX_SAFE_INTEGER;
+        if (numA !== numB) return numA - numB;
+        return `${a.cognome} ${a.nome}`.localeCompare(`${b.cognome} ${b.nome}`, "it", { sensitivity: "base" });
+      });
+
+      const rows = [];
+      for (let i = 0; i < 14; i++) {
+        if (filledRows[i]) {
           rows.push({
             idx: i + 1,
-            nome: firstName,
-            cognome: lastName,
-            maglia: jersey,
-            nascita: dob
+            ...filledRows[i]
           });
         } else {
           rows.push({ idx: i + 1, nome: "", cognome: "", maglia: "", nascita: "" });
         }
       }
+
       return rows;
+
 }
 
     function getListaRRowsForMatch(matchId) {
@@ -2516,13 +2535,14 @@ if (typeof firestoreAtletiMap !== "undefined" && firestoreAtletiMap === null && 
       URL.revokeObjectURL(url);
     }
 
-  function printListaRPdf() {const sheet = document.getElementById('lista-r-printable-sheet');
+  function printListaRPdf() {
+const sheet = document.getElementById('lista-r-printable-sheet');
       if (!sheet) return;
       const clone = sheet.cloneNode(true);
       clone.querySelectorAll('input').forEach(inp => {
         const span = document.createElement('span');
         span.textContent = inp.value || '';
-        span.className = 'inline-block w-full text-[12px] leading-snug ' + (inp.classList.contains('text-center') ? 'text-center ' : '') + (inp.classList.contains('font-bold') ? 'font-bold' : 'font-semibold');
+        span.className = 'inline-block w-full text-[12.5px] leading-snug ' + (inp.classList.contains('text-center') ? 'text-center ' : '') + (inp.classList.contains('font-bold') ? 'font-bold' : 'font-semibold');
         inp.parentNode.replaceChild(span, inp);
       });
       const win = window.open("", "_blank", "width=950,height=800");
@@ -2556,12 +2576,14 @@ if (typeof firestoreAtletiMap !== "undefined" && firestoreAtletiMap === null && 
             .print-fit-wrapper {
               width: 100%;
               margin: 0 auto;
+              display: flex;
+              justify-content: center;
             }
             #lista-r-printable-sheet {
               max-width: 100% !important;
               width: 100% !important;
-              margin: 0 !important;
-              padding: 14px 18px !important;
+              margin: 0 auto !important;
+              padding: 16px 20px !important;
               border: 2px solid #0f172a !important;
               background: #ffffff !important;
               break-inside: avoid !important;
@@ -2569,18 +2591,45 @@ if (typeof firestoreAtletiMap !== "undefined" && firestoreAtletiMap === null && 
             }
             #lista-r-printable-sheet table {
               width: 100% !important;
+              table-layout: fixed !important;
               border-collapse: collapse !important;
-              font-size: 11.5px !important;
-              line-height: 1.25 !important;
+              font-size: 12.5px !important;
+              line-height: 1.3 !important;
               break-inside: avoid !important;
               page-break-inside: avoid !important;
             }
+            #lista-r-printable-sheet th:nth-child(1),
+            #lista-r-printable-sheet td:nth-child(1) {
+              width: 6% !important;
+              text-align: center !important;
+            }
+            #lista-r-printable-sheet th:nth-child(2),
+            #lista-r-printable-sheet td:nth-child(2) {
+              width: 28% !important;
+            }
+            #lista-r-printable-sheet th:nth-child(3),
+            #lista-r-printable-sheet td:nth-child(3) {
+              width: 30% !important;
+            }
+            #lista-r-printable-sheet th:nth-child(4),
+            #lista-r-printable-sheet td:nth-child(4) {
+              width: 14% !important;
+              text-align: center !important;
+            }
+            #lista-r-printable-sheet th:nth-child(5),
+            #lista-r-printable-sheet td:nth-child(5) {
+              width: 22% !important;
+              text-align: center !important;
+            }
             #lista-r-printable-sheet th,
             #lista-r-printable-sheet td {
-              padding-top: 4px !important;
-              padding-bottom: 4px !important;
-              padding-left: 6px !important;
-              padding-right: 6px !important;
+              padding-top: 6px !important;
+              padding-bottom: 6px !important;
+              padding-left: 8px !important;
+              padding-right: 8px !important;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
             }
             #lista-r-printable-sheet tr {
               break-inside: avoid !important;
@@ -2607,7 +2656,6 @@ if (typeof firestoreAtletiMap !== "undefined" && firestoreAtletiMap === null && 
               sheetEl.style.transform = '';
               sheetEl.style.width = '100%';
 
-              // Altezza utile A4 portrait con margini 6mm (~1060px a 96dpi)
               const maxHeightPx = 1055;
               const rect = sheetEl.getBoundingClientRect();
               if (rect.height > maxHeightPx) {
@@ -2640,7 +2688,10 @@ if (typeof firestoreAtletiMap !== "undefined" && firestoreAtletiMap === null && 
         </body>
         </html>
       `);
-      win.document.close();}
+      win.document.close();
+
+
+  }
 
     function removePlayer(idx) {
       if (!dbState.roster[idx]) return;
