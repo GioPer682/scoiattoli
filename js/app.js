@@ -2420,7 +2420,7 @@ if (typeof firestoreAtletiMap !== "undefined" && firestoreAtletiMap === null && 
             <div>Gara n°: <span class="underline decoration-slate-900 font-extrabold">${escHtml(garaNum)}</span></div>
             <div class="sm:col-span-2">Squadra A: <span class="underline decoration-slate-900 font-extrabold">${escHtml(sqCasa)}</span></div>
             <div>Squadra B: <span class="underline decoration-slate-900 font-extrabold">${escHtml(sqTrasf)}</span></div>
-            <div class="sm:col-span-3">Trofeo Minibasket: <span class="underline decoration-slate-900 font-extrabold">${escHtml(trofeo)}</span></div>
+            <div class="sm:col-span-3">Competizione: <span class="underline decoration-slate-900 font-extrabold">${escHtml(trofeo)}</span></div>
           </div>
 
           <table class="w-full border-collapse text-xs">
@@ -2510,7 +2510,7 @@ if (typeof firestoreAtletiMap !== "undefined" && firestoreAtletiMap === null && 
         [esc("LISTA NOMINATIVI MINIATLETI E ISTRUTTORI"), "", "", "", ""],
         [esc("Data"), esc(match.data || ""), esc("Luogo"), esc(luogo), esc("Gara n°: " + (match.garaNumero || ""))],
         [esc("Squadra A"), esc(sqCasa), esc("Squadra B"), esc(sqTrasf), ""],
-        [esc("Trofeo Minibasket"), esc(trofeo), "", "", ""],
+        [esc("Competizione:"), esc(trofeo), "", "", ""],
         ["", "", "", "", ""],
         [esc("##"), esc("NOME"), esc("COGNOME"), esc("N° Maglia"), esc("Data di Nascita")]
       ];
@@ -2536,7 +2536,6 @@ if (typeof firestoreAtletiMap !== "undefined" && firestoreAtletiMap === null && 
     }
 
   function printListaRPdf() {
-
 const sheet = document.getElementById('lista-r-printable-sheet');
       if (!sheet) return;
       const clone = sheet.cloneNode(true);
@@ -2583,14 +2582,11 @@ const sheet = document.getElementById('lista-r-printable-sheet');
             #lista-r-printable-sheet {
               max-width: 100% !important;
               width: 100% !important;
-              min-height: 277mm !important;
               margin: 0 auto !important;
               padding: 16px 20px !important;
-              border: 2px solid #0f172a !important;
+              border: none !important;
+              box-shadow: none !important;
               background: #ffffff !important;
-              display: flex !important;
-              flex-direction: column !important;
-              justify-content: space-between !important;
               break-inside: avoid !important;
               page-break-inside: avoid !important;
             }
@@ -2652,9 +2648,6 @@ const sheet = document.getElementById('lista-r-printable-sheet');
                 margin: 0 !important;
                 padding: 0 !important;
               }
-              #lista-r-printable-sheet {
-                min-height: 277mm !important;
-              }
             }
           </style>
         </head>
@@ -2703,7 +2696,6 @@ const sheet = document.getElementById('lista-r-printable-sheet');
         </html>
       `);
       win.document.close();
-
 
   }
 
