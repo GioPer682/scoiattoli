@@ -2536,6 +2536,7 @@ if (typeof firestoreAtletiMap !== "undefined" && firestoreAtletiMap === null && 
     }
 
   function printListaRPdf() {
+
 const sheet = document.getElementById('lista-r-printable-sheet');
       if (!sheet) return;
       const clone = sheet.cloneNode(true);
@@ -2582,51 +2583,61 @@ const sheet = document.getElementById('lista-r-printable-sheet');
             #lista-r-printable-sheet {
               max-width: 100% !important;
               width: 100% !important;
+              min-height: 277mm !important;
               margin: 0 auto !important;
               padding: 16px 20px !important;
               border: 2px solid #0f172a !important;
               background: #ffffff !important;
+              display: flex !important;
+              flex-direction: column !important;
+              justify-content: space-between !important;
               break-inside: avoid !important;
               page-break-inside: avoid !important;
             }
             #lista-r-printable-sheet table {
               width: 100% !important;
-              table-layout: fixed !important;
               border-collapse: collapse !important;
               font-size: 12.5px !important;
               line-height: 1.3 !important;
               break-inside: avoid !important;
               page-break-inside: avoid !important;
             }
-            #lista-r-printable-sheet th:nth-child(1),
-            #lista-r-printable-sheet td:nth-child(1) {
+            #lista-r-printable-sheet table.roster-main-table,
+            #lista-r-printable-sheet > div > table:first-child {
+              table-layout: fixed !important;
+            }
+            #lista-r-printable-sheet > div > table:first-child th:nth-child(1),
+            #lista-r-printable-sheet > div > table:first-child td:nth-child(1) {
               width: 6% !important;
               text-align: center !important;
             }
-            #lista-r-printable-sheet th:nth-child(2),
-            #lista-r-printable-sheet td:nth-child(2) {
+            #lista-r-printable-sheet > div > table:first-child th:nth-child(2),
+            #lista-r-printable-sheet > div > table:first-child td:nth-child(2) {
               width: 28% !important;
             }
-            #lista-r-printable-sheet th:nth-child(3),
-            #lista-r-printable-sheet td:nth-child(3) {
+            #lista-r-printable-sheet > div > table:first-child th:nth-child(3),
+            #lista-r-printable-sheet > div > table:first-child td:nth-child(3) {
               width: 30% !important;
             }
-            #lista-r-printable-sheet th:nth-child(4),
-            #lista-r-printable-sheet td:nth-child(4) {
+            #lista-r-printable-sheet > div > table:first-child th:nth-child(4),
+            #lista-r-printable-sheet > div > table:first-child td:nth-child(4) {
               width: 14% !important;
               text-align: center !important;
             }
-            #lista-r-printable-sheet th:nth-child(5),
-            #lista-r-printable-sheet td:nth-child(5) {
+            #lista-r-printable-sheet > div > table:first-child th:nth-child(5),
+            #lista-r-printable-sheet > div > table:first-child td:nth-child(5) {
               width: 22% !important;
               text-align: center !important;
             }
             #lista-r-printable-sheet th,
             #lista-r-printable-sheet td {
-              padding-top: 6px !important;
-              padding-bottom: 6px !important;
+              padding-top: 7px !important;
+              padding-bottom: 7px !important;
               padding-left: 8px !important;
               padding-right: 8px !important;
+            }
+            #lista-r-printable-sheet > div > table:first-child th,
+            #lista-r-printable-sheet > div > table:first-child td {
               overflow: hidden;
               text-overflow: ellipsis;
               white-space: nowrap;
@@ -2640,6 +2651,9 @@ const sheet = document.getElementById('lista-r-printable-sheet');
                 width: 100% !important;
                 margin: 0 !important;
                 padding: 0 !important;
+              }
+              #lista-r-printable-sheet {
+                min-height: 277mm !important;
               }
             }
           </style>
@@ -2656,7 +2670,7 @@ const sheet = document.getElementById('lista-r-printable-sheet');
               sheetEl.style.transform = '';
               sheetEl.style.width = '100%';
 
-              const maxHeightPx = 1055;
+              const maxHeightPx = 1060;
               const rect = sheetEl.getBoundingClientRect();
               if (rect.height > maxHeightPx) {
                 const scale = Math.max(0.75, maxHeightPx / rect.height);
